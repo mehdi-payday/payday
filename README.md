@@ -1,3 +1,3 @@
 # payday
 
-is today
+is today c:
