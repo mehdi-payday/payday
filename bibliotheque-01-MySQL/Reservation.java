@@ -1,4 +1,6 @@
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Permet d'effectuer les acc�s � la table reservation.
@@ -26,19 +28,19 @@ public class Reservation {
     /**
       * Creation d'une instance.
       */
-    public Reservation(Connexion cx) throws SQLException {
+    public Reservation(final Connexion cx) throws SQLException {
 
         this.cx = cx;
-        stmtExiste = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
+        this.stmtExiste = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
             + "from reservation where idReservation = ?");
-        stmtExisteLivre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
+        this.stmtExisteLivre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
             + "from reservation where idLivre = ? "
             + "order by dateReservation");
-        stmtExisteMembre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
+        this.stmtExisteMembre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
             + "from reservation where idMembre = ? ");
-        stmtInsert = cx.getConnection().prepareStatement("insert into reservation (idReservation, idlivre, idMembre, dateReservation) "
-            + "values (?,?,?,to_date(?,'YYYY-MM-DD'))");
-        stmtDelete = cx.getConnection().prepareStatement("delete from reservation where idReservation = ?");
+        this.stmtInsert = cx.getConnection().prepareStatement("insert into reservation (idReservation, idlivre, idMembre, dateReservation) "
+            + "values (?,?,?,STR_TO_DATE(?,'%Y-%m-%D'))");
+        this.stmtDelete = cx.getConnection().prepareStatement("delete from reservation where idReservation = ?");
     }
 
     /**
@@ -46,17 +48,17 @@ public class Reservation {
       */
     public Connexion getConnexion() {
 
-        return cx;
+        return this.cx;
     }
 
     /**
       * Verifie si une reservation existe.
       */
-    public boolean existe(int idReservation) throws SQLException {
+    public boolean existe(final int idReservation) throws SQLException {
 
-        stmtExiste.setInt(1,
+        this.stmtExiste.setInt(1,
             idReservation);
-        ResultSet rset = stmtExiste.executeQuery();
+        ResultSet rset = this.stmtExiste.executeQuery();
         boolean reservationExiste = rset.next();
         rset.close();
         return reservationExiste;
@@ -65,11 +67,11 @@ public class Reservation {
     /**
       * Lecture d'une reservation.
       */
-    public TupleReservation getReservation(int idReservation) throws SQLException {
+    public TupleReservation getReservation(final int idReservation) throws SQLException {
 
-        stmtExiste.setInt(1,
+        this.stmtExiste.setInt(1,
             idReservation);
-        ResultSet rset = stmtExiste.executeQuery();
+        ResultSet rset = this.stmtExiste.executeQuery();
         if(rset.next()) {
             TupleReservation tupleReservation = new TupleReservation();
             tupleReservation.idReservation = rset.getInt(1);
@@ -78,18 +80,19 @@ public class Reservation {
             tupleReservation.idMembre = rset.getInt(3);
             tupleReservation.dateReservation = rset.getDate(4);
             return tupleReservation;
-        } else
+        } else {
             return null;
+        }
     }
 
     /**
       * Lecture de la premi�re reservation d'un livre.
       */
-    public TupleReservation getReservationLivre(int idLivre) throws SQLException {
+    public TupleReservation getReservationLivre(final int idLivre) throws SQLException {
 
-        stmtExisteLivre.setInt(1,
+        this.stmtExisteLivre.setInt(1,
             idLivre);
-        ResultSet rset = stmtExisteLivre.executeQuery();
+        ResultSet rset = this.stmtExisteLivre.executeQuery();
         if(rset.next()) {
             TupleReservation tupleReservation = new TupleReservation();
             tupleReservation.idReservation = rset.getInt(1);
@@ -98,18 +101,19 @@ public class Reservation {
             tupleReservation.idMembre = rset.getInt(3);
             tupleReservation.dateReservation = rset.getDate(4);
             return tupleReservation;
-        } else
+        } else {
             return null;
+        }
     }
 
     /**
       * Lecture de la premi�re reservation d'un livre.
       */
-    public TupleReservation getReservationMembre(int idMembre) throws SQLException {
+    public TupleReservation getReservationMembre(final int idMembre) throws SQLException {
 
-        stmtExisteMembre.setInt(1,
+        this.stmtExisteMembre.setInt(1,
             idMembre);
-        ResultSet rset = stmtExisteMembre.executeQuery();
+        ResultSet rset = this.stmtExisteMembre.executeQuery();
         if(rset.next()) {
             TupleReservation tupleReservation = new TupleReservation();
             tupleReservation.idReservation = rset.getInt(1);
@@ -118,34 +122,35 @@ public class Reservation {
             tupleReservation.idMembre = rset.getInt(3);
             tupleReservation.dateReservation = rset.getDate(4);
             return tupleReservation;
-        } else
+        } else {
             return null;
+        }
     }
 
     /**
       * R�servation d'un livre.
       */
-    public void reserver(int idReservation,
-        int idLivre,
-        int idMembre,
-        String dateReservation) throws SQLException {
-        stmtInsert.setInt(1,
+    public void reserver(final int idReservation,
+        final int idLivre,
+        final int idMembre,
+        final String dateReservation) throws SQLException {
+        this.stmtInsert.setInt(1,
             idReservation);
-        stmtInsert.setInt(2,
+        this.stmtInsert.setInt(2,
             idLivre);
-        stmtInsert.setInt(3,
+        this.stmtInsert.setInt(3,
             idMembre);
-        stmtInsert.setString(4,
+        this.stmtInsert.setString(4,
             dateReservation);
-        stmtInsert.executeUpdate();
+        this.stmtInsert.executeUpdate();
     }
 
     /**
       * Suppression d'une reservation.
       */
-    public int annulerRes(int idReservation) throws SQLException {
-        stmtDelete.setInt(1,
+    public int annulerRes(final int idReservation) throws SQLException {
+        this.stmtDelete.setInt(1,
             idReservation);
-        return stmtDelete.executeUpdate();
+        return this.stmtDelete.executeUpdate();
     }
 }
