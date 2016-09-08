@@ -42,8 +42,7 @@ public class Connexion {
                     + bd,
                     user,
                     pass);
-            }
-            if(serveur.equals("distant")) {
+            } else if(serveur.equals("distant")) {
                 d = (Driver) Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
                 DriverManager.registerDriver(d);
                 this.conn = DriverManager.getConnection("jdbc:oracle:thin:@collegeahuntsic.info:1521:"
@@ -57,7 +56,7 @@ public class Connexion {
                      + bd,
                      user,
                      pass);
-              } 
+              }
                else // access
                {
                d = (Driver) Class.forName("org.postgresql.Driver").newInstance();

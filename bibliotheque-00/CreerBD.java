@@ -38,7 +38,7 @@ class CreerBD {
         stmt.executeUpdate("CREATE TABLE membre ( "
             + "idMembre        int(3) check(idMembre > 0), "
             + "nom             varchar(10) NOT NULL, "
-            + "telephone       int(10) , "
+            + "telephone       bigint(10) , "
             + "limitePret      int(2) check(limitePret > 0 and limitePret <= 10) , "
             + "nbpret          int(2) default 0 check(nbpret >= 0) , "
             + "CONSTRAINT cleMembre PRIMARY KEY (idMembre), "
