@@ -1,4 +1,6 @@
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * Permet d'effectuer les acc�s � la table membre.

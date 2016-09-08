@@ -1,4 +1,4 @@
-import java.sql.*;
+import java.sql.SQLException;
 
 /**
  * Gestion des transactions de reli�es � la cr�ation et

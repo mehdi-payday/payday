@@ -1,4 +1,4 @@
-import java.sql.*;
+import java.sql.SQLException;
 
 /**
  * Syst�me de gestion d'une biblioth�que

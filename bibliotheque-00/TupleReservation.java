@@ -1,4 +1,4 @@
-import java.sql.*;
+import java.sql.Date;
 
 /**
  * Permet de repr�senter un tuple de la table membre.

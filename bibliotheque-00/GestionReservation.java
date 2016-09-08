@@ -1,4 +1,5 @@
-import java.sql.*;
+import java.sql.Date;
+import java.sql.SQLException;
 
 /**
  * Gestion des transactions de reli�es aux r�servations de livres
