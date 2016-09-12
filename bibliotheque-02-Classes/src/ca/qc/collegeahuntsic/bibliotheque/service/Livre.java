@@ -1,3 +1,4 @@
+
 package ca.qc.collegeahuntsic.bibliotheque.service;
 
 import java.sql.Date;
@@ -5,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 
@@ -15,113 +15,129 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 
 public class Livre {
 
-	private PreparedStatement stmtExiste;
+    private PreparedStatement stmtExiste;
 
-	private PreparedStatement stmtInsert;
+    private PreparedStatement stmtInsert;
 
-	private PreparedStatement stmtUpdate;
+    private PreparedStatement stmtUpdate;
 
-	private PreparedStatement stmtDelete;
+    private PreparedStatement stmtDelete;
 
-	private Connexion cx;
+    private Connexion cx;
 
-	/**
-	 * Creation d'une instance. Des �nonc�s SQL pour chaque requ�te sont
-	 * pr�compil�s.
-	 */
-	public Livre(Connexion cx) throws SQLException {
+    /**
+     * Creation d'une instance. Des �nonc�s SQL pour chaque requ�te sont
+     * pr�compil�s.
+     */
+    public Livre(Connexion cx) throws SQLException {
 
-		this.cx = cx;
-		stmtExiste = cx.getConnection().prepareStatement(
-				"select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?");
-		stmtInsert = cx.getConnection()
-				.prepareStatement("insert into livre (idLivre, titre, auteur, dateAcquisition, idMembre, datePret) "
-						+ "values (?,?,?,?,null,null)");
-		stmtUpdate = cx.getConnection()
-				.prepareStatement("update livre set idMembre = ?, datePret = ? " + "where idLivre = ?");
-		stmtDelete = cx.getConnection().prepareStatement("delete from livre where idlivre = ?");
-	}
+        this.cx = cx;
+        stmtExiste = cx.getConnection().prepareStatement("select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?");
+        stmtInsert = cx.getConnection().prepareStatement("insert into livre (idLivre, titre, auteur, dateAcquisition, idMembre, datePret) "
+            + "values (?,?,?,?,null,null)");
+        stmtUpdate = cx.getConnection().prepareStatement("update livre set idMembre = ?, datePret = ? "
+            + "where idLivre = ?");
+        stmtDelete = cx.getConnection().prepareStatement("delete from livre where idlivre = ?");
+    }
 
-	/**
-	 * Retourner la connexion associ�e.
-	 */
-	public Connexion getConnexion() {
+    /**
+     * Retourner la connexion associ�e.
+     */
+    public Connexion getConnexion() {
 
-		return cx;
-	}
+        return cx;
+    }
 
-	/**
-	 * Verifie si un livre existe.
-	 */
-	public boolean existe(int idLivre) throws SQLException {
+    /**
+     * Verifie si un livre existe.
+     */
+    public boolean existe(int idLivre) throws SQLException {
 
-		stmtExiste.setInt(1, idLivre);
-		ResultSet rset = stmtExiste.executeQuery();
-		boolean livreExiste = rset.next();
-		rset.close();
-		return livreExiste;
-	}
+        stmtExiste.setInt(1,
+            idLivre);
+        ResultSet rset = stmtExiste.executeQuery();
+        boolean livreExiste = rset.next();
+        rset.close();
+        return livreExiste;
+    }
 
-	/**
-	 * Lecture d'un livre.
-	 */
-	public LivreDTO getLivre(int idLivre) throws SQLException {
+    /**
+     * Lecture d'un livre.
+     */
+    public LivreDTO getLivre(int idLivre) throws SQLException {
 
-		stmtExiste.setInt(1, idLivre);
-		ResultSet rset = stmtExiste.executeQuery();
-		if (rset.next()) {
-			LivreDTO tupleLivre = new LivreDTO();
-			tupleLivre.idLivre = idLivre;
-			tupleLivre.titre = rset.getString(2);
-			tupleLivre.auteur = rset.getString(3);
-			tupleLivre.dateAcquisition = rset.getDate(4);
-			tupleLivre.idMembre = rset.getInt(5);
-			tupleLivre.datePret = rset.getDate(6);
-			return tupleLivre;
-		} else
-			return null;
-	}
+        stmtExiste.setInt(1,
+            idLivre);
+        ResultSet rset = stmtExiste.executeQuery();
+        if(rset.next()) {
+            LivreDTO tupleLivre = new LivreDTO();
+            tupleLivre.idLivre = idLivre;
+            tupleLivre.titre = rset.getString(2);
+            tupleLivre.auteur = rset.getString(3);
+            tupleLivre.dateAcquisition = rset.getDate(4);
+            tupleLivre.idMembre = rset.getInt(5);
+            tupleLivre.datePret = rset.getDate(6);
+            return tupleLivre;
+        } else
+            return null;
+    }
 
-	/**
-	 * Ajout d'un nouveau livre dans la base de donnees.
-	 */
-	public void acquerir(int idLivre, String titre, String auteur, String dateAcquisition) throws SQLException {
-		/* Ajout du livre. */
-		stmtInsert.setInt(1, idLivre);
-		stmtInsert.setString(2, titre);
-		stmtInsert.setString(3, auteur);
-		stmtInsert.setDate(4, Date.valueOf(dateAcquisition));
-		stmtInsert.executeUpdate();
-	}
+    /**
+     * Ajout d'un nouveau livre dans la base de donnees.
+     */
+    public void acquerir(int idLivre,
+        String titre,
+        String auteur,
+        String dateAcquisition) throws SQLException {
+        /* Ajout du livre. */
+        stmtInsert.setInt(1,
+            idLivre);
+        stmtInsert.setString(2,
+            titre);
+        stmtInsert.setString(3,
+            auteur);
+        stmtInsert.setDate(4,
+            Date.valueOf(dateAcquisition));
+        stmtInsert.executeUpdate();
+    }
 
-	/**
-	 * Enregistrement de l'emprunteur d'un livre.
-	 */
-	public int preter(int idLivre, int idMembre, String datePret) throws SQLException {
-		/* Enregistrement du pret. */
-		stmtUpdate.setInt(1, idMembre);
-		stmtUpdate.setDate(2, Date.valueOf(datePret));
-		stmtUpdate.setInt(3, idLivre);
-		return stmtUpdate.executeUpdate();
-	}
+    /**
+     * Enregistrement de l'emprunteur d'un livre.
+     */
+    public int preter(int idLivre,
+        int idMembre,
+        String datePret) throws SQLException {
+        /* Enregistrement du pret. */
+        stmtUpdate.setInt(1,
+            idMembre);
+        stmtUpdate.setDate(2,
+            Date.valueOf(datePret));
+        stmtUpdate.setInt(3,
+            idLivre);
+        return stmtUpdate.executeUpdate();
+    }
 
-	/**
-	 * Rendre le livre disponible (non-pr�t�)
-	 */
-	public int retourner(int idLivre) throws SQLException {
-		/* Enregistrement du pret. */
-		stmtUpdate.setNull(1, Types.INTEGER);
-		stmtUpdate.setNull(2, Types.DATE);
-		stmtUpdate.setInt(3, idLivre);
-		return stmtUpdate.executeUpdate();
-	}
+    /**
+     * Rendre le livre disponible (non-pr�t�)
+     */
+    public int retourner(int idLivre) throws SQLException {
+        /* Enregistrement du pret. */
+        stmtUpdate.setNull(1,
+            Types.INTEGER);
+        stmtUpdate.setNull(2,
+            Types.DATE);
+        stmtUpdate.setInt(3,
+            idLivre);
+        return stmtUpdate.executeUpdate();
+    }
 
-	/**
-	 * Suppression d'un livre.
-	 */
-	public int vendre(int idLivre) throws SQLException {
-		/* Suppression du livre. */
-		stmtDelete.setInt(1, idLivre);
-		return stmtDelete.executeUpdate();
-	}
+    /**
+     * Suppression d'un livre.
+     */
+    public int vendre(int idLivre) throws SQLException {
+        /* Suppression du livre. */
+        stmtDelete.setInt(1,
+            idLivre);
+        return stmtDelete.executeUpdate();
+    }
 }
