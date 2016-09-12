@@ -99,7 +99,7 @@ public class Biblio {
         /* echo si lecture dans un fichier */
         if(!lectureAuClavier
             && transaction != null
-            && !"".equals(transaction)) {
+            && !transaction.equals("")) {
             System.out.println(transaction);
         }
         return transaction;
