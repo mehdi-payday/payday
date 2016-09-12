@@ -1,3 +1,5 @@
+package ca.qc.collegeahuntsic.bibliotheque.dto;
+
 import java.sql.Date;
 
 /**
@@ -5,7 +7,7 @@ import java.sql.Date;
  * 
  */
 
-public class TupleReservation {
+public class ReservationDTO {
 
     public int idReservation;
 
