@@ -1,7 +1,8 @@
+package ca.qc.collegeahuntsic.bibliotheque.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import ca.qc.collegeahuntsic.bibliotheque.db.*;
 /**
  * Permet d'effectuer les acc�s � la table reservation.
  *<pre>

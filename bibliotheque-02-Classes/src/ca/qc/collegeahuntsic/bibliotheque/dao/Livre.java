@@ -1,9 +1,10 @@
+package ca.qc.collegeahuntsic.bibliotheque.dao;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-
+import ca.qc.collegeahuntsic.bibliotheque.db.*;
 /**
  * Permet d'effectuer les acc�s � la table livre.
  */

@@ -1,5 +1,6 @@
+package ca.qc.collegeahuntsic.bibliotheque.dao;
 import java.sql.SQLException;
-
+import ca.qc.collegeahuntsic.bibliotheque.db.*;
 /**
  * Gestion des transactions de reli�es � la cr�ation et
  * suppresion de membres dans une biblioth�que.

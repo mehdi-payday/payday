@@ -1,6 +1,9 @@
+package ca.qc.collegeahuntsic.bibliotheque.dao;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import ca.qc.collegeahuntsic.bibliotheque.db.*;
 
 /**
  * Gestion des transactions d'interrogation dans une biblioth�que.

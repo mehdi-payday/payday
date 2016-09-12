@@ -1,6 +1,7 @@
+package ca.qc.collegeahuntsic.bibliotheque.dao;
 import java.sql.Date;
 import java.sql.SQLException;
-
+import ca.qc.collegeahuntsic.bibliotheque.db.*;
 /**
  * Gestion des transactions de reli�es aux pr�ts de livres
  * aux membres dans une biblioth�que.

@@ -1,3 +1,4 @@
+package ca.qc.collegeahuntsic.bibliotheque.dao;
 import java.sql.SQLException;
 
 /**
