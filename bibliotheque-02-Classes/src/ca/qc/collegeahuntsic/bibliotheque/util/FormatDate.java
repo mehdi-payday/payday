@@ -1,3 +1,6 @@
+
+package ca.qc.collegeahuntsic.bibliotheque.util;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -5,7 +8,7 @@ import java.util.Date;
 /**
  * Permet de valider le format d'une date en YYYY-MM-DD et de la convertir en un
  * objet Date.
- * 
+ *
  */
 public class FormatDate {
     private static SimpleDateFormat formatAMJ;
