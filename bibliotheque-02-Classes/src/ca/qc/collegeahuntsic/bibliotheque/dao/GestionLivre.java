@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.service.Livre;
+import ca.qc.collegeahuntsic.bibliotheque.service.Reservation;
 
 /**
  * Gestion des transactions de reli�es � la cr�ation et suppresion de

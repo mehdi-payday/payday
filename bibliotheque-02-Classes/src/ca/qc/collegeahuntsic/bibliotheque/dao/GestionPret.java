@@ -8,6 +8,9 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.service.Livre;
+import ca.qc.collegeahuntsic.bibliotheque.service.Membre;
+import ca.qc.collegeahuntsic.bibliotheque.service.Reservation;
 
 /**
  * Gestion des transactions de reli�es aux pr�ts de livres aux membres dans

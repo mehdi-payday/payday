@@ -1,4 +1,4 @@
-package ca.qc.collegeahuntsic.bibliotheque.dao;
+package ca.qc.collegeahuntsic.bibliotheque.service;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
