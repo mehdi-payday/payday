@@ -13,7 +13,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
  * Permet d'effectuer les acc�s � la table livre.
  */
 
-public class Livre {
+public class LivreService {
 
     private PreparedStatement stmtExiste;
 
@@ -29,7 +29,7 @@ public class Livre {
      * Creation d'une instance. Des �nonc�s SQL pour chaque requ�te sont
      * pr�compil�s.
      */
-    public Livre(Connexion cx) throws SQLException {
+    public LivreService(Connexion cx) throws SQLException {
 
         this.cx = cx;
         stmtExiste = cx.getConnection().prepareStatement("select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?");

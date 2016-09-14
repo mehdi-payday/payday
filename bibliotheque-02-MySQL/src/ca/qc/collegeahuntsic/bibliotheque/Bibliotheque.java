@@ -32,7 +32,7 @@ import ca.qc.collegeahuntsic.bibliotheque.util.FormatDate;
  * transaction
  * </pre>
  */
-public class Biblio {
+public class Bibliotheque {
     private static GestionBibliotheque gestionBiblio;
 
     private static boolean lectureAuClavier;

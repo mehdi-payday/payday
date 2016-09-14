@@ -14,7 +14,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
  * </pre>
  */
 
-public class Membre {
+public class MembreService {
 
     private PreparedStatement stmtExiste;
 
@@ -31,7 +31,7 @@ public class Membre {
     /**
      * Creation d'une instance. Pr�compilation d'�nonc�s SQL.
      */
-    public Membre(Connexion cx) throws SQLException {
+    public MembreService(Connexion cx) throws SQLException {
         this.cx = cx;
         stmtExiste = cx.getConnection().prepareStatement("select idMembre, nom, telephone, limitePret, nbpret from membre where idmembre = ?");
         stmtInsert = cx.getConnection().prepareStatement("insert into membre (idmembre, nom, telephone, limitepret, nbpret) "

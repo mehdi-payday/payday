@@ -5,8 +5,8 @@ import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
-import ca.qc.collegeahuntsic.bibliotheque.service.Livre;
-import ca.qc.collegeahuntsic.bibliotheque.service.Reservation;
+import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
+import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
  * Gestion des transactions de reli�es � la cr�ation et suppresion de
@@ -23,17 +23,17 @@ import ca.qc.collegeahuntsic.bibliotheque.service.Reservation;
  */
 public class LivreDAO {
 
-    private Livre livre;
+    private LivreService livre;
 
-    private Reservation reservation;
+    private ReservationService reservation;
 
     private Connexion cx;
 
     /**
      * Creation d'une instance
      */
-    public LivreDAO(Livre livre,
-        Reservation reservation) {
+    public LivreDAO(LivreService livre,
+        ReservationService reservation) {
         this.cx = livre.getConnexion();
         this.livre = livre;
         this.reservation = reservation;

@@ -30,11 +30,11 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
 public class GestionBibliotheque {
     public Connexion cx;
 
-    public Livre livre;
+    public LivreService livre;
 
-    public Membre membre;
+    public MembreService membre;
 
-    public Reservation reservation;
+    public ReservationService reservation;
 
     public LivreDAO gestionLivre;
 
@@ -67,9 +67,9 @@ public class GestionBibliotheque {
             bd,
             user,
             password);
-        this.livre = new Livre(this.cx);
-        this.membre = new Membre(this.cx);
-        this.reservation = new Reservation(this.cx);
+        this.livre = new LivreService(this.cx);
+        this.membre = new MembreService(this.cx);
+        this.reservation = new ReservationService(this.cx);
         this.gestionLivre = new LivreDAO(this.livre,
             this.reservation);
         this.gestionMembre = new MembreDAO(this.membre,

@@ -8,9 +8,9 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
-import ca.qc.collegeahuntsic.bibliotheque.service.Livre;
-import ca.qc.collegeahuntsic.bibliotheque.service.Membre;
-import ca.qc.collegeahuntsic.bibliotheque.service.Reservation;
+import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
+import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
+import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
  * Gestion des transactions de reli�es aux r�servations de livres par les
@@ -28,11 +28,11 @@ import ca.qc.collegeahuntsic.bibliotheque.service.Reservation;
 
 public class ReservationDAO {
 
-    private Livre livre;
+    private LivreService livre;
 
-    private Membre membre;
+    private MembreService membre;
 
-    private Reservation reservation;
+    private ReservationService reservation;
 
     private Connexion cx;
 
@@ -41,9 +41,9 @@ public class ReservationDAO {
      * membre doit �tre la m�me que cx, afin d'assurer l'int�grit� des
      * transactions.
      */
-    public ReservationDAO(Livre livre,
-        Membre membre,
-        Reservation reservation) throws BiblioException {
+    public ReservationDAO(LivreService livre,
+        MembreService membre,
+        ReservationService reservation) throws BiblioException {
         if(livre.getConnexion() != membre.getConnexion()
             || reservation.getConnexion() != membre.getConnexion())
             throw new BiblioException("Les instances de livre, de membre et de reservation n'utilisent pas la m�me connexion au serveur");
