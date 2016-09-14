@@ -11,21 +11,21 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
 
 /**
- * Syst�me de gestion d'une biblioth�que
+ * Syst�me de gestion d'une bibliothèque
  *
- *<pre>
- * Ce programme permet de g�rer les transaction de base d'une
- * biblioth�que.  Il g�re des livres, des membres et des
- * r�servations. Les donn�es sont conserv�es dans une base de
- * donn�es relationnelles acc�d�e avec JDBC.
  *
- * Pr�-condition
- *   la base de donn�es de la biblioth�que doit exister
+ * Ce programme permet de gérer les transaction de base d'une
+ * bibliothèque.  Il gère des livres, des membres et des
+ * réservations. Les données sont conservées dans une base de
+ * données relationnelles accédées avec JDBC.
+ *
+ * Pré-condition
+ *   la base de données de la bibliothèque doit exister
  *
  * Post-condition
- *   le programme effectue les maj associ�es � chaque
+ *   le programme effectue les maj associées à chaque
  *   transaction
- * </pre>
+ *
  */
 public class GestionBibliotheque {
     public Connexion cx;
@@ -49,20 +49,18 @@ public class GestionBibliotheque {
     /**
       * Ouvre une connexion avec la BD relationnelle et
       * alloue les gestionnaires de transactions et de tables.
-      * <pre>
       *
       * @param serveur SQL
-      * @param bd nom de la bade de donn�es
-      * @param user user id pour �tablir une connexion avec le serveur SQL
+      * @param bd nom de la bade de données
+      * @param user user id pour établir une connexion avec le serveur SQL
       * @param password mot de passe pour le user id
-      *</pre>
       */
     public GestionBibliotheque(final String serveur,
         final String bd,
         final String user,
         final String password) throws BiblioException,
         SQLException {
-        // allocation des objets pour le traitement des transactions
+
         this.cx = new Connexion(serveur,
             bd,
             user,
@@ -84,7 +82,6 @@ public class GestionBibliotheque {
     }
 
     public void fermer() throws SQLException {
-        // fermeture de la connexion
         this.cx.fermer();
     }
 }

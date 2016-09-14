@@ -7,22 +7,19 @@ import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 
 /**
- * Gestion des transactions d'interrogation dans une biblioth�que.
- * 
- * <pre>
- * 
+ * Gestion des transactions d'interrogation dans une bibliothèque.
+ *
  *   Ce programme permet de faire diverses interrogations
- *   sur l'�tat de la biblioth�que.
- *  
- *   Pr�-condition
- *     la base de donn�es de la biblioth�que doit exister
- *  
+ *   sur l'état de la bibliothèque.
+ *
+ *   Pré-condition
+ *     la base de données de la biblioth�que doit exister
+ *
  *   Post-condition
- *     le programme effectue les maj associ�es � chaque
+ *     le programme effectue les maj associées à chaque
  *     transaction
- * 
- * 
- * </pre>
+ *
+ *
  */
 
 public class InterrogationDAO {
@@ -39,11 +36,11 @@ public class InterrogationDAO {
     public InterrogationDAO(Connexion cx) throws SQLException {
 
         this.cx = cx;
-        stmtLivresTitreMot = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret + 14 "
+        this.stmtLivresTitreMot = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret + 14 "
             + "from livre t1 "
             + "where lower(titre) like ?");
 
-        stmtListeTousLivres = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret "
+        this.stmtListeTousLivres = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret "
             + "from livre t1");
     }
 
@@ -52,11 +49,11 @@ public class InterrogationDAO {
      */
     public void listerLivresTitre(String mot) throws SQLException {
 
-        stmtLivresTitreMot.setString(1,
+        this.stmtLivresTitreMot.setString(1,
             "%"
                 + mot
                 + "%");
-        ResultSet rset = stmtLivresTitreMot.executeQuery();
+        ResultSet rset = this.stmtLivresTitreMot.executeQuery();
 
         int idMembre;
         System.out.println("idLivre titre auteur idMembre dateRetour");
@@ -75,7 +72,7 @@ public class InterrogationDAO {
             }
             System.out.println();
         }
-        cx.commit();
+        this.cx.commit();
     }
 
     /**
@@ -83,7 +80,7 @@ public class InterrogationDAO {
      */
     public void listerLivres() throws SQLException {
 
-        ResultSet rset = stmtListeTousLivres.executeQuery();
+        ResultSet rset = this.stmtListeTousLivres.executeQuery();
 
         System.out.println("idLivre titre auteur idMembre datePret");
         int idMembre;
@@ -102,6 +99,6 @@ public class InterrogationDAO {
             }
             System.out.println();
         }
-        cx.commit();
+        this.cx.commit();
     }
 }
