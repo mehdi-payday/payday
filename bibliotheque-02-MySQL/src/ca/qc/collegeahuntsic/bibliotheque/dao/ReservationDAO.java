@@ -13,15 +13,15 @@ import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
- * Gestion des transactions de reli�es aux r�servations de livres par les
- * membres dans une biblioth�que.
+ * Gestion des transactions de reliées aux réservations de livrées par les
+ * membres dans une bibliothèque.
  *
- * Ce programme permet de g�rer les transactions r�server, prendre et
+ * Ce programme permet de gérer les transactions réserver, prendre et
  * annuler.
  *
- * Pr�-condition la base de donn�es de la biblioth�que doit exister
+ * Pré-condition la base de données de la bibliothèque doit exister
  *
- * Post-condition le programme effectue les maj associ�es � chaque
+ * Post-condition le programme effectue les maj associées à chaque
  * transaction
  * </pre>
  */
@@ -38,7 +38,7 @@ public class ReservationDAO {
 
     /**
      * Creation d'une instance. La connection de l'instance de livre et de
-     * membre doit �tre la m�me que cx, afin d'assurer l'int�grit� des
+     * membre doit être la même que cx, afin d'assurer l'intégrité des
      * transactions.
      */
     public ReservationDAO(LivreService livre,
@@ -46,7 +46,7 @@ public class ReservationDAO {
         ReservationService reservation) throws BiblioException {
         if(livre.getConnexion() != membre.getConnexion()
             || reservation.getConnexion() != membre.getConnexion())
-            throw new BiblioException("Les instances de livre, de membre et de reservation n'utilisent pas la m�me connexion au serveur");
+            throw new BiblioException("Les instances de livre, de membre et de reservation n'utilisent pas la même connexion au serveur");
         this.cx = livre.getConnexion();
         this.livre = livre;
         this.membre = membre;
@@ -54,7 +54,7 @@ public class ReservationDAO {
     }
 
     /**
-     * R�servation d'un livre par un membre. Le livre doit �tre pr�t�.
+     * Réservation d'un livre par un membre. Le livre doit être prêté.
      */
     public void reserver(int idReservation,
         int idLivre,
@@ -63,7 +63,7 @@ public class ReservationDAO {
         BiblioException,
         Exception {
         try {
-            /* Verifier que le livre est pret� */
+            /* Verifier que le livre est prêté */
             LivreDTO tupleLivre = livre.getLivre(idLivre);
             if(tupleLivre == null)
                 throw new BiblioException("Livre inexistant: "
@@ -77,7 +77,7 @@ public class ReservationDAO {
                     + idLivre
                     + " deja prete a ce membre");
 
-            /* V�rifier que le membre existe */
+            /* Vérifier que le membre existe */
             MembreDTO tupleMembre = membre.getMembre(idMembre);
             if(tupleMembre == null)
                 throw new BiblioException("Membre inexistant: "
@@ -85,11 +85,11 @@ public class ReservationDAO {
 
             /* Verifier si date reservation >= datePret */
             if(Date.valueOf(dateReservation).before(tupleLivre.datePret))
-                throw new BiblioException("Date de reservation inferieure � la date de pret");
+                throw new BiblioException("Date de reservation inferieure à la date de pret");
 
-            /* V�rifier que la r�servation n'existe pas */
+            /* Vérifier que la réservation n'existe pas */
             if(reservation.existe(idReservation))
-                throw new BiblioException("R�servation "
+                throw new BiblioException("Réservation "
                     + idReservation
                     + " existe deja");
 
@@ -106,25 +106,25 @@ public class ReservationDAO {
     }
 
     /**
-     * Prise d'une r�servation. Le livre ne doit pas �tre pr�t�. Le
-     * membre ne doit pas avoir d�pass� sa limite de pret. La r�servation
-     * doit la �tre la premi�re en liste.
+     * Prise d'une réservation. Le livre ne doit pas être prêté. Le
+     * membre ne doit pas avoir dépassé sa limite de pret. La réservation
+     * doit la être la première en liste.
      */
     public void prendreRes(int idReservation,
         String datePret) throws SQLException,
         BiblioException,
         Exception {
         try {
-            /* V�rifie s'il existe une r�servation pour le livre */
+            /* Vérifie s'il existe une réservation pour le livre */
             ReservationDTO tupleReservation = reservation.getReservation(idReservation);
             if(tupleReservation == null)
-                throw new BiblioException("R�servation inexistante : "
+                throw new BiblioException("Réservation inexistante : "
                     + idReservation);
 
-            /* V�rifie que c'est la premi�re r�servation pour le livre */
+            /* Vérifie que c'est la première réservation pour le livre */
             ReservationDTO tupleReservationPremiere = reservation.getReservationLivre(tupleReservation.idLivre);
             if(tupleReservation.idReservation != tupleReservationPremiere.idReservation)
-                throw new BiblioException("La r�servation n'est pas la premi�re de la liste "
+                throw new BiblioException("La réservation n'est pas la première de la liste "
                     + "pour ce livre; la premiere est "
                     + tupleReservationPremiere.idReservation);
 
@@ -136,31 +136,31 @@ public class ReservationDAO {
             if(tupleLivre.idMembre != 0)
                 throw new BiblioException("Livre "
                     + tupleLivre.idLivre
-                    + " deja pr�t� � "
+                    + " deja prêté ? "
                     + tupleLivre.idMembre);
 
-            /* V�rifie si le membre existe et sa limite de pret */
+            /* Vérifie si le membre existe et sa limite de prêt */
             MembreDTO tupleMembre = membre.getMembre(tupleReservation.idMembre);
             if(tupleMembre == null)
                 throw new BiblioException("Membre inexistant: "
                     + tupleReservation.idMembre);
             if(tupleMembre.nbPret >= tupleMembre.limitePret)
-                throw new BiblioException("Limite de pr�t du membre "
+                throw new BiblioException("Limite de prêt du membre "
                     + tupleReservation.idMembre
                     + " atteinte");
 
             /* Verifier si datePret >= tupleReservation.dateReservation */
             if(Date.valueOf(datePret).before(tupleReservation.dateReservation))
-                throw new BiblioException("Date de pr�t inf�rieure � la date de r�servation");
+                throw new BiblioException("Date de prêt inférieure à la date de réservation");
 
-            /* Enregistrement du pret. */
+            /* Enregistrement du prêt. */
             if(livre.preter(tupleReservation.idLivre,
                 tupleReservation.idMembre,
                 datePret) == 0)
-                throw new BiblioException("Livre supprim� par une autre transaction");
+                throw new BiblioException("Livre supprimé par une autre transaction");
             if(membre.preter(tupleReservation.idMembre) == 0)
-                throw new BiblioException("Membre supprim� par une autre transaction");
-            /* Eliminer la r�servation */
+                throw new BiblioException("Membre supprimé par une autre transaction");
+            /* Eliminer la réservation */
             reservation.annulerRes(idReservation);
             cx.commit();
         } catch(Exception e) {
@@ -170,16 +170,16 @@ public class ReservationDAO {
     }
 
     /**
-     * Annulation d'une r�servation. La r�servation doit exister.
+     * Annulation d'une réservation. La réservation doit exister.
      */
     public void annulerRes(int idReservation) throws SQLException,
         BiblioException,
         Exception {
         try {
 
-            /* V�rifier que la r�servation existe */
+            /* Vérifier que la réservation existe */
             if(reservation.annulerRes(idReservation) == 0)
-                throw new BiblioException("R�servation "
+                throw new BiblioException("Réservation "
                     + idReservation
                     + " n'existe pas");
 

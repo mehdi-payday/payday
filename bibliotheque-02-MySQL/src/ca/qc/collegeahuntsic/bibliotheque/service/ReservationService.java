@@ -8,11 +8,11 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 
 /**
- * Permet d'effectuer les acc�s � la table reservation.
+ * Permet d'effectuer les accès à la table reservation.
  * 
  * <pre>
  *
- * Cette classe g�re tous les acc�s � la table reservation.
+ * Cette classe gère tous les accès à la table reservation.
  *
  * </pre>
  */
@@ -50,7 +50,7 @@ public class ReservationService {
     }
 
     /**
-     * Retourner la connexion associ�e.
+     * Retourner la connexion associée.
      */
     public Connexion getConnexion() {
 
@@ -58,7 +58,7 @@ public class ReservationService {
     }
 
     /**
-     * Verifie si une reservation existe.
+     * Verifie si une réservation existe.
      */
     public boolean existe(final int idReservation) throws SQLException {
 
@@ -71,7 +71,7 @@ public class ReservationService {
     }
 
     /**
-     * Lecture d'une reservation.
+     * Lecture d'une réservation.
      */
     public ReservationDTO getReservation(final int idReservation) throws SQLException {
 
@@ -92,7 +92,7 @@ public class ReservationService {
     }
 
     /**
-     * Lecture de la premi�re reservation d'un livre.
+     * Lecture de la première reservation d'un livre.
      */
     public ReservationDTO getReservationLivre(final int idLivre) throws SQLException {
 
@@ -113,7 +113,7 @@ public class ReservationService {
     }
 
     /**
-     * Lecture de la premi�re reservation d'un livre.
+     * Lecture de la première reservation d'un livre.
      */
     public ReservationDTO getReservationMembre(final int idMembre) throws SQLException {
 
@@ -134,7 +134,7 @@ public class ReservationService {
     }
 
     /**
-     * R�servation d'un livre.
+     * Réservation d'un livre.
      */
     public void reserver(final int idReservation,
         final int idLivre,

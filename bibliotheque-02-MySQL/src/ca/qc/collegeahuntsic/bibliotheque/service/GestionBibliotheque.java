@@ -11,7 +11,7 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
 
 /**
- * Syst�me de gestion d'une bibliothèque
+ * Système de gestion d'une bibliothèque
  *
  *
  * Ce programme permet de gérer les transaction de base d'une
