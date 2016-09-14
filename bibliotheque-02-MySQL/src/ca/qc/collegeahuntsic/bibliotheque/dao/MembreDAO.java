@@ -9,17 +9,16 @@ import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
- * Gestion des transactions de reli�es � la cr�ation et suppresion de
- * membres dans une biblioth�que.
+ * Gestion des transactions reliees a la creation et suppresion de
+ * membres dans une bibliotheque.
  *
- * Ce programme permet de g�rer les transaction reli�es � la cr�ation et
+ * Ce programme permet de gerer les transaction reliees a la creation et
  * suppresion de membres.
  *
- * Pr�-condition la base de donn�es de la biblioth�que doit exister
+ * Pre-condition la base de donnees de la bibliotheque doit exister
  *
- * Post-condition le programme effectue les maj associ�es � chaque
+ * Post-condition le programme effectue les maj associees a chaque
  * transaction
- * </pre>
  */
 
 public class MembreDAO {
@@ -52,19 +51,17 @@ public class MembreDAO {
         BiblioException,
         Exception {
         try {
-            /* V�rifie si le membre existe d�ja */
-            if(membre.existe(idMembre))
+            if(this.membre.existe(idMembre)) {
                 throw new BiblioException("Membre existe deja: "
                     + idMembre);
-
-            /* Ajout du membre. */
-            membre.inscrire(idMembre,
+            }
+            this.membre.inscrire(idMembre,
                 nom,
                 telephone,
                 limitePret);
-            cx.commit();
+            this.cx.commit();
         } catch(Exception e) {
-            cx.rollback();
+            this.cx.rollback();
             throw e;
         }
     }
@@ -76,30 +73,32 @@ public class MembreDAO {
         BiblioException,
         Exception {
         try {
-            /* V�rifie si le membre existe et son nombre de pret en cours */
-            MembreDTO tupleMembre = membre.getMembre(idMembre);
-            if(tupleMembre == null)
+            MembreDTO tupleMembre = this.membre.getMembre(idMembre);
+            if(tupleMembre == null) {
                 throw new BiblioException("Membre inexistant: "
                     + idMembre);
-            if(tupleMembre.nbPret > 0)
+            }
+            if(tupleMembre.nbPret > 0) {
                 throw new BiblioException("Le membre "
                     + idMembre
                     + " a encore des prets.");
-            if(reservation.getReservationMembre(idMembre) != null)
+            }
+            if(this.reservation.getReservationMembre(idMembre) != null) {
                 throw new BiblioException("Membre "
                     + idMembre
                     + " a des r�servations");
+            }
 
-            /* Suppression du membre */
-            int nb = membre.desinscrire(idMembre);
-            if(nb == 0)
+            int nb = this.membre.desinscrire(idMembre);
+            if(nb == 0) {
                 throw new BiblioException("Membre "
                     + idMembre
                     + " inexistant");
-            cx.commit();
+            }
+            this.cx.commit();
         } catch(Exception e) {
-            cx.rollback();
+            this.cx.rollback();
             throw e;
         }
     }
-}// class
+}

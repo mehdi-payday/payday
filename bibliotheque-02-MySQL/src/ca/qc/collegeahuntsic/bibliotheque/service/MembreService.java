@@ -8,10 +8,8 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 
 /**
- * Permet d'effectuer les acc�s � la table membre. Cette classe g�re tous
- * les acc�s � la table membre.
- *
- * </pre>
+ * Permet d'effectuer les acces a la table membre. Cette classe gere tous
+ * les acces a la table membre.
  */
 
 public class MembreService {
@@ -29,33 +27,32 @@ public class MembreService {
     private Connexion cx;
 
     /**
-     * Creation d'une instance. Pr�compilation d'�nonc�s SQL.
+     * Creation d'une instance. Precompilation d'enonces SQL.
      */
     public MembreService(Connexion cx) throws SQLException {
         this.cx = cx;
-        stmtExiste = cx.getConnection().prepareStatement("select idMembre, nom, telephone, limitePret, nbpret from membre where idmembre = ?");
-        stmtInsert = cx.getConnection().prepareStatement("insert into membre (idmembre, nom, telephone, limitepret, nbpret) "
+        this.stmtExiste = cx.getConnection().prepareStatement("select idMembre, nom, telephone, limitePret, nbpret from membre where idmembre = ?");
+        this.stmtInsert = cx.getConnection().prepareStatement("insert into membre (idmembre, nom, telephone, limitepret, nbpret) "
             + "values (?,?,?,?,0)");
-        stmtUpdateIncrNbPret = cx.getConnection().prepareStatement("update membre set nbpret = nbPret + 1 where idMembre = ?");
-        stmtUpdateDecNbPret = cx.getConnection().prepareStatement("update membre set nbpret = nbPret - 1 where idMembre = ?");
-        stmtDelete = cx.getConnection().prepareStatement("delete from membre where idmembre = ?");
+        this.stmtUpdateIncrNbPret = cx.getConnection().prepareStatement("update membre set nbpret = nbPret + 1 where idMembre = ?");
+        this.stmtUpdateDecNbPret = cx.getConnection().prepareStatement("update membre set nbpret = nbPret - 1 where idMembre = ?");
+        this.stmtDelete = cx.getConnection().prepareStatement("delete from membre where idmembre = ?");
     }
 
     /**
-     * Retourner la connexion associ�e.
+     * Retourner la connexion associee.
      */
     public Connexion getConnexion() {
-
-        return cx;
+        return this.cx;
     }
 
     /**
      * Verifie si un membre existe.
      */
     public boolean existe(int idMembre) throws SQLException {
-        stmtExiste.setInt(1,
+        this.stmtExiste.setInt(1,
             idMembre);
-        ResultSet rset = stmtExiste.executeQuery();
+        ResultSet rset = this.stmtExiste.executeQuery();
         boolean membreExiste = rset.next();
         rset.close();
         return membreExiste;
@@ -65,9 +62,9 @@ public class MembreService {
      * Lecture d'un membre.
      */
     public MembreDTO getMembre(int idMembre) throws SQLException {
-        stmtExiste.setInt(1,
+        this.stmtExiste.setInt(1,
             idMembre);
-        ResultSet rset = stmtExiste.executeQuery();
+        ResultSet rset = this.stmtExiste.executeQuery();
         if(rset.next()) {
             MembreDTO tupleMembre = new MembreDTO();
             tupleMembre.idMembre = idMembre;
@@ -76,8 +73,9 @@ public class MembreService {
             tupleMembre.limitePret = rset.getInt(4);
             tupleMembre.nbPret = rset.getInt(5);
             return tupleMembre;
-        } else
+        } else {
             return null;
+        }
     }
 
     /**
@@ -87,42 +85,41 @@ public class MembreService {
         String nom,
         long telephone,
         int limitePret) throws SQLException {
-        /* Ajout du membre. */
-        stmtInsert.setInt(1,
+        this.stmtInsert.setInt(1,
             idMembre);
-        stmtInsert.setString(2,
+        this.stmtInsert.setString(2,
             nom);
-        stmtInsert.setLong(3,
+        this.stmtInsert.setLong(3,
             telephone);
-        stmtInsert.setInt(4,
+        this.stmtInsert.setInt(4,
             limitePret);
-        stmtInsert.executeUpdate();
+        this.stmtInsert.executeUpdate();
     }
 
     /**
      * Incrementer le nb de pret d'un membre.
      */
     public int preter(int idMembre) throws SQLException {
-        stmtUpdateIncrNbPret.setInt(1,
+        this.stmtUpdateIncrNbPret.setInt(1,
             idMembre);
-        return stmtUpdateIncrNbPret.executeUpdate();
+        return this.stmtUpdateIncrNbPret.executeUpdate();
     }
 
     /**
      * Decrementer le nb de pret d'un membre.
      */
     public int retourner(int idMembre) throws SQLException {
-        stmtUpdateDecNbPret.setInt(1,
+        this.stmtUpdateDecNbPret.setInt(1,
             idMembre);
-        return stmtUpdateDecNbPret.executeUpdate();
+        return this.stmtUpdateDecNbPret.executeUpdate();
     }
 
     /**
      * Suppression d'un membre.
      */
     public int desinscrire(int idMembre) throws SQLException {
-        stmtDelete.setInt(1,
+        this.stmtDelete.setInt(1,
             idMembre);
-        return stmtDelete.executeUpdate();
+        return this.stmtDelete.executeUpdate();
     }
 }

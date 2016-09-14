@@ -11,24 +11,23 @@ import java.sql.SQLException;
  * Gestionnaire d'une connexion avec une BD relationnelle via JDBC.
  *
  * Ce programme ouvrir une connexion avec une BD via JDBC.
- * La m�thode serveursSupportes() indique les serveurs support�s.
+ * La methode serveursSupportes() indique les serveurs support�s.
  *
- * Pr�-condition
- *   le driver JDBC appropri� doit �tre accessible.
+ * Pre-condition
+ *   le driver JDBC approprie doit etre accessible.
  *
  * Post-condition
- *   la connexion est ouverte en mode autocommit false et s�rialisable,
- *   (s'il est support� par le serveur).
- * </pre>
+ *   la connexion est ouverte en mode autocommit false et serialisable,
+ *   (s'il est supporte par le serveur).
  */
 public class Connexion {
 
     private Connection conn;
 
     /**
-     * Ouverture d'une connexion en mode autocommit false et s�rialisable (si support�)
+     * Ouverture d'une connexion en mode autocommit false et serialisable (si supporte)
      * @param serveur serveur SQL de la BD
-     * @bd nom de la base de donn�es
+     * @bd nom de la base de donnees
      * @user userid sur le serveur SQL
      * @pass mot de passe sur le serveur SQL
      */
@@ -69,11 +68,8 @@ public class Connexion {
                "", "");
                }
                */
-            // mettre en mode de commit manuel
             this.conn.setAutoCommit(false);
 
-            // mettre en mode s�rialisable si possible
-            // (plus haut niveau d'integrit� l'acc�s concurrent aux donn�es)
             DatabaseMetaData dbmd = this.conn.getMetaData();
             if(dbmd.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
                 this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
@@ -89,9 +85,7 @@ public class Connexion {
                     + " "
                     + this.conn);
             }
-        } // try
-
-        catch(SQLException e) {
+        } catch(SQLException e) {
             throw e;
         } catch(Exception e) {
             e.printStackTrace(System.out);
@@ -100,7 +94,7 @@ public class Connexion {
     }
 
     /**
-     *fermeture d'une connexion
+     * fermeture d'une connexion
      */
     public void fermer() throws SQLException {
         this.conn.rollback();
@@ -111,21 +105,21 @@ public class Connexion {
     }
 
     /**
-     *commit
+     * commit
      */
     public void commit() throws SQLException {
         this.conn.commit();
     }
 
     /**
-     *rollback
+     * rollback
      */
     public void rollback() throws SQLException {
         this.conn.rollback();
     }
 
     /**
-     *retourne la Connection jdbc
+     * retourne la Connection jdbc
      */
     public Connection getConnection() {
         return this.conn;
@@ -140,4 +134,4 @@ public class Connexion {
             + "postgres : Postgres install� localement\n"
             + "access : Microsoft Access install� localement et inscrit dans ODBC";
     }
-}// Classe Connexion
+}
