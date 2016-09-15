@@ -1,3 +1,6 @@
+// Fichier LivreDTO.java
+// Auteur : Alexandre Barone
+// Date de création : 2016-09-15
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;
 
