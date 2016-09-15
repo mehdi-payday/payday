@@ -74,12 +74,12 @@ public class ReservationDAO extends DAO {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
             }
-            if(tupleLivre.idMembre == 0) {
+            if(tupleLivre.getIdMembre() == 0) {
                 throw new BiblioException("Livre "
                     + idLivre
                     + " n'est pas prete");
             }
-            if(tupleLivre.idMembre == idMembre) {
+            if(tupleLivre.getIdLivre() == idMembre) {
                 throw new BiblioException("Livre "
                     + idLivre
                     + " deja prete a ce membre");
@@ -93,7 +93,7 @@ public class ReservationDAO extends DAO {
             }
 
             /* Verifier si date reservation >= datePret */
-            if(Date.valueOf(dateReservation).before(tupleLivre.datePret)) {
+            if(Date.valueOf(dateReservation).before(tupleLivre.getDatePret())) {
                 throw new BiblioException("Date de reservation inferieure à la date de pret");
             }
 
@@ -134,50 +134,50 @@ public class ReservationDAO extends DAO {
             }
 
             /* Vérifie que c'est la première réservation pour le livre */
-            ReservationDTO tupleReservationPremiere = this.reservation.getReservationLivre(tupleReservation.idLivre);
-            if(tupleReservation.idReservation != tupleReservationPremiere.idReservation) {
+            ReservationDTO tupleReservationPremiere = this.reservation.getReservationLivre(tupleReservation.getIdLivre());
+            if(tupleReservation.getIdReservation() != tupleReservationPremiere.getIdReservation()) {
                 throw new BiblioException("La réservation n'est pas la première de la liste "
                     + "pour ce livre; la premiere est "
-                    + tupleReservationPremiere.idReservation);
+                    + tupleReservationPremiere.getIdReservation());
             }
 
             /* Verifier si le livre est disponible */
-            LivreDTO tupleLivre = this.livre.getLivre(tupleReservation.idLivre);
+            LivreDTO tupleLivre = this.livre.getLivre(tupleReservation.getIdLivre());
             if(tupleLivre == null) {
                 throw new BiblioException("Livre inexistant: "
-                    + tupleReservation.idLivre);
+                    + tupleReservation.getIdLivre());
             }
-            if(tupleLivre.idMembre != 0) {
+            if(tupleLivre.getIdMembre() != 0) {
                 throw new BiblioException("Livre "
-                    + tupleLivre.idLivre
+                    + tupleLivre.getIdLivre()
                     + " deja prêté ? "
-                    + tupleLivre.idMembre);
+                    + tupleLivre.getIdMembre());
             }
 
             /* Vérifie si le membre existe et sa limite de prêt */
-            MembreDTO tupleMembre = this.membre.getMembre(tupleReservation.idMembre);
+            MembreDTO tupleMembre = this.membre.getMembre(tupleReservation.getIdMembre());
             if(tupleMembre == null) {
                 throw new BiblioException("Membre inexistant: "
-                    + tupleReservation.idMembre);
+                    + tupleReservation.getIdMembre());
             }
-            if(tupleMembre.nbPret >= tupleMembre.limitePret) {
+            if(tupleMembre.getNbPret() >= tupleMembre.getLimitePret()) {
                 throw new BiblioException("Limite de prêt du membre "
-                    + tupleReservation.idMembre
+                    + tupleReservation.getIdMembre()
                     + " atteinte");
             }
 
             /* Verifier si datePret >= tupleReservation.dateReservation */
-            if(Date.valueOf(datePret).before(tupleReservation.dateReservation)) {
+            if(Date.valueOf(datePret).before(tupleReservation.getDateReservation())) {
                 throw new BiblioException("Date de prêt inférieure à la date de réservation");
             }
 
             /* Enregistrement du prêt. */
-            if(this.livre.preter(tupleReservation.idLivre,
-                tupleReservation.idMembre,
+            if(this.livre.preter(tupleReservation.getIdLivre(),
+                tupleReservation.getIdMembre(),
                 datePret) == 0) {
                 throw new BiblioException("Livre supprimé par une autre transaction");
             }
-            if(this.membre.preter(tupleReservation.idMembre) == 0) {
+            if(this.membre.preter(tupleReservation.getIdLivre()) == 0) {
                 throw new BiblioException("Membre supprimé par une autre transaction");
             }
             /* Eliminer la réservation */

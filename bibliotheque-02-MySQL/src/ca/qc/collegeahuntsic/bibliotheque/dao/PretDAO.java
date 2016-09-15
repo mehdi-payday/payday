@@ -75,11 +75,11 @@ public class PretDAO extends DAO {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
             }
-            if(tupleLivre.idMembre != 0) {
+            if(tupleLivre.getIdMembre() != 0) {
                 throw new BiblioException("Livre "
                     + idLivre
                     + " deja prete a "
-                    + tupleLivre.idMembre);
+                    + tupleLivre.getIdMembre());
             }
 
             /* Verifie si le membre existe et sa limite de pret */
@@ -88,7 +88,7 @@ public class PretDAO extends DAO {
                 throw new BiblioException("Membre inexistant: "
                     + idMembre);
             }
-            if(tupleMembre.nbPret >= tupleMembre.limitePret) {
+            if(tupleMembre.getNbPret() >= tupleMembre.getLimitePret()) {
                 throw new BiblioException("Limite de pret du membre "
                     + idMembre
                     + " atteinte");
@@ -98,9 +98,9 @@ public class PretDAO extends DAO {
             ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
             if(tupleReservation != null) {
                 throw new BiblioException("Livre reserve par : "
-                    + tupleReservation.idMembre
+                    + tupleReservation.getIdMembre()
                     + " idReservation : "
-                    + tupleReservation.idReservation);
+                    + tupleReservation.getIdReservation());
             }
 
             /* Enregistrement du pret. */
@@ -136,14 +136,14 @@ public class PretDAO extends DAO {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
             }
-            if(tupleLivre.idMembre == 0) {
+            if(tupleLivre.getIdMembre() == 0) {
                 throw new BiblioException("Livre "
                     + idLivre
                     + " n'est pas prete");
             }
 
             /* Verifier si date renouvellement >= datePret */
-            if(Date.valueOf(datePret).before(tupleLivre.datePret)) {
+            if(Date.valueOf(datePret).before(tupleLivre.getDatePret())) {
                 throw new BiblioException("Date de renouvellement inferieure a la date de pret");
             }
 
@@ -151,14 +151,14 @@ public class PretDAO extends DAO {
             ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
             if(tupleReservation != null) {
                 throw new BiblioException("Livre reserve par : "
-                    + tupleReservation.idMembre
+                    + tupleReservation.getIdMembre()
                     + " idReservation : "
-                    + tupleReservation.idReservation);
+                    + tupleReservation.getIdReservation());
             }
 
             /* Enregistrement du pret. */
             int nb1 = this.livre.preter(idLivre,
-                tupleLivre.idMembre,
+                tupleLivre.getIdMembre(),
                 datePret);
             if(nb1 == 0) {
                 throw new BiblioException("Livre supprime par une autre transaction");
@@ -184,14 +184,14 @@ public class PretDAO extends DAO {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
             }
-            if(tupleLivre.idMembre == 0) {
+            if(tupleLivre.getIdMembre() == 0) {
                 throw new BiblioException("Livre "
                     + idLivre
                     + " n'est pas prete ");
             }
 
             /* Verifier si date retour >= datePret */
-            if(Date.valueOf(dateRetour).before(tupleLivre.datePret)) {
+            if(Date.valueOf(dateRetour).before(tupleLivre.getDatePret())) {
                 throw new BiblioException("Date de retour inferieure a la date de pret");
             }
 
@@ -201,7 +201,7 @@ public class PretDAO extends DAO {
                 throw new BiblioException("Livre supprime par une autre transaction");
             }
 
-            int nb2 = this.membre.retourner(tupleLivre.idMembre);
+            int nb2 = this.membre.retourner(tupleLivre.getIdMembre());
             if(nb2 == 0) {
                 throw new BiblioException("Livre supprime par une autre transaction");
             }
