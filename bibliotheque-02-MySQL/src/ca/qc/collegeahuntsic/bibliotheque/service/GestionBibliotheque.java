@@ -31,25 +31,27 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
  *
  */
 public class GestionBibliotheque extends Service {
-    public Connexion cx;
+    private Connexion cx;
 
-    public LivreService livre;
+    private LivreService livre;
 
-    public MembreService membre;
+    private MembreService membre;
 
-    public ReservationService reservation;
+    private ReservationService reservation;
 
-    public LivreDAO gestionLivre;
+    private LivreDAO gestionLivre;
 
-    public MembreDAO gestionMembre;
+    private MembreDAO gestionMembre;
 
-    public PretDAO gestionPret;
+    private PretDAO gestionPret;
 
-    public ReservationDAO gestionReservation;
+    private ReservationDAO gestionReservation;
 
-    public InterrogationDAO gestionInterrogation;
+    private InterrogationDAO gestionInterrogation;
 
-    /**
+    
+
+	/**
       * Ouvre une connexion avec la BD relationnelle et
       * alloue les gestionnaires de transactions et de tables.
       *
@@ -87,4 +89,42 @@ public class GestionBibliotheque extends Service {
     public void fermer() throws SQLException {
         this.cx.fermer();
     }
+    
+    // Region Getters and Setters
+    public Connexion getCx() {
+		return this.cx;
+	}
+
+	public LivreService getLivre() {
+		return this.livre;
+	}
+
+	public MembreService getMembre() {
+		return this.membre;
+	}
+
+	public ReservationService getReservation() {
+		return this.reservation;
+	}
+
+	public LivreDAO getGestionLivre() {
+		return this.gestionLivre;
+	}
+
+	public MembreDAO getGestionMembre() {
+		return this.gestionMembre;
+	}
+
+	public PretDAO getGestionPret() {
+		return this.gestionPret;
+	}
+
+	public ReservationDAO getGestionReservation() {
+		return this.gestionReservation;
+	}
+
+	public InterrogationDAO getGestionInterrogation() {
+		return this.gestionInterrogation;
+	}
+	// EndRegion
 }
