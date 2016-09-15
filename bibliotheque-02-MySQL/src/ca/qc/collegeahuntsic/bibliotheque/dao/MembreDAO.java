@@ -81,7 +81,7 @@ public class MembreDAO extends DAO {
                 throw new BiblioException("Membre inexistant: "
                     + idMembre);
             }
-            if(tupleMembre.nbPret > 0) {
+            if(tupleMembre.getNbPret() > 0) {
                 throw new BiblioException("Le membre "
                     + idMembre
                     + " a encore des prets.");
