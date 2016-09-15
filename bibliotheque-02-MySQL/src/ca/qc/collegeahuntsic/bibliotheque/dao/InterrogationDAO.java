@@ -13,7 +13,7 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
  *   sur l'état de la bibliothèque.
  *
  *   Pré-condition
- *     la base de données de la biblioth�que doit exister
+ *     la base de données de la bibliothèque doit exister
  *
  *   Post-condition
  *     le programme effectue les maj associées à chaque
