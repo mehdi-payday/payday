@@ -24,7 +24,7 @@ public class MembreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.idMembre</code>
      */
-    public int getIdMembre() {
+    private int getIdMembre() {
         return this.idMembre;
     }
 
@@ -42,7 +42,7 @@ public class MembreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.nom</code>
      */
-    public String getNom() {
+    private String getNom() {
         return this.nom;
     }
 
@@ -60,7 +60,7 @@ public class MembreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.telephone</code>
      */
-    public long getTelephone() {
+    private long getTelephone() {
         return this.telephone;
     }
 

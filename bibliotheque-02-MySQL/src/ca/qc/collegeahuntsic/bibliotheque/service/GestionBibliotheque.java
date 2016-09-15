@@ -49,9 +49,7 @@ public class GestionBibliotheque extends Service {
 
     private InterrogationDAO gestionInterrogation;
 
-    
-
-	/**
+    /**
       * Ouvre une connexion avec la BD relationnelle et
       * alloue les gestionnaires de transactions et de tables.
       *
@@ -89,42 +87,42 @@ public class GestionBibliotheque extends Service {
     public void fermer() throws SQLException {
         this.cx.fermer();
     }
-    
+
     // Region Getters and Setters
     public Connexion getCx() {
-		return this.cx;
-	}
+        return this.cx;
+    }
 
-	public LivreService getLivre() {
-		return this.livre;
-	}
+    public LivreService getLivre() {
+        return this.livre;
+    }
 
-	public MembreService getMembre() {
-		return this.membre;
-	}
+    public MembreService getMembre() {
+        return this.membre;
+    }
 
-	public ReservationService getReservation() {
-		return this.reservation;
-	}
+    public ReservationService getReservation() {
+        return this.reservation;
+    }
 
-	public LivreDAO getGestionLivre() {
-		return this.gestionLivre;
-	}
+    public LivreDAO getGestionLivre() {
+        return this.gestionLivre;
+    }
 
-	public MembreDAO getGestionMembre() {
-		return this.gestionMembre;
-	}
+    public MembreDAO getGestionMembre() {
+        return this.gestionMembre;
+    }
 
-	public PretDAO getGestionPret() {
-		return this.gestionPret;
-	}
+    public PretDAO getGestionPret() {
+        return this.gestionPret;
+    }
 
-	public ReservationDAO getGestionReservation() {
-		return this.gestionReservation;
-	}
+    public ReservationDAO getGestionReservation() {
+        return this.gestionReservation;
+    }
 
-	public InterrogationDAO getGestionInterrogation() {
-		return this.gestionInterrogation;
-	}
-	// EndRegion
+    public InterrogationDAO getGestionInterrogation() {
+        return this.gestionInterrogation;
+    }
+    // EndRegion
 }

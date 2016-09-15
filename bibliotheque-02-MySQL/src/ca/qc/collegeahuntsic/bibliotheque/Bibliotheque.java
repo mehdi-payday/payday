@@ -119,43 +119,43 @@ public class Bibliotheque {
             if("aide".startsWith(command)) {
                 afficherAide();
             } else if("acquerir".startsWith(command)) {
-                gestionBiblio.gestionLivre.acquerir(readInt(tokenizer) /* idLivre */,
+                gestionBiblio.getGestionLivre().acquerir(readInt(tokenizer) /* idLivre */,
                     readString(tokenizer) /* titre */,
                     readString(tokenizer) /* auteur */,
                     readDate(tokenizer) /* dateAcquisition */);
             } else if("vendre".startsWith(command)) {
-                gestionBiblio.gestionLivre.vendre(readInt(tokenizer) /* idLivre */);
+                gestionBiblio.getGestionLivre().vendre(readInt(tokenizer) /* idLivre */);
             } else if("preter".startsWith(command)) {
-                gestionBiblio.gestionPret.preter(readInt(tokenizer) /* idLivre */,
+                gestionBiblio.getGestionPret().preter(readInt(tokenizer) /* idLivre */,
                     readInt(tokenizer) /* idMembre */,
                     readDate(tokenizer) /* dateEmprunt */);
             } else if("renouveler".startsWith(command)) {
-                gestionBiblio.gestionPret.renouveler(readInt(tokenizer) /* idLivre */,
+                gestionBiblio.getGestionPret().renouveler(readInt(tokenizer) /* idLivre */,
                     readDate(tokenizer) /* dateRenouvellement */);
             } else if("retourner".startsWith(command)) {
-                gestionBiblio.gestionPret.retourner(readInt(tokenizer) /* idLivre */,
+                gestionBiblio.getGestionPret().retourner(readInt(tokenizer) /* idLivre */,
                     readDate(tokenizer) /* dateRetour */);
             } else if("inscrire".startsWith(command)) {
-                gestionBiblio.gestionMembre.inscrire(readInt(tokenizer) /* idMembre */,
+                gestionBiblio.getGestionMembre().inscrire(readInt(tokenizer) /* idMembre */,
                     readString(tokenizer) /* nom */,
                     readLong(tokenizer) /* tel */,
                     readInt(tokenizer) /* limitePret */ );
             } else if("desinscrire".startsWith(command)) {
-                gestionBiblio.gestionMembre.desinscrire(readInt(tokenizer) /* idMembre */);
+                gestionBiblio.getGestionMembre().desinscrire(readInt(tokenizer) /* idMembre */);
             } else if("reserver".startsWith(command)) {
-                gestionBiblio.gestionReservation.reserver(readInt(tokenizer) /* idReservation */,
+                gestionBiblio.getGestionReservation().reserver(readInt(tokenizer) /* idReservation */,
                     readInt(tokenizer) /* idLivre */,
                     readInt(tokenizer) /* idMembre */,
                     readDate(tokenizer) /* dateReservation */);
             } else if("prendreRes".startsWith(command)) {
-                gestionBiblio.gestionReservation.prendreRes(readInt(tokenizer) /* idReservation */,
+                gestionBiblio.getGestionReservation().prendreRes(readInt(tokenizer) /* idReservation */,
                     readDate(tokenizer) /* dateReservation */);
             } else if("annulerRes".startsWith(command)) {
-                gestionBiblio.gestionReservation.annulerRes(readInt(tokenizer) /* idReservation */);
+                gestionBiblio.getGestionReservation().annulerRes(readInt(tokenizer) /* idReservation */);
             } else if("listerLivres".startsWith(command)) {
-                gestionBiblio.gestionInterrogation.listerLivres();
+                gestionBiblio.getGestionInterrogation().listerLivres();
             } else if("listerLivresTitre".startsWith(command)) {
-                gestionBiblio.gestionInterrogation.listerLivresTitre(readString(tokenizer) /* mot */);
+                gestionBiblio.getGestionInterrogation().listerLivresTitre(readString(tokenizer) /* mot */);
             } else if("--".startsWith(command)) {
             } // ne rien faire; c'est un commentaire
             /* *********************** */

@@ -48,7 +48,7 @@ public class LivreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.titre</code>
      */
-    public String getTitre() {
+    private String getTitre() {
         return this.titre;
     }
 
@@ -66,7 +66,7 @@ public class LivreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.auteur</code>
      */
-    public String getAuteur() {
+    private String getAuteur() {
         return this.auteur;
     }
 
@@ -84,7 +84,7 @@ public class LivreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.dateAcquisition</code>
      */
-    public Date getDateAcquisition() {
+    private Date getDateAcquisition() {
         return this.dateAcquisition;
     }
 
