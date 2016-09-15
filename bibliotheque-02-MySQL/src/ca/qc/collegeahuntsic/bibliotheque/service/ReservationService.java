@@ -83,11 +83,11 @@ public class ReservationService extends Service {
         ResultSet rset = this.stmtExiste.executeQuery();
         if(rset.next()) {
             ReservationDTO tupleReservation = new ReservationDTO();
-            tupleReservation.setIdReservation( rset.getInt(1) );
-            tupleReservation.setIdLivre(  rset.getInt(2) );
-            ;
-            tupleReservation.setIdMembre(  rset.getInt(3) );
-            tupleReservation.setDateReservation ( rset.getDate(4) );
+            tupleReservation.setIdReservation(rset.getInt(1));
+            tupleReservation.setIdLivre(rset.getInt(2));
+
+            tupleReservation.setIdMembre(rset.getInt(3));
+            tupleReservation.setDateReservation(rset.getDate(4));
             return tupleReservation;
         } else {
             return null;
@@ -104,11 +104,11 @@ public class ReservationService extends Service {
         ResultSet rset = this.stmtExisteLivre.executeQuery();
         if(rset.next()) {
             ReservationDTO tupleReservation = new ReservationDTO();
-            tupleReservation.setIdReservation( rset.getInt(1) );
-            tupleReservation.setIdLivre( rset.getInt(2) );
-            ;
-            tupleReservation.setIdMembre( rset.getInt(3) );
-            tupleReservation.setDateReservation( rset.getDate(4) );
+            tupleReservation.setIdReservation(rset.getInt(1));
+            tupleReservation.setIdLivre(rset.getInt(2));
+
+            tupleReservation.setIdMembre(rset.getInt(3));
+            tupleReservation.setDateReservation(rset.getDate(4));
             return tupleReservation;
         } else {
             return null;
@@ -125,11 +125,11 @@ public class ReservationService extends Service {
         ResultSet rset = this.stmtExisteMembre.executeQuery();
         if(rset.next()) {
             ReservationDTO tupleReservation = new ReservationDTO();
-            tupleReservation.setIdReservation ( rset.getInt(1) );
-            tupleReservation.setIdLivre (  rset.getInt(2) );
-            ;
-            tupleReservation.setIdMembre( rset.getInt(3) );
-            tupleReservation.setDateReservation( rset.getDate(4) );
+            tupleReservation.setIdReservation(rset.getInt(1));
+            tupleReservation.setIdLivre(rset.getInt(2));
+
+            tupleReservation.setIdMembre(rset.getInt(3));
+            tupleReservation.setDateReservation(rset.getDate(4));
             return tupleReservation;
         } else {
             return null;
