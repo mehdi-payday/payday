@@ -8,7 +8,7 @@ import java.sql.Date;
  *
  */
 
-public class LivreDTO {
+public class LivreDTO extends DTO {
 
     public int idLivre;
 

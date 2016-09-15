@@ -12,7 +12,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
  * les acces a la table membre.
  */
 
-public class MembreService {
+public class MembreService extends Service {
 
     private PreparedStatement stmtExiste;
 

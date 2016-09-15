@@ -20,7 +20,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
  * Post-condition le programme effectue les mises à jour associées à chaque
  * transaction
  */
-public class LivreDAO {
+public class LivreDAO extends DAO {
 
     private LivreService livre;
 
@@ -31,8 +31,9 @@ public class LivreDAO {
     /**
      * Creation d'une instance
      */
-    public LivreDAO(LivreService livre,
-        ReservationService reservation) {
+    public LivreDAO(final LivreService livre,
+        final ReservationService reservation) {
+        super(livre.getConnexion());
         this.cx = livre.getConnexion();
         this.livre = livre;
         this.reservation = reservation;
@@ -42,10 +43,10 @@ public class LivreDAO {
      * Ajout d'un nouveau livre dans la base de données. S'il existe déjà, une
      * exception est levée
      */
-    public void acquerir(int idLivre,
-        String titre,
-        String auteur,
-        String dateAcquisition) throws SQLException,
+    public void acquerir(final int idLivre,
+        final String titre,
+        final String auteur,
+        final String dateAcquisition) throws SQLException,
         BiblioException,
         Exception {
         try {
@@ -69,7 +70,7 @@ public class LivreDAO {
     /**
      * Vente d'un livre.
      */
-    public void vendre(int idLivre) throws SQLException,
+    public void vendre(final int idLivre) throws SQLException,
         BiblioException,
         Exception {
         try {

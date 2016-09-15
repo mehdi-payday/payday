@@ -13,7 +13,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
  * Permet d'effectuer les accès à la table livre.
  */
 
-public class LivreService {
+public class LivreService extends Service {
 
     private PreparedStatement stmtExiste;
 

@@ -5,7 +5,7 @@ package ca.qc.collegeahuntsic.bibliotheque.dto;
  * Permet de representer un tuple de la table membre.
  */
 
-public class MembreDTO {
+public class MembreDTO extends DTO {
     public int idMembre;
 
     public String nom;
