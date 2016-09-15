@@ -26,7 +26,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
  * </pre>
  */
 
-public class PretDAO {
+public class PretDAO extends DAO {
 
     private LivreService livre;
 
@@ -45,8 +45,9 @@ public class PretDAO {
         MembreService membre,
         ReservationService reservation) throws BiblioException {
         if(livre.getConnexion() != membre.getConnexion()
-            || reservation.getConnexion() != membre.getConnexion())
+            || reservation.getConnexion() != membre.getConnexion()) {
             throw new BiblioException("Les instances de livre, de membre et de reservation n'utilisent pas la m�me connexion au serveur");
+        }
         this.cx = livre.getConnexion();
         this.livre = livre;
         this.membre = membre;
@@ -64,46 +65,53 @@ public class PretDAO {
         Exception {
         try {
             /* Verfier si le livre est disponible */
-            LivreDTO tupleLivre = livre.getLivre(idLivre);
-            if(tupleLivre == null)
+            LivreDTO tupleLivre = this.livre.getLivre(idLivre);
+            if(tupleLivre == null) {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
-            if(tupleLivre.idMembre != 0)
+            }
+            if(tupleLivre.idMembre != 0) {
                 throw new BiblioException("Livre "
                     + idLivre
                     + " deja prete a "
                     + tupleLivre.idMembre);
+            }
 
             /* V�rifie si le membre existe et sa limite de pret */
-            MembreDTO tupleMembre = membre.getMembre(idMembre);
-            if(tupleMembre == null)
+            MembreDTO tupleMembre = this.membre.getMembre(idMembre);
+            if(tupleMembre == null) {
                 throw new BiblioException("Membre inexistant: "
                     + idMembre);
-            if(tupleMembre.nbPret >= tupleMembre.limitePret)
+            }
+            if(tupleMembre.nbPret >= tupleMembre.limitePret) {
                 throw new BiblioException("Limite de pret du membre "
                     + idMembre
                     + " atteinte");
+            }
 
             /* V�rifie s'il existe une r�servation pour le livre */
-            ReservationDTO tupleReservation = reservation.getReservationLivre(idLivre);
-            if(tupleReservation != null)
+            ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
+            if(tupleReservation != null) {
                 throw new BiblioException("Livre r�serv� par : "
                     + tupleReservation.idMembre
                     + " idReservation : "
                     + tupleReservation.idReservation);
+            }
 
             /* Enregistrement du pret. */
-            int nb1 = livre.preter(idLivre,
+            int nb1 = this.livre.preter(idLivre,
                 idMembre,
                 datePret);
-            if(nb1 == 0)
+            if(nb1 == 0) {
                 throw new BiblioException("Livre supprim� par une autre transaction");
-            int nb2 = membre.preter(idMembre);
-            if(nb2 == 0)
+            }
+            int nb2 = this.membre.preter(idMembre);
+            if(nb2 == 0) {
                 throw new BiblioException("Membre supprim� par une autre transaction");
-            cx.commit();
+            }
+            this.cx.commit();
         } catch(Exception e) {
-            cx.rollback();
+            this.cx.rollback();
             throw e;
         }
     }
@@ -118,36 +126,41 @@ public class PretDAO {
         Exception {
         try {
             /* Verifier si le livre est pr�t� */
-            LivreDTO tupleLivre = livre.getLivre(idLivre);
-            if(tupleLivre == null)
+            LivreDTO tupleLivre = this.livre.getLivre(idLivre);
+            if(tupleLivre == null) {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
-            if(tupleLivre.idMembre == 0)
+            }
+            if(tupleLivre.idMembre == 0) {
                 throw new BiblioException("Livre "
                     + idLivre
                     + " n'est pas prete");
+            }
 
             /* Verifier si date renouvellement >= datePret */
-            if(Date.valueOf(datePret).before(tupleLivre.datePret))
+            if(Date.valueOf(datePret).before(tupleLivre.datePret)) {
                 throw new BiblioException("Date de renouvellement inferieure � la date de pret");
+            }
 
             /* V�rifie s'il existe une r�servation pour le livre */
-            ReservationDTO tupleReservation = reservation.getReservationLivre(idLivre);
-            if(tupleReservation != null)
+            ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
+            if(tupleReservation != null) {
                 throw new BiblioException("Livre r�serv� par : "
                     + tupleReservation.idMembre
                     + " idReservation : "
                     + tupleReservation.idReservation);
+            }
 
             /* Enregistrement du pret. */
-            int nb1 = livre.preter(idLivre,
+            int nb1 = this.livre.preter(idLivre,
                 tupleLivre.idMembre,
                 datePret);
-            if(nb1 == 0)
+            if(nb1 == 0) {
                 throw new BiblioException("Livre supprime par une autre transaction");
-            cx.commit();
+            }
+            this.cx.commit();
         } catch(Exception e) {
-            cx.rollback();
+            this.cx.rollback();
             throw e;
         }
     }
@@ -161,30 +174,35 @@ public class PretDAO {
         Exception {
         try {
             /* Verifier si le livre est pr�t� */
-            LivreDTO tupleLivre = livre.getLivre(idLivre);
-            if(tupleLivre == null)
+            LivreDTO tupleLivre = this.livre.getLivre(idLivre);
+            if(tupleLivre == null) {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
-            if(tupleLivre.idMembre == 0)
+            }
+            if(tupleLivre.idMembre == 0) {
                 throw new BiblioException("Livre "
                     + idLivre
                     + " n'est pas pr�t� ");
+            }
 
             /* Verifier si date retour >= datePret */
-            if(Date.valueOf(dateRetour).before(tupleLivre.datePret))
+            if(Date.valueOf(dateRetour).before(tupleLivre.datePret)) {
                 throw new BiblioException("Date de retour inferieure � la date de pret");
+            }
 
             /* Retour du pret. */
-            int nb1 = livre.retourner(idLivre);
-            if(nb1 == 0)
+            int nb1 = this.livre.retourner(idLivre);
+            if(nb1 == 0) {
                 throw new BiblioException("Livre supprim� par une autre transaction");
+            }
 
-            int nb2 = membre.retourner(tupleLivre.idMembre);
-            if(nb2 == 0)
+            int nb2 = this.membre.retourner(tupleLivre.idMembre);
+            if(nb2 == 0) {
                 throw new BiblioException("Livre supprim� par une autre transaction");
-            cx.commit();
+            }
+            this.cx.commit();
         } catch(Exception e) {
-            cx.rollback();
+            this.cx.rollback();
             throw e;
         }
     }

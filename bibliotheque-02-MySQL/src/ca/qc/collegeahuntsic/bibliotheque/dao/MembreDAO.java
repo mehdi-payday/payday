@@ -21,7 +21,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
  * transaction
  */
 
-public class MembreDAO {
+public class MembreDAO extends DAO {
 
     private Connexion cx;
 

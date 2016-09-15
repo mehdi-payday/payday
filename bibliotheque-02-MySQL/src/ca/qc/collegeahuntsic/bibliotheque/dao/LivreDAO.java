@@ -20,7 +20,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
  * Post-condition le programme effectue les mises à jour associées à chaque
  * transaction
  */
-public class LivreDAO {
+public class LivreDAO extends DAO {
 
     private LivreService livre;
 

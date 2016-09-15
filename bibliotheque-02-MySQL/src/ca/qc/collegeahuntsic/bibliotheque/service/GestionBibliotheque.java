@@ -27,7 +27,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
  *   transaction
  *
  */
-public class GestionBibliotheque {
+public class GestionBibliotheque extends Service {
     public Connexion cx;
 
     public LivreService livre;

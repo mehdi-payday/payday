@@ -5,10 +5,10 @@ import java.sql.Date;
 
 /**
  * Permet de représenter un tuple de la table membre.
- * 
+ *
  */
 
-public class ReservationDTO {
+public class ReservationDTO extends DTO {
 
     public int idReservation;
 

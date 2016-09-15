@@ -9,7 +9,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 
 /**
  * Permet d'effectuer les accès à la table reservation.
- * 
+ *
  * <pre>
  *
  * Cette classe gère tous les accès à la table reservation.
@@ -17,7 +17,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
  * </pre>
  */
 
-public class ReservationService {
+public class ReservationService extends Service {
 
     private PreparedStatement stmtExiste;
 

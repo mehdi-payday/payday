@@ -22,7 +22,7 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
  *
  */
 
-public class InterrogationDAO {
+public class InterrogationDAO extends DAO {
 
     private PreparedStatement stmtLivresTitreMot;
 
