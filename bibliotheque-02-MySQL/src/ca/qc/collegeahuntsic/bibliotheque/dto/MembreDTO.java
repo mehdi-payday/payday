@@ -9,13 +9,104 @@ package ca.qc.collegeahuntsic.bibliotheque.dto;
  */
 
 public class MembreDTO extends DTO {
-    public int idMembre;
+    private int idMembre;
 
-    public String nom;
+    private String nom;
 
-    public long telephone;
+    private long telephone;
 
-    public int limitePret;
+    private int limitePret;
 
-    public int nbPret;
+    private int nbPret;
+
+    /**
+     * Getter de la variable d'instance <code>this.idMembre</code>.
+     *
+     * @return La variable d'instance <code>this.idMembre</code>
+     */
+    public int getIdMembre() {
+        return this.idMembre;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.idMembre</code>.
+     *
+     * @param idMembre La valeur à utiliser pour la variable d'instance <code>this.idMembre</code>
+     */
+    public void setIdMembre(int idMembre) {
+        this.idMembre = idMembre;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.nom</code>.
+     *
+     * @return La variable d'instance <code>this.nom</code>
+     */
+    public String getNom() {
+        return this.nom;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.nom</code>.
+     *
+     * @param nom La valeur à utiliser pour la variable d'instance <code>this.nom</code>
+     */
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.telephone</code>.
+     *
+     * @return La variable d'instance <code>this.telephone</code>
+     */
+    public long getTelephone() {
+        return this.telephone;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.telephone</code>.
+     *
+     * @param telephone La valeur à utiliser pour la variable d'instance <code>this.telephone</code>
+     */
+    public void setTelephone(long telephone) {
+        this.telephone = telephone;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.limitePret</code>.
+     *
+     * @return La variable d'instance <code>this.limitePret</code>
+     */
+    public int getLimitePret() {
+        return this.limitePret;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.limitePret</code>.
+     *
+     * @param limitePret La valeur à utiliser pour la variable d'instance <code>this.limitePret</code>
+     */
+    public void setLimitePret(int limitePret) {
+        this.limitePret = limitePret;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.nbPret</code>.
+     *
+     * @return La variable d'instance <code>this.nbPret</code>
+     */
+    public int getNbPret() {
+        return this.nbPret;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.nbPret</code>.
+     *
+     * @param nbPret La valeur à utiliser pour la variable d'instance <code>this.nbPret</code>
+     */
+    public void setNbPret(int nbPret) {
+        this.nbPret = nbPret;
+    }
+
 }
