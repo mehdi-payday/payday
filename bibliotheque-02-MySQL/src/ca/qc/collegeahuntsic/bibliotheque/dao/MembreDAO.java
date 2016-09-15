@@ -32,9 +32,9 @@ public class MembreDAO extends DAO {
     /**
      * Creation d'une instance
      */
-    public MembreDAO(MembreService membre,
-        ReservationService reservation) {
-
+    public MembreDAO(final MembreService membre,
+        final ReservationService reservation) {
+        super(membre.getConnexion());
         this.cx = membre.getConnexion();
         this.membre = membre;
         this.reservation = reservation;
@@ -44,10 +44,10 @@ public class MembreDAO extends DAO {
      * Ajout d'un nouveau membre dans la base de donnees. S'il existe deja, une
      * exception est levee.
      */
-    public void inscrire(int idMembre,
-        String nom,
-        long telephone,
-        int limitePret) throws SQLException,
+    public void inscrire(final int idMembre,
+        final String nom,
+        final long telephone,
+        final int limitePret) throws SQLException,
         BiblioException,
         Exception {
         try {
@@ -69,7 +69,7 @@ public class MembreDAO extends DAO {
     /**
      * Suppression d'un membre de la base de donnees.
      */
-    public void desinscrire(int idMembre) throws SQLException,
+    public void desinscrire(final int idMembre) throws SQLException,
         BiblioException,
         Exception {
         try {

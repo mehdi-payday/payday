@@ -1,6 +1,9 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.facade;
 
-public class Facade {
+import java.io.Serializable;
+
+public class Facade implements Serializable {
+    private static final long serialVersionUID = 1L;
 
 }

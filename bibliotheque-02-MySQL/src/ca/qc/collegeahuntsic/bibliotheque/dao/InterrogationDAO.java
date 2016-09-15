@@ -33,8 +33,8 @@ public class InterrogationDAO extends DAO {
     /**
      * Creation d'une instance
      */
-    public InterrogationDAO(Connexion cx) throws SQLException {
-
+    public InterrogationDAO(final Connexion cx) throws SQLException {
+        super(cx);
         this.cx = cx;
         this.stmtLivresTitreMot = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret + 14 "
             + "from livre t1 "
@@ -47,7 +47,7 @@ public class InterrogationDAO extends DAO {
     /**
      * Affiche les livres contenu un mot dans le titre
      */
-    public void listerLivresTitre(String mot) throws SQLException {
+    public void listerLivresTitre(final String mot) throws SQLException {
 
         this.stmtLivresTitreMot.setString(1,
             "%"

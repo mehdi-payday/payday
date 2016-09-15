@@ -1,6 +1,9 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;
 
-public class DTO {
+import java.io.Serializable;
+
+public class DTO implements Serializable {
+    private static final long serialVersionUID = 1L;
 
 }
