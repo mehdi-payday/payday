@@ -60,13 +60,15 @@ public class Bibliotheque {
                 sourceTransaction = new FileInputStream(argv[4]);
                 lectureAuClavier = false;
             }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction));
 
             gestionBiblio = new GestionBibliotheque(argv[0],
                 argv[1],
                 argv[2],
                 argv[3]);
-            traiterTransactions(reader);
+            try(BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))){
+                traiterTransactions(reader);
+            }
+
         } catch(Exception e) {
             e.printStackTrace(System.out);
         } finally {
@@ -156,8 +158,7 @@ public class Bibliotheque {
                 gestionBiblio.getGestionInterrogation().listerLivres();
             } else if("listerLivresTitre".startsWith(command)) {
                 gestionBiblio.getGestionInterrogation().listerLivresTitre(readString(tokenizer) /* mot */);
-            } else if("--".startsWith(command)) {
-            } // ne rien faire; c'est un commentaire
+            }
             /* *********************** */
             /* TRANSACTION NON RECONNUEE */
             /* *********************** */
@@ -214,11 +215,8 @@ public class Bibliotheque {
 
         /* commande "exit" */
         String commande = tokenizer.nextToken();
-        if(commande.equals("exit")) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return "exit".equals(commande);
     }
 
     /**
@@ -226,21 +224,21 @@ public class Bibliotheque {
      * l'écran
      */
     static String readString(StringTokenizer tokenizer) throws BiblioException {
-        if(tokenizer.hasMoreElements()) {
-            return tokenizer.nextToken();
-        } else {
+        if(!tokenizer.hasMoreElements()) {
             throw new BiblioException("autre paramètre attendu");
         }
+        return tokenizer.nextToken();
     }
 
     /**
      * lecture d'un int java de la transaction entrée à l'écran
      */
     static int readInt(StringTokenizer tokenizer) throws BiblioException {
+        int integerLu;
         if(tokenizer.hasMoreElements()) {
             String token = tokenizer.nextToken();
             try {
-                return Integer.valueOf(token).intValue();
+                integerLu = Integer.valueOf(token).intValue();
             } catch(NumberFormatException e) {
                 throw new BiblioException("Nombre attendu à la place de \""
                     + token
@@ -249,16 +247,18 @@ public class Bibliotheque {
         } else {
             throw new BiblioException("autre paramètre attendu");
         }
+        return integerLu;
     }
 
     /**
      * lecture d'un long java de la transaction entrée à l'écran
      */
     static long readLong(StringTokenizer tokenizer) throws BiblioException {
+        long longLu;
         if(tokenizer.hasMoreElements()) {
             String token = tokenizer.nextToken();
             try {
-                return Long.valueOf(token).longValue();
+                longLu = Long.valueOf(token).longValue();
             } catch(NumberFormatException e) {
                 throw new BiblioException("Nombre attendu à la place de \""
                     + token
@@ -267,17 +267,18 @@ public class Bibliotheque {
         } else {
             throw new BiblioException("autre paramètre attendu");
         }
+        return longLu;
     }
 
     /**
      * lecture d'une date en format YYYY-MM-DD
      */
     static String readDate(StringTokenizer tokenizer) throws BiblioException {
+        String token;
         if(tokenizer.hasMoreElements()) {
-            String token = tokenizer.nextToken();
+            token = tokenizer.nextToken();
             try {
                 FormatDate.convertirDate(token);
-                return token;
             } catch(ParseException e) {
                 throw new BiblioException("Date en format YYYY-MM-DD attendue à la place  de \""
                     + token
@@ -286,5 +287,6 @@ public class Bibliotheque {
         } else {
             throw new BiblioException("autre paramètre attendu");
         }
+        return token;
     }
 }// class
