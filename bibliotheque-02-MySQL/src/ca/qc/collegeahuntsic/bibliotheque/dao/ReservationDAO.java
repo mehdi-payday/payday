@@ -46,9 +46,9 @@ public class ReservationDAO extends DAO {
      * membre doit être la même que cx, afin d'assurer l'intégrité des
      * transactions.
      */
-    public ReservationDAO(final LivreService livre,
-        final MembreService membre,
-        final ReservationService reservation) throws BiblioException {
+    public ReservationDAO(LivreService livre,
+        MembreService membre,
+        ReservationService reservation) throws BiblioException {
         super(livre.getConnexion());
         if(livre.getConnexion() != membre.getConnexion()
             || reservation.getConnexion() != membre.getConnexion()) {
@@ -63,10 +63,10 @@ public class ReservationDAO extends DAO {
     /**
      * Réservation d'un livre par un membre. Le livre doit être prêté.
      */
-    public void reserver(final int idReservation,
-        final int idLivre,
-        final int idMembre,
-        final String dateReservation) throws SQLException,
+    public void reserver(int idReservation,
+        int idLivre,
+        int idMembre,
+        String dateReservation) throws SQLException,
         BiblioException,
         Exception {
         try {
@@ -123,8 +123,8 @@ public class ReservationDAO extends DAO {
      * membre ne doit pas avoir dépassé sa limite de pret. La réservation
      * doit la être la première en liste.
      */
-    public void prendreRes(final int idReservation,
-        final String datePret) throws SQLException,
+    public void prendreRes(int idReservation,
+        String datePret) throws SQLException,
         BiblioException,
         Exception {
         try {
@@ -194,7 +194,7 @@ public class ReservationDAO extends DAO {
     /**
      * Annulation d'une réservation. La réservation doit exister.
      */
-    public void annulerRes(final int idReservation) throws SQLException,
+    public void annulerRes(int idReservation) throws SQLException,
         BiblioException,
         Exception {
         try {

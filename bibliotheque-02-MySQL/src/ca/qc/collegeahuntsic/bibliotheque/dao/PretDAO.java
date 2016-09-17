@@ -46,9 +46,9 @@ public class PretDAO extends DAO {
      * membre doit etre la meme que cx, afin d'assurer l'integrite des
      * transactions.
      */
-    public PretDAO(final LivreService livre,
-        final MembreService membre,
-        final ReservationService reservation) throws BiblioException {
+    public PretDAO(LivreService livre,
+        MembreService membre,
+        ReservationService reservation) throws BiblioException {
         super(livre.getConnexion());
         if(livre.getConnexion() != membre.getConnexion()
             || reservation.getConnexion() != membre.getConnexion()) {
@@ -65,9 +65,9 @@ public class PretDAO extends DAO {
      * Pret d'un livre  un membre. Le livre ne doit pas etre prete. Le
      * membre ne doit pas avoir depasse sa limite de pret.
      */
-    public void preter(final int idLivre,
-        final int idMembre,
-        final String datePret) throws SQLException,
+    public void preter(int idLivre,
+        int idMembre,
+        String datePret) throws SQLException,
         BiblioException,
         Exception {
         try {
@@ -127,8 +127,8 @@ public class PretDAO extends DAO {
      * Renouvellement d'un pret. Le livre doit etre prete. Le livre ne
      * doit pas etre reserve.
      */
-    public void renouveler(final int idLivre,
-        final String datePret) throws SQLException,
+    public void renouveler(int idLivre,
+        String datePret) throws SQLException,
         BiblioException,
         Exception {
         try {
@@ -175,8 +175,8 @@ public class PretDAO extends DAO {
     /**
      * Retourner un livre prete Le livre doit etre prete.
      */
-    public void retourner(final int idLivre,
-        final String dateRetour) throws SQLException,
+    public void retourner(int idLivre,
+        String dateRetour) throws SQLException,
         BiblioException,
         Exception {
         try {
