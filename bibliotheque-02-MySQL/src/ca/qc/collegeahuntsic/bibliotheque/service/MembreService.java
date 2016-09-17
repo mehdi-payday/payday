@@ -55,11 +55,13 @@ public class MembreService extends Service {
      * Verifie si un membre existe.
      */
     public boolean existe(int idMembre) throws SQLException {
+        boolean membreExiste;
         this.stmtExiste.setInt(1,
             idMembre);
-        ResultSet rset = this.stmtExiste.executeQuery();
-        boolean membreExiste = rset.next();
-        rset.close();
+        try (ResultSet rset = this.stmtExiste.executeQuery()){
+            membreExiste = rset.next();
+        }
+
         return membreExiste;
     }
 

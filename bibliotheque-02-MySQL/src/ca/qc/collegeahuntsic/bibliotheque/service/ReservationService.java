@@ -66,12 +66,13 @@ public class ReservationService extends Service {
      * Verifie si une réservation existe.
      */
     public boolean existe(final int idReservation) throws SQLException {
-
+        boolean reservationExiste;
         this.stmtExiste.setInt(1,
             idReservation);
-        ResultSet rset = this.stmtExiste.executeQuery();
-        boolean reservationExiste = rset.next();
-        rset.close();
+        try (ResultSet rset = this.stmtExiste.executeQuery()){
+            reservationExiste = rset.next();
+        }
+
         return reservationExiste;
     }
 

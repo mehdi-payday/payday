@@ -35,7 +35,7 @@ class BDCreateur {
             args[2],
             args[3]);
 
-        Statement stmt = cx.getConnection().createStatement();
+        try (Statement stmt = cx.getConnection().createStatement()){
         stmt.executeUpdate("DROP TABLE  IF EXISTS reservation");
 
         stmt.executeUpdate("DROP TABLE IF EXISTS livre");
@@ -76,7 +76,7 @@ class BDCreateur {
             + "  ON DELETE CASCADE "
             + ")");
 
-        stmt.close();
+        }
         cx.fermer();
     }
 }

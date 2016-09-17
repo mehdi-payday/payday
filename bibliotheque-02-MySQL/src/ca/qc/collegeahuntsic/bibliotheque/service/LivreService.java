@@ -56,11 +56,14 @@ public class LivreService extends Service {
      * Verifie si un livre existe
      */
     public boolean existe(int idLivre) throws SQLException {
+        boolean livreExiste;
         this.stmtExiste.setInt(1,
             idLivre);
-        ResultSet rset = this.stmtExiste.executeQuery();
-        boolean livreExiste = rset.next();
-        rset.close();
+
+        try(ResultSet rset = this.stmtExiste.executeQuery()){
+            livreExiste = rset.next();
+        }
+
         return livreExiste;
     }
 
