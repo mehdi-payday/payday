@@ -26,6 +26,8 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 public class MembreDAO extends DAO {
 
+    private static final long serialVersionUID = 1L;
+
     private Connexion cx;
 
     private MembreService membre;

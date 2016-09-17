@@ -31,6 +31,9 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
  *
  */
 public class GestionBibliotheque extends Service {
+
+    private static final long serialVersionUID = 1L;
+
     private Connexion cx;
 
     private LivreService livre;

@@ -31,6 +31,8 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 public class PretDAO extends DAO {
 
+    private static final long serialVersionUID = 1L;
+
     private LivreService livre;
 
     private MembreService membre;

@@ -17,6 +17,8 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 
 public class MembreService extends Service {
 
+    private static final long serialVersionUID = 1L;
+
     private PreparedStatement stmtExiste;
 
     private PreparedStatement stmtInsert;

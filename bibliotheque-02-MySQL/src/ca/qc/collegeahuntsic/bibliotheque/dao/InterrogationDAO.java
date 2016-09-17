@@ -27,6 +27,8 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 
 public class InterrogationDAO extends DAO {
 
+    private static final long serialVersionUID = 1L;
+
     private PreparedStatement stmtLivresTitreMot;
 
     private PreparedStatement stmtListeTousLivres;
