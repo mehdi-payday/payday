@@ -11,8 +11,7 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 
 /**
- * Permet d'effectuer les acces a la table membre. Cette classe gere tous
- * les acces a la table membre.
+ * Service de la table Membre
  */
 
 public class MembreService extends Service {
@@ -32,8 +31,13 @@ public class MembreService extends Service {
     private Connexion cx;
 
     /**
-     * Creation d'une instance. Precompilation d'enonces SQL.
+     *
+     * Crée le service de la table membre
+     *
+     * @param cx connexion à la base de données
+     * @throws SQLException
      */
+
     public MembreService(Connexion cx) throws SQLException {
         this.cx = cx;
         this.stmtExiste = cx.getConnection().prepareStatement("select idMembre, nom, telephone, limitePret, nbpret from membre where idmembre = ?");
@@ -45,20 +49,29 @@ public class MembreService extends Service {
     }
 
     /**
-     * Retourner la connexion associee.
+     *
+     * Retourne la connexion associee.
+     *
+     * @return la connexion à la base de données
      */
     public Connexion getConnexion() {
         return this.cx;
     }
 
     /**
+     *
      * Verifie si un membre existe.
+     *
+     * @param idMembre l'id du membre
+     * @return
+     * @throws SQLException
      */
     public boolean existe(int idMembre) throws SQLException {
         boolean membreExiste;
         this.stmtExiste.setInt(1,
             idMembre);
-        try (ResultSet rset = this.stmtExiste.executeQuery()){
+        try(
+            ResultSet rset = this.stmtExiste.executeQuery()) {
             membreExiste = rset.next();
         }
 
@@ -66,27 +79,42 @@ public class MembreService extends Service {
     }
 
     /**
+     *
      * Lecture d'un membre.
+     *
+     * @param idMembre l'id du membre
+     * @return
+     * @throws SQLException
      */
     public MembreDTO getMembre(int idMembre) throws SQLException {
         this.stmtExiste.setInt(1,
             idMembre);
-        ResultSet rset = this.stmtExiste.executeQuery();
-        if(rset.next()) {
-            MembreDTO tupleMembre = new MembreDTO();
-            tupleMembre.setIdMembre(  idMembre );
-            tupleMembre.setNom( rset.getString(2) );
-            tupleMembre.setTelephone ( rset.getLong(3) );
-            tupleMembre.setLimitePret ( rset.getInt(4) );
-            tupleMembre.setNbPret (  rset.getInt(5) );
-            return tupleMembre;
-        } else {
-            return null;
+
+        try(
+            ResultSet rset = this.stmtExiste.executeQuery()) {
+            if(rset.next()) {
+
+                MembreDTO tupleMembre = new MembreDTO();
+                tupleMembre.setIdMembre(idMembre);
+                tupleMembre.setNom(rset.getString(2));
+                tupleMembre.setTelephone(rset.getLong(3));
+                tupleMembre.setLimitePret(rset.getInt(4));
+                tupleMembre.setNbPret(rset.getInt(5));
+                return tupleMembre;
+            }
         }
+        return null;
     }
 
     /**
+     *
      * Ajout d'un nouveau membre.
+     *
+     * @param idMembre l'id du nouveau membre
+     * @param nom le nom du membre
+     * @param telephone le numéro de téléphone
+     * @param limitePret le nombre de prêts maximums auquel le membre a droit
+     * @throws SQLException
      */
     public void inscrire(int idMembre,
         String nom,
@@ -104,7 +132,12 @@ public class MembreService extends Service {
     }
 
     /**
-     * Incrementer le nb de pret d'un membre.
+     *
+     * Emprunte un livre.
+     *
+     * @param idMembre l'id du membre qui emprunte
+     * @return
+     * @throws SQLException
      */
     public int preter(int idMembre) throws SQLException {
         this.stmtUpdateIncrNbPret.setInt(1,
@@ -113,7 +146,12 @@ public class MembreService extends Service {
     }
 
     /**
-     * Decrementer le nb de pret d'un membre.
+     *
+     * Désinscrire un membre.
+     *
+     * @param idMembre l'id du membre qui emprunte
+     * @return
+     * @throws SQLException
      */
     public int retourner(int idMembre) throws SQLException {
         this.stmtUpdateDecNbPret.setInt(1,
@@ -122,7 +160,12 @@ public class MembreService extends Service {
     }
 
     /**
+     *
      * Suppression d'un membre.
+     *
+     * @param idMembre l'id du membre qui emprunte
+     * @return
+     * @throws SQLException
      */
     public int desinscrire(int idMembre) throws SQLException {
         this.stmtDelete.setInt(1,

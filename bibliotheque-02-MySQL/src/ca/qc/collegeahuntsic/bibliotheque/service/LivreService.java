@@ -1,4 +1,4 @@
-// Fichier LivreSerivce.java
+// Fichier LivreService.java
 // Auteur : Adam Cherti
 // Date de création : 2016-09-15
 
@@ -13,7 +13,7 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 
 /**
- * Permet d'effectuer les accès à la table livre.
+ * Service de la table Livre
  */
 
 public class LivreService extends Service {
@@ -31,8 +31,11 @@ public class LivreService extends Service {
     private Connexion cx;
 
     /**
-     * Creation d'une instance. Des énoncés SQL pour chaque requête sont
-     * précompilés
+     *
+     * Cree le service de lq table livre
+     *
+     * @param cx : La connexion à la base de données
+     * @throws SQLException
      */
     public LivreService(Connexion cx) throws SQLException {
         this.cx = cx;
@@ -60,7 +63,8 @@ public class LivreService extends Service {
         this.stmtExiste.setInt(1,
             idLivre);
 
-        try(ResultSet rset = this.stmtExiste.executeQuery()){
+        try(
+            ResultSet rset = this.stmtExiste.executeQuery()) {
             livreExiste = rset.next();
         }
 
@@ -68,28 +72,46 @@ public class LivreService extends Service {
     }
 
     /**
+     *
      * Lecture d'un livre
+     *
+     * @param idLivre
+     * @return le livre
+     * @throws SQLException
      */
     public LivreDTO getLivre(int idLivre) throws SQLException {
         this.stmtExiste.setInt(1,
             idLivre);
-        ResultSet rset = this.stmtExiste.executeQuery();
-        if(rset.next()) {
-            LivreDTO tupleLivre = new LivreDTO();
-            tupleLivre.setIdLivre( idLivre );
-            tupleLivre.setTitre( rset.getString(2) );
-            tupleLivre.setAuteur( rset.getString(3) );
-            tupleLivre.setDateAcquisition( rset.getDate(4) );
-            tupleLivre.setIdMembre( rset.getInt(5) );
-            tupleLivre.setDatePret( rset.getDate(6) );
-            return tupleLivre;
-        } else {
-            return null;
+
+        LivreDTO tupleLivre = null;
+
+        try(
+            ResultSet rset = this.stmtExiste.executeQuery()) {
+
+            if(rset.next()) {
+                tupleLivre = new LivreDTO();
+
+                tupleLivre.setIdLivre(idLivre);
+                tupleLivre.setTitre(rset.getString(2));
+                tupleLivre.setAuteur(rset.getString(3));
+                tupleLivre.setDateAcquisition(rset.getDate(4));
+                tupleLivre.setIdMembre(rset.getInt(5));
+                tupleLivre.setDatePret(rset.getDate(6));
+            }
         }
+
+        return tupleLivre;
     }
 
     /**
-     * Ajout d'un nouveau livre dans la base de données
+     *
+     * Acquiert un livre
+     *
+     * @param idLivre
+     * @param titre
+     * @param auteur
+     * @param dateAcquisition
+     * @throws SQLException
      */
     public void acquerir(int idLivre,
         String titre,
@@ -107,7 +129,14 @@ public class LivreService extends Service {
     }
 
     /**
+     *
      * Enregistrement de l'emprunteur d'un livre
+     *
+     * @param idLivre le livre
+     * @param idMembre le membre à qui sera prêté le livre
+     * @param datePret la date du prêt
+     * @return
+     * @throws SQLException
      */
     public int preter(int idLivre,
         int idMembre,
@@ -122,7 +151,12 @@ public class LivreService extends Service {
     }
 
     /**
-     * Rendre le livre disponible (non-prêté)
+     *
+     * Retourne un livre
+     *
+     * @param idLivre
+     * @return
+     * @throws SQLException
      */
     public int retourner(int idLivre) throws SQLException {
         this.stmtUpdate.setNull(1,
@@ -135,7 +169,12 @@ public class LivreService extends Service {
     }
 
     /**
+     *
      * Suppression d'un livre
+     *
+     * @param idLivre
+     * @return
+     * @throws SQLException
      */
     public int vendre(int idLivre) throws SQLException {
         this.stmtDelete.setInt(1,
