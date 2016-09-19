@@ -33,12 +33,21 @@ import ca.qc.collegeahuntsic.bibliotheque.util.FormatteurDate;
  *
  * Post-condition le programme effectue les maj associées à chaque
  * transaction
- *
+ * @author Mehdi Hamidi
  */
-public class Bibliotheque {
+final class Bibliotheque {
     private static GestionBibliotheque gestionBiblio;
 
     private static boolean lectureAuClavier;
+    /**
+     * TODO Auto-generated constructor javadoc.
+     *
+     */
+    private Bibliotheque() {
+        /*
+         * vide
+         */
+    }
 
     /**
      *
@@ -176,11 +185,7 @@ public class Bibliotheque {
                 gestionBiblio.getGestionInterrogation().listerLivres();
             } else if("listerLivresTitre".startsWith(command)) {
                 gestionBiblio.getGestionInterrogation().listerLivresTitre(readString(tokenizer) /* mot */);
-            }
-            /* *********************** */
-            /* TRANSACTION NON RECONNUEE */
-            /* *********************** */
-            else {
+            } else {
                 System.out.println("  Transactions non reconnue.  Essayer \"aide\"");
             }
         } catch(BiblioException e) {
