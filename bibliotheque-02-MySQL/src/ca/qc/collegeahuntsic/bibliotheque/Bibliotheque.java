@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
 import ca.qc.collegeahuntsic.bibliotheque.service.GestionBibliotheque;
-import ca.qc.collegeahuntsic.bibliotheque.util.FormatDate;
+import ca.qc.collegeahuntsic.bibliotheque.util.FormatteurDate;
 
 /**
  * Interface du système de gestion d'une bibliothèque
@@ -278,7 +278,7 @@ public class Bibliotheque {
         if(tokenizer.hasMoreElements()) {
             token = tokenizer.nextToken();
             try {
-                FormatDate.convertirDate(token);
+                FormatteurDate.convertirDate(token);
             } catch(ParseException e) {
                 throw new BiblioException("Date en format YYYY-MM-DD attendue à la place  de \""
                     + token
