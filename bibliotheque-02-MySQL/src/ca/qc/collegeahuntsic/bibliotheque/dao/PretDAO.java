@@ -26,7 +26,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
  *
  * Post-condition le programme effectue les maj associees  a chaque
  * transaction
- * </pre>
+ * 
  */
 
 public class PretDAO extends DAO {
@@ -42,9 +42,15 @@ public class PretDAO extends DAO {
     private Connexion cx;
 
     /**
+     * 
      * Creation d'une instance. La connection de l'instance de livre et de
      * membre doit etre la meme que cx, afin d'assurer l'integrite des
-     * transactions.
+     * transactions.     * 
+     *
+     * @param livre
+     * @param membre
+     * @param reservation
+     * @throws BiblioException
      */
     public PretDAO(LivreService livre,
         MembreService membre,
@@ -61,9 +67,19 @@ public class PretDAO extends DAO {
         this.reservation = reservation;
     }
 
+
     /**
+     * 
      * Pret d'un livre  un membre. Le livre ne doit pas etre prete. Le
      * membre ne doit pas avoir depasse sa limite de pret.
+     * 
+     *
+     * @param idLivre
+     * @param idMembre
+     * @param datePret
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void preter(int idLivre,
         int idMembre,
@@ -122,10 +138,17 @@ public class PretDAO extends DAO {
             throw e;
         }
     }
-
+    
     /**
+     * 
      * Renouvellement d'un pret. Le livre doit etre prete. Le livre ne
      * doit pas etre reserve.
+     *
+     * @param idLivre
+     * @param datePret
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void renouveler(int idLivre,
         String datePret) throws SQLException,
@@ -171,9 +194,16 @@ public class PretDAO extends DAO {
             throw e;
         }
     }
-
+    
     /**
+     * 
      * Retourner un livre prete Le livre doit etre prete.
+     *
+     * @param idLivre
+     * @param dateRetour
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void retourner(int idLivre,
         String dateRetour) throws SQLException,

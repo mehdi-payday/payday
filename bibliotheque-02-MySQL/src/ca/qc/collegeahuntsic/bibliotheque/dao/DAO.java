@@ -7,11 +7,20 @@ package ca.qc.collegeahuntsic.bibliotheque.dao;
 import java.io.Serializable;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 
+/**
+ *
+ * Classe de base pour tous les DAOs.
+ *
+ * @author Mehdi Hamidi
+ */
 public class DAO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Connexion connexion;
 
+    /**
+     * Crée un DAO à partir d'une connexion à la base de données.
+     * */
     public DAO(final Connexion connexion) {
         setConnexion(connexion);
     }

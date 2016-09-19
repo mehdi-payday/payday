@@ -12,16 +12,10 @@ import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
- * Gestion des transactions reliées à la création et suppresion de
- * livres dans une bibliothèque.
+ * 
+ * DAO pour effectuer des CRUDs avec la table livre.
  *
- * Ce programme permet de gérer les transactions reliées à la création et
- * suppresion de livres.
- *
- * Pré-condition la base de données de la bibliothèque doit exister
- *
- * Post-condition le programme effectue les mises à jour associées à chaque
- * transaction
+ * @author Mehdi Hamidi
  */
 public class LivreDAO extends DAO {
 
@@ -34,7 +28,11 @@ public class LivreDAO extends DAO {
     private Connexion cx;
 
     /**
-     * Creation d'une instance
+     * 
+     * Crée un DAO à partir d'une connexion à la base de données
+     *
+     * @param livre
+     * @param reservation
      */
     public LivreDAO(LivreService livre,
         ReservationService reservation) {
@@ -44,9 +42,19 @@ public class LivreDAO extends DAO {
         this.reservation = reservation;
     }
 
+
     /**
+     * 
      * Ajout d'un nouveau livre dans la base de données. S'il existe déjà, une
      * exception est levée
+     *
+     * @param idLivre
+     * @param titre
+     * @param auteur
+     * @param dateAcquisition
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void acquerir(int idLivre,
         String titre,
@@ -73,7 +81,13 @@ public class LivreDAO extends DAO {
     }
 
     /**
+     * 
      * Vente d'un livre.
+     *
+     * @param idLivre
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void vendre(int idLivre) throws SQLException,
         BiblioException,
@@ -93,7 +107,7 @@ public class LivreDAO extends DAO {
             if(this.reservation.getReservationLivre(idLivre) != null) {
                 throw new BiblioException("Livre "
                     + idLivre
-                    + " r�serv� ");
+                    + " reserve ");
             }
 
             int nb = this.livre.vendre(idLivre);

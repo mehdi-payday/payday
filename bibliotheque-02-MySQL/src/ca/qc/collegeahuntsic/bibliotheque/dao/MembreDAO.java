@@ -12,16 +12,10 @@ import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
- * Gestion des transactions reliees a la creation et suppresion de
- * membres dans une bibliotheque.
+ * 
+ * DAO pour effectuer des CRUDs avec la table membre.
  *
- * Ce programme permet de gerer les transaction reliees a la creation et
- * suppresion de membres.
- *
- * Pre-condition la base de donnees de la bibliotheque doit exister
- *
- * Post-condition le programme effectue les maj associees a chaque
- * transaction
+ * @author Mehdi Hamidi
  */
 
 public class MembreDAO extends DAO {
@@ -34,9 +28,13 @@ public class MembreDAO extends DAO {
 
     private ReservationService reservation;
 
-    /**
-     * Creation d'une instance
-     */
+  /**
+   * 
+   * Crée un DAO à partir d'une connexion à la base de données.
+   *
+   * @param membre
+   * @param reservation
+   */
     public MembreDAO(MembreService membre,
         ReservationService reservation) {
         super(membre.getConnexion());
@@ -46,8 +44,17 @@ public class MembreDAO extends DAO {
     }
 
     /**
+     * 
      * Ajout d'un nouveau membre dans la base de donnees. S'il existe deja, une
      * exception est levee.
+     *
+     * @param idMembre
+     * @param nom
+     * @param telephone
+     * @param limitePret
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void inscrire(int idMembre,
         String nom,
@@ -70,9 +77,15 @@ public class MembreDAO extends DAO {
             throw e;
         }
     }
-
+    
     /**
+     * 
      * Suppression d'un membre de la base de donnees.
+     *
+     * @param idMembre
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void desinscrire(int idMembre) throws SQLException,
         BiblioException,

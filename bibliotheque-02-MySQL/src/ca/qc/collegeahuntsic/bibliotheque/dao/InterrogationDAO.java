@@ -36,8 +36,13 @@ public class InterrogationDAO extends DAO {
     private Connexion cx;
 
     /**
+     * 
      * Creation d'une instance
+     *
+     * @param cx
+     * @throws SQLException
      */
+     
     public InterrogationDAO(Connexion cx) throws SQLException {
         super(cx);
         this.cx = cx;
@@ -48,9 +53,13 @@ public class InterrogationDAO extends DAO {
         this.stmtListeTousLivres = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret "
             + "from livre t1");
     }
-
+    
     /**
+     * 
      * Affiche les livres contenu un mot dans le titre
+     *
+     * @param mot
+     * @throws SQLException
      */
     public void listerLivresTitre(String mot) throws SQLException {
 
@@ -81,9 +90,12 @@ public class InterrogationDAO extends DAO {
         }
         this.cx.commit();
     }
-
+    
     /**
+     * 
      * Affiche tous les livres de la BD
+     *
+     * @throws SQLException
      */
     public void listerLivres() throws SQLException {
 

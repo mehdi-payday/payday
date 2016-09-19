@@ -39,9 +39,13 @@ public class Bibliotheque {
     private static GestionBibliotheque gestionBiblio;
 
     private static boolean lectureAuClavier;
-
+    
     /**
-     * Ouverture de la BD, traitement des transactions et fermeture de la BD.
+     * 
+     * Crée une connexion sur la base de données, traite toutes les transactions et détruit la connexion.
+     *
+     * @param argv
+     * @throws Exception
      */
     public static void main(String argv[]) throws Exception {
         // validation du nombre de param�tres
@@ -53,7 +57,7 @@ public class Bibliotheque {
 
         try {
             // ouverture du fichier de transactions
-            // s'il est sp�cifi� comme argument
+            // s'il est spcifie comme argument
             lectureAuClavier = true;
             InputStream sourceTransaction = System.in;
             if(argv.length > 4) {
@@ -75,9 +79,13 @@ public class Bibliotheque {
             gestionBiblio.fermer();
         }
     }
-
+    
     /**
+     * 
      * Traitement des transactions de la bibliothèque
+     *
+     * @param reader
+     * @throws Exception
      */
     static void traiterTransactions(BufferedReader reader) throws Exception {
         afficherAide();
@@ -93,8 +101,14 @@ public class Bibliotheque {
         }
     }
 
+
     /**
+     * 
      * Lecture d'une transaction
+     *
+     * @param reader
+     * @return La transaction lue
+     * @throws IOException
      */
     static String lireTransaction(BufferedReader reader) throws IOException {
         System.out.print("> ");
@@ -108,8 +122,13 @@ public class Bibliotheque {
         return transaction;
     }
 
+ 
     /**
-     * Décodage et traitement d'une transaction
+     * 
+     * Décode et traite une transaction.
+     *
+     * @param tokenizer  L'entrée à décoder
+     * @throws Exception Si une erreur survient
      */
     static void executerTransaction(StringTokenizer tokenizer) throws Exception {
         try {
@@ -197,7 +216,15 @@ public class Bibliotheque {
     }
 
     /**
+     * 
+     */
+    /**
+     * 
      * Vérifie si la fin du traitement des transactions est atteinte.
+     *
+     * @param transaction La transaction à traiter 
+     * 
+     * @return true si la fin du fichier est atteinte, false sinon 
      */
     static boolean finTransaction(String transaction) {
         /* fin de fichier atteinte */
@@ -219,9 +246,15 @@ public class Bibliotheque {
         return "exit".equals(commande);
     }
 
+
     /**
+     * 
      * lecture d'une chaîne de caractères de la transaction entrée à
      * l'écran
+     *
+     * @param tokenizer
+     * @return La chaîne de caractères lue
+     * @throws BiblioException  Si l'élément lu est manquant
      */
     static String readString(StringTokenizer tokenizer) throws BiblioException {
         if(!tokenizer.hasMoreElements()) {
@@ -232,6 +265,14 @@ public class Bibliotheque {
 
     /**
      * lecture d'un int java de la transaction entrée à l'écran
+     */
+    /**
+     * 
+     * Lit un integer de la transaction.
+     *
+     * @param tokenizer  La transaction à décoder
+     * @return Le integer lu
+     * @throws BiblioException  Si l'élément lu est manquant ou n'est pas un integer
      */
     static int readInt(StringTokenizer tokenizer) throws BiblioException {
         int integerLu;
@@ -250,9 +291,14 @@ public class Bibliotheque {
         return integerLu;
     }
 
-    /**
-     * lecture d'un long java de la transaction entrée à l'écran
-     */
+   /**
+    * 
+    * Lit un long de la transaction.
+    *
+    * @param tokenizer La transaction à décoder
+    * @return Le long lu 
+    * @throws BiblioException Si l'élément lu est manquant ou n'est pas un long
+    */
     static long readLong(StringTokenizer tokenizer) throws BiblioException {
         long longLu;
         if(tokenizer.hasMoreElements()) {
@@ -272,6 +318,14 @@ public class Bibliotheque {
 
     /**
      * lecture d'une date en format YYYY-MM-DD
+     */
+    /**
+     * 
+     * Lit une date au format YYYY-MM-DD de la transaction.
+     *
+     * @param tokenizer  La transaction à décoder
+     * @return La date lue
+     * @throws BiblioException Si l'élément lu est manquant ou n'est pas une date correctement formatée
      */
     static String readDate(StringTokenizer tokenizer) throws BiblioException {
         String token;

@@ -16,17 +16,10 @@ import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
- * Gestion des transactions de reliées aux réservations de livrées par les
- * membres dans une bibliothèque.
+ * 
+ * DAO pour effectuer des CRUDs avec la table reservation.
  *
- * Ce programme permet de gérer les transactions réserver, prendre et
- * annuler.
- *
- * Pré-condition la base de données de la bibliothèque doit exister
- *
- * Post-condition le programme effectue les maj associées à chaque
- * transaction
- * </pre>
+ * @author Mehdi Hamidi
  */
 
 public class ReservationDAO extends DAO {
@@ -42,9 +35,13 @@ public class ReservationDAO extends DAO {
     private Connexion cx;
 
     /**
-     * Creation d'une instance. La connection de l'instance de livre et de
-     * membre doit être la même que cx, afin d'assurer l'intégrité des
-     * transactions.
+     * 
+     * Crée un DAO à partir d'une connexion à la base de données.
+     *
+     * @param livre
+     * @param membre
+     * @param reservation
+     * @throws BiblioException
      */
     public ReservationDAO(LivreService livre,
         MembreService membre,
@@ -61,7 +58,16 @@ public class ReservationDAO extends DAO {
     }
 
     /**
+     * 
      * Réservation d'un livre par un membre. Le livre doit être prêté.
+     *
+     * @param idReservation
+     * @param idLivre
+     * @param idMembre
+     * @param dateReservation
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void reserver(int idReservation,
         int idLivre,
@@ -119,9 +125,16 @@ public class ReservationDAO extends DAO {
     }
 
     /**
+     * 
      * Prise d'une réservation. Le livre ne doit pas être prêté. Le
      * membre ne doit pas avoir dépassé sa limite de pret. La réservation
      * doit la être la première en liste.
+     *
+     * @param idReservation
+     * @param datePret
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void prendreRes(int idReservation,
         String datePret) throws SQLException,
@@ -190,9 +203,15 @@ public class ReservationDAO extends DAO {
             throw e;
         }
     }
-
+    
     /**
+     * 
      * Annulation d'une réservation. La réservation doit exister.
+     *
+     * @param idReservation
+     * @throws SQLException
+     * @throws BiblioException
+     * @throws Exception
      */
     public void annulerRes(int idReservation) throws SQLException,
         BiblioException,
