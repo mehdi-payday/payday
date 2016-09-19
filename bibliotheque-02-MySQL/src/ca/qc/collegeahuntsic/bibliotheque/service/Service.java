@@ -8,12 +8,19 @@ import java.io.Serializable;
 
 /**
  *
- * Classe base pour tous les services
+ * Class de base pour tous les services.
  *
  * @author Adam Cherti
  */
 
 public class Service implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    /**
+     *
+     * Crée et initialise l'objet Service.
+     *
+     */
+    public Service() {
+    
+    }
 }

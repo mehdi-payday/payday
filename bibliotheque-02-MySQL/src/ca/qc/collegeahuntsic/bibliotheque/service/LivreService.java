@@ -13,7 +13,10 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 
 /**
- * Service de la table Livre
+ * 
+ * Service de la table Livre.
+ *
+ * @author Gilles Bénichou
  */
 
 public class LivreService extends Service {
@@ -32,10 +35,10 @@ public class LivreService extends Service {
 
     /**
      *
-     * Cree le service de lq table livre
+     * Cree le service de lq table livre.
      *
      * @param cx : La connexion à la base de données
-     * @throws SQLException
+     * @throws SQLException erreur SQL
      */
     public LivreService(final Connexion cx) throws SQLException {
         this.cx = cx;
@@ -50,7 +53,7 @@ public class LivreService extends Service {
 
     /**
      *
-     * Retourner la connexion associée
+     * Retourner la connexion associée.
      *
      * @return la connexion a la base de données
      */
@@ -60,14 +63,14 @@ public class LivreService extends Service {
 
     /**
      *
-     * Verifie si un livre existe
+     * Verifie si un livre existe.
      *
      * @param idLivre l'id du livre
      * @return true si le livre est existe, false sinon.
-     * @throws SQLException
+     * @throws SQLException erreur SQL
      */
     public boolean existe(final int idLivre) throws SQLException {
-        boolean livreExiste;
+        boolean livreExiste = false;
         this.stmtExiste.setInt(1,
             idLivre);
 
@@ -81,11 +84,11 @@ public class LivreService extends Service {
 
     /**
      *
-     * Lecture d'un livre
+     * Lecture d'un livre.
      *
-     * @param idLivre
-     * @return le livre
-     * @throws SQLException
+     * @param idLivre id du livre a lire
+     * @return un objet représentant livre, null s'il n'existe pas.
+     * @throws SQLException erreur SQL
      */
     public LivreDTO getLivre(final int idLivre) throws SQLException {
         this.stmtExiste.setInt(1,
@@ -113,13 +116,13 @@ public class LivreService extends Service {
 
     /**
      *
-     * Acquiert un livre
+     * Acquiert un livre.
      *
-     * @param idLivre
-     * @param titre
-     * @param auteur
-     * @param dateAcquisition
-     * @throws SQLException
+     * @param idLivre id du livre a acquerir
+     * @param titre titre du livre a acquerir
+     * @param auteur nom de l'auteur du livre
+     * @param dateAcquisition date d'acquisition du livre
+     * @throws SQLException erreur SQL
      */
     public void acquerir(final int idLivre,
         final String titre,
@@ -138,13 +141,13 @@ public class LivreService extends Service {
 
     /**
      *
-     * Enregistrement de l'emprunteur d'un livre
+     * Enregistrement de l'emprunteur d'un livre.
      *
      * @param idLivre le livre
      * @param idMembre le membre à qui sera prêté le livre
      * @param datePret la date du prêt
      * @return 1 si le livre a été prêté. 0 si le livre n'existe pas.
-     * @throws SQLException
+     * @throws SQLException erreur SQL
      */
     public int preter(final int idLivre,
         final int idMembre,
@@ -160,11 +163,11 @@ public class LivreService extends Service {
 
     /**
      *
-     * Retourne un livre
+     * Retourne un livre.
      *
-     * @param idLivre
+     * @param idLivre l'id du livre a supprimer
      * @return 1 si le livre a bien été retourné. 0 si le livre n'existe pas.
-     * @throws SQLException
+     * @throws SQLException erreur SQL
      */
     public int retourner(final int idLivre) throws SQLException {
         this.stmtUpdate.setNull(1,
@@ -178,11 +181,11 @@ public class LivreService extends Service {
 
     /**
      *
-     * Suppression d'un livre
+     * Suppression d'un livre.
      *
-     * @param idLivre
+     * @param idLivre l'id du livre a supprimer
      * @return 1 si le livre a bien été vendu. 0 si le livre n'existe pas.
-     * @throws SQLException
+     * @throws SQLException erreur SQL
      */
     public int vendre(final int idLivre) throws SQLException {
         this.stmtDelete.setInt(1,

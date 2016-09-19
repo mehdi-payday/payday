@@ -3,7 +3,7 @@
 // Date de création : 2016-09-12
 
 /**
- * TODO Auto-generated class javadoc
+ * Initialisateur du paquet Service.
  *
  * @author Vincent Laferrière
  */

@@ -27,6 +27,8 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
  * Post-condition
  *   le programme effectue les maj associées à chaque
  *   transaction
+ *   
+ * @author Adam Cherti
  *
  */
 public class GestionBibliotheque extends Service {
@@ -59,6 +61,9 @@ public class GestionBibliotheque extends Service {
       * @param bd nom de la bade de données
       * @param user user id pour établir une connexion avec le serveur SQL
       * @param password mot de passe pour le user id
+      * @throws BiblioException erreur d'initialisation de la
+      * bibliotheque
+      * @throws SQLException erreur SQL
       */
     public GestionBibliotheque(final String serveur,
         final String bd,
@@ -86,6 +91,12 @@ public class GestionBibliotheque extends Service {
         this.gestionInterrogation = new InterrogationDAO(this.cx);
     }
 
+    /**
+     * 
+     * Fermer la connection a la base de données.
+     *
+     * @throws SQLException erreur SQL
+     */
     public void fermer() throws SQLException {
         this.cx.fermer();
     }
@@ -93,7 +104,7 @@ public class GestionBibliotheque extends Service {
     // Region Getters and Setters
     /**
      *
-     * Retourne la connexion
+     * Retourne la connexion.
      *
      * @return la connexion à la base de données
      */
@@ -103,7 +114,7 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le service de la table livre
+     * Retourne le service de la table livre.
      *
      * @return le service de la table livre
      */
@@ -113,7 +124,7 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le service de la table membre
+     * Retourne le service de la table membre.
      *
      * @return le service de la table membre
      */
@@ -123,7 +134,7 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le service de la table réservation
+     * Retourne le service de la table réservation.
      *
      * @return le service de la table reservation
      */
@@ -133,7 +144,7 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le DAO de la table livre
+     * Retourne le DAO de la table livre.
      *
      * @return le DAO de livre
      */
@@ -143,7 +154,7 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le DAO de la table membre
+     * Retourne le DAO de la table membre.
      *
      * @return le DAO de membre
      */
@@ -153,7 +164,7 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le DAO de la table pret
+     * Retourne le DAO de la table pret.
      *
      * @return le DAO de pret
      */
@@ -163,7 +174,7 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le DAO de la table reservation
+     * Retourne le DAO de la table reservation.
      *
      * @return le DAO de reservation
      */
@@ -173,7 +184,7 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le DAO de la table integorration
+     * Retourne le DAO de la table integorration.
      *
      * @return le DAO de la table interrogation
      */
