@@ -1,8 +1,9 @@
 // Fichier package-info.java
 // Auteur : Vincent Laferrière
 // Date de création : 2016-09-12
-/**
- * TODO Auto-generated class javadoc
+
+/**.
+ * Data Transfer Object Class
  *
  * @author Vincent Laferrière
  */
