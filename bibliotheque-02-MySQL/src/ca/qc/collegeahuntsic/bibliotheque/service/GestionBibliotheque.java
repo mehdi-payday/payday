@@ -115,7 +115,7 @@ public class GestionBibliotheque extends Service {
      *
      * Retourne le service de la table membre
      *
-     * @return
+     * @return le service de la table membre
      */
     public MembreService getMembre() {
         return this.membre;
@@ -125,7 +125,7 @@ public class GestionBibliotheque extends Service {
      *
      * Retourne le service de la table réservation
      *
-     * @return
+     * @return le service de la table reservation
      */
     public ReservationService getReservation() {
         return this.reservation;
@@ -133,9 +133,9 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le service de la table livre
+     * Retourne le DAO de la table livre
      *
-     * @return
+     * @return le DAO de livre
      */
     public LivreDAO getGestionLivre() {
         return this.gestionLivre;
@@ -143,9 +143,9 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le service de la table membre
+     * Retourne le DAO de la table membre
      *
-     * @return
+     * @return le DAO de membre
      */
     public MembreDAO getGestionMembre() {
         return this.gestionMembre;
@@ -153,9 +153,9 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le service de la table pret
+     * Retourne le DAO de la table pret
      *
-     * @return
+     * @return le DAO de pret
      */
     public PretDAO getGestionPret() {
         return this.gestionPret;
@@ -163,9 +163,9 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le service de la table reservation
+     * Retourne le DAO de la table reservation
      *
-     * @return
+     * @return le DAO de reservation
      */
     public ReservationDAO getGestionReservation() {
         return this.gestionReservation;
@@ -173,9 +173,9 @@ public class GestionBibliotheque extends Service {
 
     /**
      *
-     * Retourne le service de la table integorration
+     * Retourne le DAO de la table integorration
      *
-     * @return
+     * @return le DAO de la table interrogation
      */
     public InterrogationDAO getGestionInterrogation() {
         return this.gestionInterrogation;

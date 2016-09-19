@@ -63,7 +63,7 @@ public class MembreService extends Service {
      * Verifie si un membre existe.
      *
      * @param idMembre l'id du membre
-     * @return
+     * @return true si le membre existe, false sinon
      * @throws SQLException
      */
     public boolean existe(int idMembre) throws SQLException {
@@ -83,7 +83,7 @@ public class MembreService extends Service {
      * Lecture d'un membre.
      *
      * @param idMembre l'id du membre
-     * @return
+     * @return l'objet représentant le membre, null s'il n'existe pas.
      * @throws SQLException
      */
     public MembreDTO getMembre(int idMembre) throws SQLException {
@@ -136,7 +136,7 @@ public class MembreService extends Service {
      * Emprunte un livre.
      *
      * @param idMembre l'id du membre qui emprunte
-     * @return
+     * @return 1 si le nombre de prêts du membre a été incrémenté, 0 si le membre n'existe pas
      * @throws SQLException
      */
     public int preter(int idMembre) throws SQLException {
@@ -150,7 +150,7 @@ public class MembreService extends Service {
      * Désinscrire un membre.
      *
      * @param idMembre l'id du membre qui emprunte
-     * @return
+     * @return 1 si le nombre de prêts du membre a été décrémenté, 0 si le membre n'existe pas
      * @throws SQLException
      */
     public int retourner(int idMembre) throws SQLException {
@@ -164,7 +164,7 @@ public class MembreService extends Service {
      * Suppression d'un membre.
      *
      * @param idMembre l'id du membre qui emprunte
-     * @return
+     * @return 1 si le membre a bien été supprimé. 0 si il n'existe pas.
      * @throws SQLException
      */
     public int desinscrire(int idMembre) throws SQLException {

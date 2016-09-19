@@ -49,14 +49,22 @@ public class LivreService extends Service {
     }
 
     /**
+     * 
      * Retourner la connexion associée
+     *
+     * @return la connexion a la base de données
      */
     public Connexion getConnexion() {
         return this.cx;
     }
 
     /**
+     * 
      * Verifie si un livre existe
+     *
+     * @param idLivre l'id du livre 
+     * @return true si le livre est existe, false sinon.
+     * @throws SQLException
      */
     public boolean existe(int idLivre) throws SQLException {
         boolean livreExiste;

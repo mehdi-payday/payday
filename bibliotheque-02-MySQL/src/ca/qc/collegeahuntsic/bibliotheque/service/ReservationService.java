@@ -14,6 +14,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
  *
  * Service de la table reservation
  *
+ * @author Adam Cherti
  */
 
 public class ReservationService extends Service {
@@ -70,7 +71,7 @@ public class ReservationService extends Service {
      * Vérifie si une réservation existe.
      *
      * @param idReservation l'id de la réservation
-     * @return
+     * @return true si la réservation existe, false sinon.
      * @throws SQLException
      */
     public boolean existe(final int idReservation) throws SQLException {
@@ -87,10 +88,10 @@ public class ReservationService extends Service {
 
     /**
      *
-     * Lecture d'une réservation.
+     * Lecture d'une réservation par id.
      *
      * @param idReservation l'id de la réservation
-     * @return
+     * @return l'objet de la réservation, null si cela n'existe pas.
      * @throws SQLException
      */
     public ReservationDTO getReservation(final int idReservation) throws SQLException {
@@ -117,7 +118,7 @@ public class ReservationService extends Service {
      * Lecture de la première reservation d'un livre.
      *
      * @param idLivre
-     * @return
+     * @return la premiere reservation du livre, null si cela n'existe pas.
      * @throws SQLException
      */
     public ReservationDTO getReservationLivre(final int idLivre) throws SQLException {
@@ -144,7 +145,7 @@ public class ReservationService extends Service {
      * Lecture de la première reservation d'un livre.
      *
      * @param idMembre l'id du membre
-     * @return
+     * @return la premiere reservation du membrem, null si cela n'existe pas.
      * @throws SQLException
      */
     public ReservationDTO getReservationMembre(final int idMembre) throws SQLException {
@@ -196,7 +197,8 @@ public class ReservationService extends Service {
      * Suppression d'une réservation.
      *
      * @param idReservation l'id de la réservation à annuler
-     * @return
+     * @return nombre d'entrées supprimés. Si 0, alors rien n'a été supprimé (car cela n'existe pas).
+     * Si plus que 0, cela veut dire que la reservation a bien été annulée.
      * @throws SQLException
      */
     public int annulerRes(final int idReservation) throws SQLException {
