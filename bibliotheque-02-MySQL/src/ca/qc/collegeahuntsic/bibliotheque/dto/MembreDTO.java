@@ -5,7 +5,9 @@
 package ca.qc.collegeahuntsic.bibliotheque.dto;
 
 /**
- * Permet de representer un tuple de la table membre.
+ * DTO de la table membre.
+ *
+ * @author Alexandre Barone
  */
 
 public class MembreDTO extends DTO {
@@ -14,23 +16,23 @@ public class MembreDTO extends DTO {
 
     private int idMembre;
 
-    private String nom;
-
-    private long telephone;
-
     private int limitePret;
 
     private int nbPret;
 
+    private String nom;
+
+    private long telephone;
+
     /**
-     * Getter de la variable d'instance <code>this.idMembre</code>.
      *
-     * @return La variable d'instance <code>this.idMembre</code>
+     * Constructeur par défaut.
+     *
      */
-    private int getIdMembre() {
-        return this.idMembre;
+    public MembreDTO() {
     }
 
+    // Region Getters and Setters
     /**
      * Setter de la variable d'instance <code>this.idMembre</code>.
      *
@@ -41,12 +43,12 @@ public class MembreDTO extends DTO {
     }
 
     /**
-     * Getter de la variable d'instance <code>this.nom</code>.
+     * Getter de la variable d'instance <code>this.idMembre</code>.
      *
-     * @return La variable d'instance <code>this.nom</code>
+     * @return La variable d'instance <code>this.idMembre</code>
      */
-    private String getNom() {
-        return this.nom;
+    public int getIdMembre() {
+        return this.idMembre;
     }
 
     /**
@@ -59,12 +61,12 @@ public class MembreDTO extends DTO {
     }
 
     /**
-     * Getter de la variable d'instance <code>this.telephone</code>.
+     * Getter de la variable d'instance <code>this.nom</code>.
      *
-     * @return La variable d'instance <code>this.telephone</code>
+     * @return La variable d'instance <code>this.nom</code>
      */
-    private long getTelephone() {
-        return this.telephone;
+    public String getNom() {
+        return this.nom;
     }
 
     /**
@@ -74,6 +76,15 @@ public class MembreDTO extends DTO {
      */
     public void setTelephone(long telephone) {
         this.telephone = telephone;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.telephone</code>.
+     *
+     * @return La variable d'instance <code>this.telephone</code>
+     */
+    public long getTelephone() {
+        return this.telephone;
     }
 
     /**

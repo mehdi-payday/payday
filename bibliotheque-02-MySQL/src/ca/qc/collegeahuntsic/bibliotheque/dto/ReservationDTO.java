@@ -7,8 +7,9 @@ package ca.qc.collegeahuntsic.bibliotheque.dto;
 import java.sql.Date;
 
 /**
- * Permet de représenter un tuple de la table membre.
+ * DTO de la table reservation.
  *
+ * @author Alexandre Barone
  */
 
 public class ReservationDTO extends DTO {
@@ -23,6 +24,15 @@ public class ReservationDTO extends DTO {
 
     private Date dateReservation;
 
+    /**
+     *
+     * Constructeur par défaut.
+     *
+     */
+    public ReservationDTO() {
+    }
+
+    // Region Getters and Setters
     /**
      * Getter de la variable d'instance <code>this.idReservation</code>.
      *

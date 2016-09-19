@@ -7,8 +7,9 @@ package ca.qc.collegeahuntsic.bibliotheque.dto;
 import java.sql.Date;
 
 /**
- * Permet de représenter une entrée de la table livre.
+ * DTO de la table livre.
  *
+ * @author Alexandre Barone
  */
 
 public class LivreDTO extends DTO {
@@ -28,29 +29,20 @@ public class LivreDTO extends DTO {
     private Date datePret;
 
     /**
-     * Getter de la variable d'instance <code>this.idLivre</code>.
      *
-     * @return La variable d'instance <code>this.idLivre</code>
+     * Constructeur par défaut.
+     *
      */
-    public int getIdLivre() {
-        return this.idLivre;
+    public LivreDTO() {
     }
 
-    /**
-     * Setter de la variable d'instance <code>this.idLivre</code>.
-     *
-     * @param idLivre La valeur à utiliser pour la variable d'instance <code>this.idLivre</code>
-     */
-    public void setIdLivre(int idLivre) {
-        this.idLivre = idLivre;
-    }
-
+    // Region Getters and Setters
     /**
      * Getter de la variable d'instance <code>this.titre</code>.
      *
      * @return La variable d'instance <code>this.titre</code>
      */
-    private String getTitre() {
+    public String getTitre() {
         return this.titre;
     }
 
@@ -68,7 +60,7 @@ public class LivreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.auteur</code>
      */
-    private String getAuteur() {
+    public String getAuteur() {
         return this.auteur;
     }
 
@@ -86,7 +78,7 @@ public class LivreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.dateAcquisition</code>
      */
-    private Date getDateAcquisition() {
+    public Date getDateAcquisition() {
         return this.dateAcquisition;
     }
 
@@ -97,6 +89,24 @@ public class LivreDTO extends DTO {
      */
     public void setDateAcquisition(Date dateAcquisition) {
         this.dateAcquisition = dateAcquisition;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.idLivre</code>.
+     *
+     * @return La variable d'instance <code>this.idLivre</code>
+     */
+    public int getIdLivre() {
+        return this.idLivre;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.idLivre</code>.
+     *
+     * @param idLivre La valeur à utiliser pour la variable d'instance <code>this.idLivre</code>
+     */
+    public void setIdLivre(int idLivre) {
+        this.idLivre = idLivre;
     }
 
     /**
