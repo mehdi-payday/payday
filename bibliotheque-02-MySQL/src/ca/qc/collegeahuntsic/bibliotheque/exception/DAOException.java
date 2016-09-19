@@ -12,6 +12,11 @@ package ca.qc.collegeahuntsic.bibliotheque.exception;
  */
 public class DAOException {
     /**
-     * TODO
+     *
+     * Constructeur de la classe.
+     *
      */
+    public DAOException() {
+
+    }
 }

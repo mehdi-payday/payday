@@ -12,6 +12,11 @@ package ca.qc.collegeahuntsic.bibliotheque.exception;
  */
 public class BDCreateurException {
     /**
-     * TODO
+     *
+     * Constructeur de la classe.
+     *
      */
+    public BDCreateurException() {
+
+    }
 }

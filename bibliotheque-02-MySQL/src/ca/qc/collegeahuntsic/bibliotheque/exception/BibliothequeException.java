@@ -12,6 +12,11 @@ package ca.qc.collegeahuntsic.bibliotheque.exception;
  */
 public class BibliothequeException {
     /**
-     * TODO
+     *
+     * Constructeur de la classe.
+     *
      */
+    public BibliothequeException() {
+
+    }
 }
