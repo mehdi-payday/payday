@@ -38,10 +38,10 @@ public class ReservationDAO extends DAO {
      * 
      * Crée un DAO à partir d'une connexion à la base de données.
      *
-     * @param livre
-     * @param membre
-     * @param reservation
-     * @throws BiblioException
+     * @param livre .
+     * @param membre .
+     * @param reservation .
+     * @throws BiblioException .
      */
     public ReservationDAO(LivreService livre,
         MembreService membre,
@@ -61,13 +61,13 @@ public class ReservationDAO extends DAO {
      * 
      * Réservation d'un livre par un membre. Le livre doit être prêté.
      *
-     * @param idReservation
-     * @param idLivre
-     * @param idMembre
-     * @param dateReservation
-     * @throws SQLException
-     * @throws BiblioException
-     * @throws Exception
+     * @param idReservation .
+     * @param idLivre .
+     * @param idMembre .
+     * @param dateReservation .
+     * @throws SQLException .
+     * @throws BiblioException .
+     * @throws Exception .
      */
     public void reserver(int idReservation,
         int idLivre,
@@ -77,7 +77,7 @@ public class ReservationDAO extends DAO {
         Exception {
         try {
             /* Verifier que le livre est prêté */
-            LivreDTO tupleLivre = this.livre.getLivre(idLivre);
+            final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
             if(tupleLivre == null) {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
@@ -94,7 +94,7 @@ public class ReservationDAO extends DAO {
             }
 
             /* Vérifier que le membre existe */
-            MembreDTO tupleMembre = this.membre.getMembre(idMembre);
+            final MembreDTO tupleMembre = this.membre.getMembre(idMembre);
             if(tupleMembre == null) {
                 throw new BiblioException("Membre inexistant: "
                     + idMembre);
@@ -130,11 +130,11 @@ public class ReservationDAO extends DAO {
      * membre ne doit pas avoir dépassé sa limite de pret. La réservation
      * doit la être la première en liste.
      *
-     * @param idReservation
-     * @param datePret
-     * @throws SQLException
-     * @throws BiblioException
-     * @throws Exception
+     * @param idReservation .
+     * @param datePret .
+     * @throws SQLException .
+     * @throws BiblioException .
+     * @throws Exception .
      */
     public void prendreRes(int idReservation,
         String datePret) throws SQLException,
@@ -142,14 +142,14 @@ public class ReservationDAO extends DAO {
         Exception {
         try {
             /* Vérifie s'il existe une réservation pour le livre */
-            ReservationDTO tupleReservation = this.reservation.getReservation(idReservation);
+            final ReservationDTO tupleReservation = this.reservation.getReservation(idReservation);
             if(tupleReservation == null) {
                 throw new BiblioException("Réservation inexistante : "
                     + idReservation);
             }
 
             /* Vérifie que c'est la première réservation pour le livre */
-            ReservationDTO tupleReservationPremiere = this.reservation.getReservationLivre(tupleReservation.getIdLivre());
+            final ReservationDTO tupleReservationPremiere = this.reservation.getReservationLivre(tupleReservation.getIdLivre());
             if(tupleReservation.getIdReservation() != tupleReservationPremiere.getIdReservation()) {
                 throw new BiblioException("La réservation n'est pas la première de la liste "
                     + "pour ce livre; la premiere est "
@@ -157,7 +157,7 @@ public class ReservationDAO extends DAO {
             }
 
             /* Verifier si le livre est disponible */
-            LivreDTO tupleLivre = this.livre.getLivre(tupleReservation.getIdLivre());
+            final LivreDTO tupleLivre = this.livre.getLivre(tupleReservation.getIdLivre());
             if(tupleLivre == null) {
                 throw new BiblioException("Livre inexistant: "
                     + tupleReservation.getIdLivre());
@@ -170,7 +170,7 @@ public class ReservationDAO extends DAO {
             }
 
             /* Vérifie si le membre existe et sa limite de prêt */
-            MembreDTO tupleMembre = this.membre.getMembre(tupleReservation.getIdMembre());
+            final MembreDTO tupleMembre = this.membre.getMembre(tupleReservation.getIdMembre());
             if(tupleMembre == null) {
                 throw new BiblioException("Membre inexistant: "
                     + tupleReservation.getIdMembre());
@@ -208,10 +208,10 @@ public class ReservationDAO extends DAO {
      * 
      * Annulation d'une réservation. La réservation doit exister.
      *
-     * @param idReservation
-     * @throws SQLException
-     * @throws BiblioException
-     * @throws Exception
+     * @param idReservation .
+     * @throws SQLException .
+     * @throws BiblioException .
+     * @throws Exception .
      */
     public void annulerRes(int idReservation) throws SQLException,
         BiblioException,

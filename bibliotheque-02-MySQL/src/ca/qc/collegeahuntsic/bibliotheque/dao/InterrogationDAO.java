@@ -21,7 +21,7 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
  *   Post-condition
  *     le programme effectue les maj associées à chaque
  *     transaction
- *
+ *  @author Mehdi Hamidi
  *
  */
 
@@ -35,12 +35,12 @@ public class InterrogationDAO extends DAO {
 
     private Connexion cx;
 
-    /**
+    /**.
      * 
      * Creation d'une instance
      *
-     * @param cx
-     * @throws SQLException
+     * @param cx Reçoit une connexion en parametre
+     * @throws SQLException si erreur de SQL throw une SQLException
      */
      
     public InterrogationDAO(Connexion cx) throws SQLException {
@@ -54,12 +54,12 @@ public class InterrogationDAO extends DAO {
             + "from livre t1");
     }
     
-    /**
+    /**.
      * 
      * Affiche les livres contenu un mot dans le titre
      *
-     * @param mot
-     * @throws SQLException
+     * @param mot Reçoit un mot en parametre
+     * @throws SQLException si erreur de SQL throw une SQLException
      */
     public void listerLivresTitre(String mot) throws SQLException {
 
@@ -91,11 +91,11 @@ public class InterrogationDAO extends DAO {
         this.cx.commit();
     }
     
-    /**
+    /**.
      * 
      * Affiche tous les livres de la BD
      *
-     * @throws SQLException
+     * @throws SQLException si erreur de SQL throw une SQLException
      */
     public void listerLivres() throws SQLException {
 

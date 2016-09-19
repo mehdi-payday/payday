@@ -19,8 +19,11 @@ public class DAO implements Serializable {
     private Connexion connexion;
 
     /**
+     *
      * Crée un DAO à partir d'une connexion à la base de données.
-     * */
+     *
+     * @param connexion Reçoit une connexion en param
+     */
     public DAO(final Connexion connexion) {
         setConnexion(connexion);
     }

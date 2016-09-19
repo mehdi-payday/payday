@@ -32,8 +32,8 @@ public class MembreDAO extends DAO {
    * 
    * Crée un DAO à partir d'une connexion à la base de données.
    *
-   * @param membre
-   * @param reservation
+   * @param membre .
+   * @param reservation .
    */
     public MembreDAO(MembreService membre,
         ReservationService reservation) {
@@ -48,13 +48,13 @@ public class MembreDAO extends DAO {
      * Ajout d'un nouveau membre dans la base de donnees. S'il existe deja, une
      * exception est levee.
      *
-     * @param idMembre
-     * @param nom
-     * @param telephone
-     * @param limitePret
-     * @throws SQLException
-     * @throws BiblioException
-     * @throws Exception
+     * @param idMembre .
+     * @param nom .
+     * @param telephone .
+     * @param limitePret .
+     * @throws SQLException .
+     * @throws BiblioException .
+     * @throws Exception .
      */
     public void inscrire(int idMembre,
         String nom,
@@ -82,16 +82,16 @@ public class MembreDAO extends DAO {
      * 
      * Suppression d'un membre de la base de donnees.
      *
-     * @param idMembre
-     * @throws SQLException
-     * @throws BiblioException
-     * @throws Exception
+     * @param idMembre .
+     * @throws SQLException .
+     * @throws BiblioException .
+     * @throws Exception .
      */
     public void desinscrire(int idMembre) throws SQLException,
         BiblioException,
         Exception {
         try {
-            MembreDTO tupleMembre = this.membre.getMembre(idMembre);
+            final MembreDTO tupleMembre = this.membre.getMembre(idMembre);
             if(tupleMembre == null) {
                 throw new BiblioException("Membre inexistant: "
                     + idMembre);
@@ -107,7 +107,7 @@ public class MembreDAO extends DAO {
                     + " a des r�servations");
             }
 
-            int nb = this.membre.desinscrire(idMembre);
+            final int nb = this.membre.desinscrire(idMembre);
             if(nb == 0) {
                 throw new BiblioException("Membre "
                     + idMembre

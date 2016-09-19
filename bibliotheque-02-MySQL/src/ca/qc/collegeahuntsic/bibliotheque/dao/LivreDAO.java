@@ -27,12 +27,12 @@ public class LivreDAO extends DAO {
 
     private Connexion cx;
 
-    /**
+    /**.
      * 
      * Crée un DAO à partir d'une connexion à la base de données
      *
-     * @param livre
-     * @param reservation
+     * @param livre reçoit un livre en parametre
+     * @param reservation reçoit un reservation en parametre
      */
     public LivreDAO(LivreService livre,
         ReservationService reservation) {
@@ -43,18 +43,18 @@ public class LivreDAO extends DAO {
     }
 
 
-    /**
+    /**.
      * 
      * Ajout d'un nouveau livre dans la base de données. S'il existe déjà, une
      * exception est levée
      *
-     * @param idLivre
-     * @param titre
-     * @param auteur
-     * @param dateAcquisition
-     * @throws SQLException
-     * @throws BiblioException
-     * @throws Exception
+     * @param idLivre .
+     * @param titre .
+     * @param auteur .
+     * @param dateAcquisition .
+     * @throws SQLException .
+     * @throws BiblioException .
+     * @throws Exception .
      */
     public void acquerir(int idLivre,
         String titre,
@@ -84,16 +84,16 @@ public class LivreDAO extends DAO {
      * 
      * Vente d'un livre.
      *
-     * @param idLivre
-     * @throws SQLException
-     * @throws BiblioException
-     * @throws Exception
+     * @param idLivre .
+     * @throws SQLException .
+     * @throws BiblioException .
+     * @throws Exception . 
      */
     public void vendre(int idLivre) throws SQLException,
         BiblioException,
         Exception {
         try {
-            LivreDTO tupleLivre = this.livre.getLivre(idLivre);
+            final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
             if(tupleLivre == null) {
                 throw new BiblioException("Livre inexistant: "
                     + idLivre);
@@ -110,7 +110,7 @@ public class LivreDAO extends DAO {
                     + " reserve ");
             }
 
-            int nb = this.livre.vendre(idLivre);
+            final int nb = this.livre.vendre(idLivre);
             if(nb == 0) {
                 throw new BiblioException("Livre "
                     + idLivre
