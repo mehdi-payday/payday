@@ -4,6 +4,14 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.exception;
 
+/**
+ *
+ * Cette exception est utilisée en cas de problème avec l'objet Connexion.
+ *
+ * @author Vincent Laferrière
+ */
 public class ConnexionException {
-
+    /**
+     * TODO
+     */
 }

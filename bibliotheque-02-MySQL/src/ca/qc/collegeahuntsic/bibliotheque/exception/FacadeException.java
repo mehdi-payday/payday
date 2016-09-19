@@ -4,6 +4,14 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.exception;
 
+/**
+ *
+ * Cette exception est utilisée en cas de problème avec un objet Facade.
+ *
+ * @author Vincent Laferrière
+ */
 public class FacadeException {
-
+    /**
+     * TODO
+     */
 }

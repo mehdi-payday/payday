@@ -4,6 +4,14 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.exception;
 
+/**
+ *
+ * Cette exception est utilisée en cas de problème avec un objet DTO.
+ *
+ * @author Vincent Laferrière
+ */
 public class DTOException {
-
+    /**
+     * TODO
+     */
 }
