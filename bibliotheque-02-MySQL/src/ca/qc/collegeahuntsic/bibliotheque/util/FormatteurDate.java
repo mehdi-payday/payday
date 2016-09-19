@@ -13,16 +13,14 @@ import java.text.SimpleDateFormat;
  *
  * @author Jeremi Cyr
  */
-public class FormatteurDate {
+public final class FormatteurDate {
     private static SimpleDateFormat formatAMJ;
     static {
         formatAMJ = new SimpleDateFormat("yyyy-MM-dd");
         formatAMJ.setLenient(false);
     }
 
-    /**
-     *
-     * constructeur privé pour empêcher toute instantiation
+    /** constructeur privé pour empêcher toute instantiation.
      *
      */
     private FormatteurDate() {
