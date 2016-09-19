@@ -39,15 +39,15 @@ public class Bibliotheque {
     private static GestionBibliotheque gestionBiblio;
 
     private static boolean lectureAuClavier;
-    
+
     /**
-     * 
+     *
      * Crée une connexion sur la base de données, traite toutes les transactions et détruit la connexion.
      *
-     * @param argv
-     * @throws Exception
+     * @param argv Parametres de lign de commande
+     * @throws Exception Exception lancee par le programme
      */
-    public static void main(String argv[]) throws Exception {
+    public static void main(String[] argv) throws Exception {
         // validation du nombre de param�tres
         if(argv.length < 4) {
             System.out.println("Usage: java Biblio <serveur> <bd> <user> <password> [<fichier-transactions>]");
@@ -69,7 +69,8 @@ public class Bibliotheque {
                 argv[1],
                 argv[2],
                 argv[3]);
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))){
+            try(
+                BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))) {
                 traiterTransactions(reader);
             }
 
@@ -79,20 +80,20 @@ public class Bibliotheque {
             gestionBiblio.fermer();
         }
     }
-    
-    /**
-     * 
+
+    /**.
+     *
      * Traitement des transactions de la bibliothèque
      *
-     * @param reader
-     * @throws Exception
+     * @param reader reader pour lire la transaction
+     * @throws Exception lancee lors dun erreur de lecture de transaction
      */
     static void traiterTransactions(BufferedReader reader) throws Exception {
         afficherAide();
         String transaction = lireTransaction(reader);
         while(!finTransaction(transaction)) {
             /* d�coupage de la transaction en mots */
-            StringTokenizer tokenizer = new StringTokenizer(transaction,
+            final StringTokenizer tokenizer = new StringTokenizer(transaction,
                 " ");
             if(tokenizer.hasMoreTokens()) {
                 executerTransaction(tokenizer);
@@ -101,30 +102,28 @@ public class Bibliotheque {
         }
     }
 
-
-    /**
-     * 
+    /**.
+     *
      * Lecture d'une transaction
      *
-     * @param reader
+     * @param reader reader contenant le fichier contenant les transactions
      * @return La transaction lue
-     * @throws IOException
+     * @throws IOException lancee lors dune erreur de lecture du fichier par le parametre reader
      */
     static String lireTransaction(BufferedReader reader) throws IOException {
         System.out.print("> ");
-        String transaction = reader.readLine();
+        final String transaction = reader.readLine();
         /* echo si lecture dans un fichier */
         if(!lectureAuClavier
             && transaction != null
-            && !transaction.equals("")) {
+            && !"".equals(transaction)) {
             System.out.println(transaction);
         }
         return transaction;
     }
 
- 
     /**
-     * 
+     *
      * Décode et traite une transaction.
      *
      * @param tokenizer  L'entrée à décoder
@@ -132,7 +131,7 @@ public class Bibliotheque {
      */
     static void executerTransaction(StringTokenizer tokenizer) throws Exception {
         try {
-            String command = tokenizer.nextToken();
+            final String command = tokenizer.nextToken();
 
             /* ******************* */
             /* HELP */
@@ -160,7 +159,7 @@ public class Bibliotheque {
                 gestionBiblio.getGestionMembre().inscrire(readInt(tokenizer) /* idMembre */,
                     readString(tokenizer) /* nom */,
                     readLong(tokenizer) /* tel */,
-                    readInt(tokenizer) /* limitePret */ );
+                    readInt(tokenizer) /* limitePret */);
             } else if("desinscrire".startsWith(command)) {
                 gestionBiblio.getGestionMembre().desinscrire(readInt(tokenizer) /* idMembre */);
             } else if("reserver".startsWith(command)) {
@@ -190,7 +189,7 @@ public class Bibliotheque {
         }
     }
 
-    /** Affiche le menu des transactions acceptées par le système */
+    /** Affiche le menu des transactions acceptées par le système. */
     static void afficherAide() {
         System.out.println();
         System.out.println("Chaque transaction comporte un nom et une liste d'arguments");
@@ -216,15 +215,15 @@ public class Bibliotheque {
     }
 
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      * Vérifie si la fin du traitement des transactions est atteinte.
      *
-     * @param transaction La transaction à traiter 
-     * 
-     * @return true si la fin du fichier est atteinte, false sinon 
+     * @param transaction La transaction à traiter
+     *
+     * @return true si la fin du fichier est atteinte, false sinon
      */
     static boolean finTransaction(String transaction) {
         /* fin de fichier atteinte */
@@ -232,7 +231,7 @@ public class Bibliotheque {
             return true;
         }
 
-        StringTokenizer tokenizer = new StringTokenizer(transaction,
+        final StringTokenizer tokenizer = new StringTokenizer(transaction,
             " ");
 
         /* ligne ne contenant que des espaces */
@@ -241,18 +240,17 @@ public class Bibliotheque {
         }
 
         /* commande "exit" */
-        String commande = tokenizer.nextToken();
+        final String commande = tokenizer.nextToken();
 
         return "exit".equals(commande);
     }
 
-
-    /**
-     * 
+    /**.
+     *
      * lecture d'une chaîne de caractères de la transaction entrée à
      * l'écran
      *
-     * @param tokenizer
+     * @param tokenizer tokenizer contenant la transaction
      * @return La chaîne de caractères lue
      * @throws BiblioException  Si l'élément lu est manquant
      */
@@ -267,7 +265,7 @@ public class Bibliotheque {
      * lecture d'un int java de la transaction entrée à l'écran
      */
     /**
-     * 
+     *
      * Lit un integer de la transaction.
      *
      * @param tokenizer  La transaction à décoder
@@ -275,9 +273,9 @@ public class Bibliotheque {
      * @throws BiblioException  Si l'élément lu est manquant ou n'est pas un integer
      */
     static int readInt(StringTokenizer tokenizer) throws BiblioException {
-        int integerLu;
+        final int integerLu;
         if(tokenizer.hasMoreElements()) {
-            String token = tokenizer.nextToken();
+            final String token = tokenizer.nextToken();
             try {
                 integerLu = Integer.valueOf(token).intValue();
             } catch(NumberFormatException e) {
@@ -291,18 +289,18 @@ public class Bibliotheque {
         return integerLu;
     }
 
-   /**
-    * 
+    /**
+    *
     * Lit un long de la transaction.
     *
     * @param tokenizer La transaction à décoder
-    * @return Le long lu 
+    * @return Le long lu
     * @throws BiblioException Si l'élément lu est manquant ou n'est pas un long
     */
     static long readLong(StringTokenizer tokenizer) throws BiblioException {
-        long longLu;
+        final long longLu;
         if(tokenizer.hasMoreElements()) {
-            String token = tokenizer.nextToken();
+            final String token = tokenizer.nextToken();
             try {
                 longLu = Long.valueOf(token).longValue();
             } catch(NumberFormatException e) {
@@ -320,7 +318,7 @@ public class Bibliotheque {
      * lecture d'une date en format YYYY-MM-DD
      */
     /**
-     * 
+     *
      * Lit une date au format YYYY-MM-DD de la transaction.
      *
      * @param tokenizer  La transaction à décoder
@@ -328,7 +326,7 @@ public class Bibliotheque {
      * @throws BiblioException Si l'élément lu est manquant ou n'est pas une date correctement formatée
      */
     static String readDate(StringTokenizer tokenizer) throws BiblioException {
-        String token;
+        final String token;
         if(tokenizer.hasMoreElements()) {
             token = tokenizer.nextToken();
             try {
@@ -343,4 +341,4 @@ public class Bibliotheque {
         }
         return token;
     }
-}// class
+} // class

@@ -5,13 +5,15 @@
 package ca.qc.collegeahuntsic.bibliotheque.util;
 
 /**
- * 
+ *
  * Utilitaire de création des outils de la bibliothèque.
  *
  * @author Jeremi Cyr
  */
 public class BibliothequeCreateur {
-    /**
-     * TODO
+    /** Constructeur de la classe BibliothequeCreateur.
      */
+    public BibliothequeCreateur() {
+
+    }
 }
