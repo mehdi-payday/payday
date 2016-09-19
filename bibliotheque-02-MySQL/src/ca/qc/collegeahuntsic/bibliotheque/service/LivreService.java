@@ -37,7 +37,7 @@ public class LivreService extends Service {
      * @param cx : La connexion à la base de données
      * @throws SQLException
      */
-    public LivreService(Connexion cx) throws SQLException {
+    public LivreService(final Connexion cx) throws SQLException {
         this.cx = cx;
         this.stmtExiste = cx.getConnection()
             .prepareStatement("select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?");
@@ -49,7 +49,7 @@ public class LivreService extends Service {
     }
 
     /**
-     * 
+     *
      * Retourner la connexion associée
      *
      * @return la connexion a la base de données
@@ -59,14 +59,14 @@ public class LivreService extends Service {
     }
 
     /**
-     * 
+     *
      * Verifie si un livre existe
      *
-     * @param idLivre l'id du livre 
+     * @param idLivre l'id du livre
      * @return true si le livre est existe, false sinon.
      * @throws SQLException
      */
-    public boolean existe(int idLivre) throws SQLException {
+    public boolean existe(final int idLivre) throws SQLException {
         boolean livreExiste;
         this.stmtExiste.setInt(1,
             idLivre);
@@ -87,7 +87,7 @@ public class LivreService extends Service {
      * @return le livre
      * @throws SQLException
      */
-    public LivreDTO getLivre(int idLivre) throws SQLException {
+    public LivreDTO getLivre(final int idLivre) throws SQLException {
         this.stmtExiste.setInt(1,
             idLivre);
 
@@ -121,10 +121,10 @@ public class LivreService extends Service {
      * @param dateAcquisition
      * @throws SQLException
      */
-    public void acquerir(int idLivre,
-        String titre,
-        String auteur,
-        String dateAcquisition) throws SQLException {
+    public void acquerir(final int idLivre,
+        final String titre,
+        final String auteur,
+        final String dateAcquisition) throws SQLException {
         this.stmtInsert.setInt(1,
             idLivre);
         this.stmtInsert.setString(2,
@@ -143,12 +143,12 @@ public class LivreService extends Service {
      * @param idLivre le livre
      * @param idMembre le membre à qui sera prêté le livre
      * @param datePret la date du prêt
-     * @return
+     * @return 1 si le livre a été prêté. 0 si le livre n'existe pas.
      * @throws SQLException
      */
-    public int preter(int idLivre,
-        int idMembre,
-        String datePret) throws SQLException {
+    public int preter(final int idLivre,
+        final int idMembre,
+        final String datePret) throws SQLException {
         this.stmtUpdate.setInt(1,
             idMembre);
         this.stmtUpdate.setDate(2,
@@ -163,10 +163,10 @@ public class LivreService extends Service {
      * Retourne un livre
      *
      * @param idLivre
-     * @return
+     * @return 1 si le livre a bien été retourné. 0 si le livre n'existe pas.
      * @throws SQLException
      */
-    public int retourner(int idLivre) throws SQLException {
+    public int retourner(final int idLivre) throws SQLException {
         this.stmtUpdate.setNull(1,
             Types.INTEGER);
         this.stmtUpdate.setNull(2,
@@ -181,10 +181,10 @@ public class LivreService extends Service {
      * Suppression d'un livre
      *
      * @param idLivre
-     * @return
+     * @return 1 si le livre a bien été vendu. 0 si le livre n'existe pas.
      * @throws SQLException
      */
-    public int vendre(int idLivre) throws SQLException {
+    public int vendre(final int idLivre) throws SQLException {
         this.stmtDelete.setInt(1,
             idLivre);
         return this.stmtDelete.executeUpdate();
