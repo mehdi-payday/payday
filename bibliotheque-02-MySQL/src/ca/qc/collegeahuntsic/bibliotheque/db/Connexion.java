@@ -39,16 +39,16 @@ public class Connexion implements AutoCloseable {
         final String schema,
         final String nomUtilisateur,
         final String motPasse) throws SQLException {
-        Driver d;
+        final Driver d;
         try {
-            if(typeServeur.equals("local")) {
+            if("local".equals(typeServeur)) {
                 d = (Driver) Class.forName("com.mysql.jdbc.Driver").newInstance();
                 DriverManager.registerDriver(d);
                 this.conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/"
                     + schema,
                     nomUtilisateur,
                     motPasse);
-            } else if(typeServeur.equals("distant")) {
+            } else if("distant".equals(typeServeur)) {
                 d = (Driver) Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
                 DriverManager.registerDriver(d);
                 this.conn = DriverManager.getConnection("jdbc:oracle:thin:@collegeahuntsic.info:1521:"
@@ -74,7 +74,7 @@ public class Connexion implements AutoCloseable {
                */
             this.conn.setAutoCommit(false);
 
-            DatabaseMetaData dbmd = this.conn.getMetaData();
+            final DatabaseMetaData dbmd = this.conn.getMetaData();
             if(dbmd.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
                 this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
                 System.out.println("Ouverture de la connexion en mode s�rialisable :\n"
@@ -98,7 +98,8 @@ public class Connexion implements AutoCloseable {
     }
 
     /**
-     * fermeture d'une connexion
+     * fermeture d'une connexion.
+     * @throws SQLException Exception lors de fermeture de connection
      */
     public void fermer() throws SQLException {
         this.conn.rollback();
@@ -144,13 +145,13 @@ public class Connexion implements AutoCloseable {
      *
      * @param connection - La valeur à utiliser pour la variable d'instance this.connection
      */
-    public void SetConnection(Connection connection) {
+    public void setConnection(Connection connection) {
         this.conn = connection;
     }
 
     /**
      *
-     * Retourne la liste des serveurs supportés par ce gestionnaire de connexion
+     * Retourne la liste des serveurs supportés par ce gestionnaire de connexion.
      * local : MySQL installé localement
      * distant : Oracle installé au Département d'Informatique du Collège Ahuntsic
      * postgres : Postgres installé localement
@@ -171,6 +172,5 @@ public class Connexion implements AutoCloseable {
     @Override
     public void close() throws Exception {
         // TODO Auto-generated method stub
-
     }
 }
