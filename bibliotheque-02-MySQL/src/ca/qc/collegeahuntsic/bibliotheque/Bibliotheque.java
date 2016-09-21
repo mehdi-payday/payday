@@ -185,7 +185,7 @@ final class Bibliotheque {
                 gestionBiblio.getGestionInterrogation().listerLivres();
             } else if("listerLivresTitre".startsWith(command)) {
                 gestionBiblio.getGestionInterrogation().listerLivresTitre(readString(tokenizer) /* mot */);
-            } else {
+            } else if(!"--".equals(command)){
                 System.out.println("  Transactions non reconnue.  Essayer \"aide\"");
             }
         } catch(BiblioException e) {
@@ -232,22 +232,19 @@ final class Bibliotheque {
      */
     static boolean finTransaction(String transaction) {
         /* fin de fichier atteinte */
-        if(transaction == null) {
-            return true;
+        boolean finDeFichier = transaction == null;
+
+        if(!finDeFichier) {
+            final StringTokenizer tokenizer = new StringTokenizer(transaction,
+                " ");
+
+            if(!tokenizer.hasMoreTokens()) {
+                finDeFichier = false;
+            }else if("exit".equals(tokenizer.nextToken())){
+                finDeFichier = true;
+            }
         }
-
-        final StringTokenizer tokenizer = new StringTokenizer(transaction,
-            " ");
-
-        /* ligne ne contenant que des espaces */
-        if(!tokenizer.hasMoreTokens()) {
-            return false;
-        }
-
-        /* commande "exit" */
-        final String commande = tokenizer.nextToken();
-
-        return "exit".equals(commande);
+        return finDeFichier;
     }
 
     /**.
