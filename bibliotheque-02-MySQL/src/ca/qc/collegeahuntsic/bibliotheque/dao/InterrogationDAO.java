@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 
 /**
@@ -96,10 +97,16 @@ public class InterrogationDAO extends DAO {
                 System.out.println();
             }
             this.cx.commit();
-        } catch(SQLException e) {
-            throw new DAOException();
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
-
     }
 
     /**
@@ -130,8 +137,15 @@ public class InterrogationDAO extends DAO {
                 System.out.println();
             }
             this.cx.commit();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
 
     }

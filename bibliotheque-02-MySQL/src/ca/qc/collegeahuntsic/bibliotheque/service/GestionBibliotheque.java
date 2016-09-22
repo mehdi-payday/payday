@@ -29,7 +29,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
  * Post-condition
  *   le programme effectue les maj associées à chaque
  *   transaction
- *   
+ *
  * @author Adam Cherti
  *
  */
@@ -71,12 +71,12 @@ public class GestionBibliotheque extends Service {
         final String bd,
         final String user,
         final String password) throws ServiceException {
-
-        this.cx = new Connexion(serveur,
-            bd,
-            user,
-            password);
         try {
+            this.cx = new Connexion(serveur,
+                bd,
+                user,
+                password);
+
             this.livre = new LivreService(this.cx);
             this.membre = new MembreService(this.cx);
             this.reservation = new ReservationService(this.cx);
@@ -95,13 +95,11 @@ public class GestionBibliotheque extends Service {
             throw new ServiceException(daoException);
         } catch(ConnexionException connException) {
             throw new ServiceException(connException);
-        } catch(DAOException daoException) {
-            throw new ServiceException(daoException);
         }
     }
 
     /**
-     * 
+     *
      * Fermer la connection a la base de données.
      *
      * @throws ServiceException s'il y a une erreur avec la fermeture de la connexion

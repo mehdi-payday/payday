@@ -6,13 +6,16 @@ package ca.qc.collegeahuntsic.bibliotheque;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.StringTokenizer;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
-import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.BibliothequeException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.service.GestionBibliotheque;
 import ca.qc.collegeahuntsic.bibliotheque.util.FormatteurDate;
 
@@ -45,32 +48,28 @@ final class Bibliotheque {
      *
      */
     private Bibliotheque() {
-        /*
-         * vide
-         */
     }
 
     /**
      * Crée une connexion sur la base de données, traite toutes les transactions et détruit la connexion.
      *
-     * @param argv Parametres de lign de commande
-     * @throws Exception Exception lancee par le programme
+     * @param argv Parametres de ligne de commande.
+     * @throws BibliothequeException Exception generale pour l'objet Bibliotheque.
      */
-    public static void main(String[] argv) throws Exception {
+    public static void main(String[] argv) throws BibliothequeException {
         if(argv.length < 4) {
             System.out.println("Usage: java Biblio <serveur> <bd> <user> <password> [<fichier-transactions>]");
             System.out.println(Connexion.serveursSupportes());
             return;
         }
 
+        lectureAuClavier = true;
+        InputStream sourceTransaction = System.in;
         try {
-            lectureAuClavier = true;
-            InputStream sourceTransaction = System.in;
             if(argv.length > 4) {
                 sourceTransaction = new FileInputStream(argv[4]);
                 lectureAuClavier = false;
             }
-
             gestionBiblio = new GestionBibliotheque(argv[0],
                 argv[1],
                 argv[2],
@@ -78,22 +77,24 @@ final class Bibliotheque {
             try(
                 BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))) {
                 traiterTransactions(reader);
+            } catch(IOException ioException) {
+                throw new BibliothequeException(ioException);
             }
-
-        } catch(Exception e) {
-            e.printStackTrace(System.out);
-        } finally {
-            gestionBiblio.fermer();
+        } catch(FileNotFoundException fileNotFoundException) {
+            throw new BibliothequeException(fileNotFoundException);
+        } catch(ServiceException serviceException) {
+            throw new BibliothequeException(serviceException);
         }
+
     }
 
     /**
      * Traitement des transactions de la bibliothèque.
      *
-     * @param reader reader pour lire la transaction
-     * @throws Exception lancee lors dun erreur de lecture de transaction
+     * @param reader reader pour lire la transaction.
+     * @throws BibliothequeException lancee lors dun erreur de lecture de transaction.
      */
-    static void traiterTransactions(BufferedReader reader) throws Exception {
+    static void traiterTransactions(BufferedReader reader) throws BibliothequeException {
         afficherAide();
         String transaction = lireTransaction(reader);
         while(!finTransaction(transaction)) {
@@ -111,15 +112,20 @@ final class Bibliotheque {
      *
      * @param reader reader contenant le fichier contenant les transactions
      * @return La transaction lue
-     * @throws IOException lancee lors dune erreur de lecture du fichier par le parametre reader
+     * @throws BibliothequeException Lancee lors dune erreur de lecture du fichier par le parametre reader
      */
-    static String lireTransaction(BufferedReader reader) throws IOException {
+    static String lireTransaction(BufferedReader reader) throws BibliothequeException {
         System.out.print("> ");
-        final String transaction = reader.readLine();
-        if(!lectureAuClavier
-            && transaction != null
-            && !"".equals(transaction)) {
-            System.out.println(transaction);
+        final String transaction;
+        try {
+            transaction = reader.readLine();
+            if(!lectureAuClavier
+                && transaction != null
+                && !"".equals(transaction)) {
+                System.out.println(transaction);
+            }
+        } catch(IOException ioException) {
+            throw new BibliothequeException(ioException);
         }
         return transaction;
     }
@@ -128,11 +134,12 @@ final class Bibliotheque {
      * Décode et traite une transaction.
      *
      * @param tokenizer  L'entrée à décoder
-     * @throws Exception Si une erreur survient
+     * @throws BibliothequeException Si une erreur survient
      */
-    static void executerTransaction(StringTokenizer tokenizer) throws Exception {
+    static void executerTransaction(StringTokenizer tokenizer) throws BibliothequeException {
+        final String command;
         try {
-            final String command = tokenizer.nextToken();
+            command = tokenizer.nextToken();
 
             /* ******************* */
             /* HELP */
@@ -180,9 +187,8 @@ final class Bibliotheque {
             } else if(!"--".equals(command)) {
                 System.out.println("  Transactions non reconnue.  Essayer \"aide\"");
             }
-        } catch(BiblioException e) {
-            System.out.println("** "
-                + e.toString());
+        } catch(DAOException daoException) {
+            throw new BibliothequeException(daoException);
         }
     }
 
@@ -223,11 +229,9 @@ final class Bibliotheque {
      */
     static boolean finTransaction(String transaction) {
         boolean finDeFichier = transaction == null;
-
         if(!finDeFichier) {
             final StringTokenizer tokenizer = new StringTokenizer(transaction,
                 " ");
-
             if(!tokenizer.hasMoreTokens()) {
                 finDeFichier = false;
             } else if("exit".equals(tokenizer.nextToken())) {
@@ -243,11 +247,11 @@ final class Bibliotheque {
      *
      * @param tokenizer tokenizer contenant la transaction
      * @return La chaîne de caractères lue
-     * @throws BiblioException  Si l'élément lu est manquant
+     * @throws BibliothequeException  Si l'élément lu est manquant
      */
-    static String readString(StringTokenizer tokenizer) throws BiblioException {
+    static String readString(StringTokenizer tokenizer) throws BibliothequeException {
         if(!tokenizer.hasMoreElements()) {
-            throw new BiblioException("autre paramètre attendu");
+            throw new BibliothequeException("autre paramètre attendu");
         }
         return tokenizer.nextToken();
     }
@@ -257,21 +261,21 @@ final class Bibliotheque {
      *
      * @param tokenizer  La transaction à décoder
      * @return Le integer lu
-     * @throws BiblioException  Si l'élément lu est manquant ou n'est pas un integer
+     * @throws BibliothequeException  Si l'élément lu est manquant ou n'est pas un integer
      */
-    static int readInt(StringTokenizer tokenizer) throws BiblioException {
+    static int readInt(StringTokenizer tokenizer) throws BibliothequeException {
         final int integerLu;
         if(tokenizer.hasMoreElements()) {
             final String token = tokenizer.nextToken();
             try {
                 integerLu = Integer.valueOf(token).intValue();
             } catch(NumberFormatException e) {
-                throw new BiblioException("Nombre attendu à la place de \""
+                throw new BibliothequeException("Nombre attendu à la place de \""
                     + token
                     + "\"");
             }
         } else {
-            throw new BiblioException("autre paramètre attendu");
+            throw new BibliothequeException("autre paramètre attendu");
         }
         return integerLu;
     }
@@ -281,21 +285,21 @@ final class Bibliotheque {
     *
     * @param tokenizer La transaction à décoder
     * @return Le long lu
-    * @throws BiblioException Si l'élément lu est manquant ou n'est pas un long
+    * @throws BibliothequeException Si l'élément lu est manquant ou n'est pas un long
     */
-    static long readLong(StringTokenizer tokenizer) throws BiblioException {
+    static long readLong(StringTokenizer tokenizer) throws BibliothequeException {
         final long longLu;
         if(tokenizer.hasMoreElements()) {
             final String token = tokenizer.nextToken();
             try {
                 longLu = Long.valueOf(token).longValue();
             } catch(NumberFormatException e) {
-                throw new BiblioException("Nombre attendu à la place de \""
+                throw new BibliothequeException("Nombre attendu à la place de \""
                     + token
                     + "\"");
             }
         } else {
-            throw new BiblioException("autre paramètre attendu");
+            throw new BibliothequeException("autre paramètre attendu");
         }
         return longLu;
     }
@@ -305,21 +309,21 @@ final class Bibliotheque {
      *
      * @param tokenizer  La transaction à décoder
      * @return La date lue
-     * @throws BiblioException Si l'élément lu est manquant ou n'est pas une date correctement formatée
+     * @throws BibliothequeException Si l'élément lu est manquant ou n'est pas une date correctement formatée
      */
-    static String readDate(StringTokenizer tokenizer) throws BiblioException {
+    static String readDate(StringTokenizer tokenizer) throws BibliothequeException {
         final String token;
         if(tokenizer.hasMoreElements()) {
             token = tokenizer.nextToken();
             try {
                 FormatteurDate.convertirDate(token);
             } catch(ParseException e) {
-                throw new BiblioException("Date en format YYYY-MM-DD attendue à la place  de \""
+                throw new BibliothequeException("Date en format YYYY-MM-DD attendue à la place  de \""
                     + token
                     + "\"");
             }
         } else {
-            throw new BiblioException("autre paramètre attendu");
+            throw new BibliothequeException("autre paramètre attendu");
         }
         return token;
     }

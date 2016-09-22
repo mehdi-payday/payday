@@ -4,10 +4,11 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
-import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
@@ -65,9 +66,15 @@ public class MembreDAO extends DAO {
                 telephone,
                 limitePret);
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback(); // a regler plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 
@@ -102,9 +109,15 @@ public class MembreDAO extends DAO {
                     + " inexistant");
             }
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback(); //a regler plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 }

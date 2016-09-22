@@ -12,7 +12,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
- * 
+ *
  * Service de la table Membre.
  *
  * @author Gilles Bénichou
@@ -50,7 +50,7 @@ public class MembreService extends Service {
                 + "values (?,?,?,?,0)");
             this.stmtUpdateIncrNbPret = cx.getConnection().prepareStatement("update membre set nbpret = nbPret + 1 where idMembre = ?");
             this.stmtUpdateDecNbPret = cx.getConnection().prepareStatement("update membre set nbpret = nbPret - 1 where idMembre = ?");
-            this.stmtDelete = cx.getConnection().prepareStatement("delete from membre where idmembre = ?");    
+            this.stmtDelete = cx.getConnection().prepareStatement("delete from membre where idmembre = ?");
         } catch(SQLException e) {
             throw new ServiceException(e);
         }
@@ -76,14 +76,20 @@ public class MembreService extends Service {
      */
     public boolean existe(int idMembre) throws ServiceException {
         boolean membreExiste = false;
-        
+        ResultSet rset = null;
         try {
             this.stmtExiste.setInt(1,
                 idMembre);
-            final ResultSet rset = this.stmtExiste.executeQuery();
+            rset = this.stmtExiste.executeQuery();
             membreExiste = rset.next();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
+        } finally {
+            try {
+                rset.close();
+            } catch(SQLException sqlException2) {
+                throw new ServiceException(sqlException2);
+            }
         }
 
         return membreExiste;
@@ -98,10 +104,11 @@ public class MembreService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public MembreDTO getMembre(int idMembre) throws ServiceException {
+        ResultSet rset = null;
         try {
             this.stmtExiste.setInt(1,
                 idMembre);
-            final ResultSet rset = this.stmtExiste.executeQuery();
+            rset = this.stmtExiste.executeQuery();
             if(rset.next()) {
 
                 final MembreDTO tupleMembre = new MembreDTO();
@@ -114,6 +121,12 @@ public class MembreService extends Service {
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
+        } finally {
+            try {
+                rset.close();
+            } catch(SQLException sqlException2) {
+                throw new ServiceException(sqlException2);
+            }
         }
         return null;
     }
@@ -143,7 +156,7 @@ public class MembreService extends Service {
                 limitePret);
             this.stmtInsert.executeUpdate();
         } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException); 
+            throw new ServiceException(sqlException);
         }
     }
 

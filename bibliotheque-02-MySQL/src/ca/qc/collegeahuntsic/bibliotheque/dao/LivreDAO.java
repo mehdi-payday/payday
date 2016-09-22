@@ -4,10 +4,11 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
-import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
@@ -48,7 +49,7 @@ public class LivreDAO extends DAO {
      * @param titre .
      * @param auteur .
      * @param dateAcquisition .
-     * @throws DAOException
+     * @throws DAOException .
      */
     public void acquerir(int idLivre,
         String titre,
@@ -65,9 +66,15 @@ public class LivreDAO extends DAO {
                 auteur,
                 dateAcquisition);
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback(); //a changer plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 
@@ -103,9 +110,15 @@ public class LivreDAO extends DAO {
                     + " inexistant");
             }
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback(); // a changer plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 }

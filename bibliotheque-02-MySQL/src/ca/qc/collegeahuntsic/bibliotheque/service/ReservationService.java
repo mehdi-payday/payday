@@ -12,7 +12,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
- * 
+ *
  * Service de la table reservation.
  *
  * @author Gilles Bénichou
@@ -79,7 +79,7 @@ public class ReservationService extends Service {
     public boolean existe(final int idReservation) throws ServiceException {
         try {
             boolean reservationExiste = false;
-            
+
             this.stmtExiste.setInt(1,
                 idReservation);
             try(
@@ -101,10 +101,11 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservation(final int idReservation) throws ServiceException {
+        ResultSet rset = null;
         try {
             this.stmtExiste.setInt(1,
                 idReservation);
-            final ResultSet rset = this.stmtExiste.executeQuery();
+            rset = this.stmtExiste.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -116,6 +117,12 @@ public class ReservationService extends Service {
             }
         } catch(SQLException e) {
             throw new ServiceException(e);
+        } finally {
+            try {
+                rset.close();
+            } catch(SQLException SqlException) {
+                throw new ServiceException(SqlException);
+            }
         }
         return null;
     }
@@ -129,11 +136,12 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservationLivre(final int idLivre) throws ServiceException {
+        ResultSet rset = null;
         try {
             this.stmtExisteLivre.setInt(1,
                 idLivre);
-     
-            final ResultSet rset = this.stmtExisteLivre.executeQuery();
+
+            rset = this.stmtExisteLivre.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -143,8 +151,14 @@ public class ReservationService extends Service {
                 tupleReservation.setDateReservation(rset.getDate(4));
                 return tupleReservation;
             }
-        } catch(SQLException e) {
-            throw new ServiceException(e);
+        } catch(SQLException sqlException) {
+            throw new ServiceException(sqlException);
+        } finally {
+            try {
+                rset.close();
+            } catch(SQLException sqlException2) {
+                throw new ServiceException(sqlException2);
+            }
         }
         return null;
     }
@@ -158,11 +172,12 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservationMembre(final int idMembre) throws ServiceException {
+        ResultSet rset = null;
         try {
             this.stmtExisteMembre.setInt(1,
                 idMembre);
-     
-            final ResultSet rset = this.stmtExisteMembre.executeQuery();
+
+            rset = this.stmtExisteMembre.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -172,10 +187,16 @@ public class ReservationService extends Service {
                 tupleReservation.setDateReservation(rset.getDate(4));
                 return tupleReservation;
             }
-        } catch(SQLException e) {
-            throw new ServiceException(e);
+        } catch(SQLException sqlException) {
+            throw new ServiceException(sqlException);
+        } finally {
+            try {
+                rset.close();
+            } catch(SQLException sqlException2) {
+                throw new ServiceException(sqlException2);
+            }
         }
-        
+
         return null;
     }
 

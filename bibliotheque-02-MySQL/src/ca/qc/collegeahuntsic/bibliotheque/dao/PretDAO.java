@@ -5,13 +5,13 @@
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
@@ -50,15 +50,15 @@ public class PretDAO extends DAO {
      * @param livre .
      * @param membre .
      * @param reservation .
-     * @throws BiblioException .
+     * @throws DAOException .
      */
     public PretDAO(LivreService livre,
         MembreService membre,
-        ReservationService reservation) throws BiblioException {
+        ReservationService reservation) throws DAOException {
         super(livre.getConnexion());
         if(livre.getConnexion() != membre.getConnexion()
             || reservation.getConnexion() != membre.getConnexion()) {
-            throw new BiblioException("Les instances de livre, de membre et de reservation n'utilisent pas la meme connexion au serveur");
+            throw new DAOException("Les instances de livre, de membre et de reservation n'utilisent pas la meme connexion au serveur");
         }
 
         this.cx = livre.getConnexion();
@@ -71,7 +71,6 @@ public class PretDAO extends DAO {
      * Pret d'un livre  un membre. Le livre ne doit pas etre prete. Le
      *      membre ne doit pas avoir depasse sa limite de pret.
      *
-     *
      * @param idLivre .
      * @param idMembre .
      * @param datePret .
@@ -81,7 +80,6 @@ public class PretDAO extends DAO {
         int idMembre,
         String datePret) throws DAOException {
         try {
-            /* Verfier si le livre est disponible */
             final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
             if(tupleLivre == null) {
                 throw new DAOException("Livre inexistant: "
@@ -93,8 +91,6 @@ public class PretDAO extends DAO {
                     + " deja prete a "
                     + tupleLivre.getIdMembre());
             }
-
-            /* Verifie si le membre existe et sa limite de pret */
             final MembreDTO tupleMembre = this.membre.getMembre(idMembre);
             if(tupleMembre == null) {
                 throw new DAOException("Membre inexistant: "
@@ -105,8 +101,6 @@ public class PretDAO extends DAO {
                     + idMembre
                     + " atteinte");
             }
-
-            /* Verifie s'il existe une reservation pour le livre */
             final ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
             if(tupleReservation != null) {
                 throw new DAOException("Livre reserve par : "
@@ -114,8 +108,6 @@ public class PretDAO extends DAO {
                     + " idReservation : "
                     + tupleReservation.getIdReservation());
             }
-
-            /* Enregistrement du pret. */
             final int nb1 = this.livre.preter(idLivre,
                 idMembre,
                 datePret);
@@ -127,9 +119,15 @@ public class PretDAO extends DAO {
                 throw new DAOException("Membre supprime par une autre transaction");
             }
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback();//a regler plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 
@@ -144,7 +142,6 @@ public class PretDAO extends DAO {
     public void renouveler(int idLivre,
         String datePret) throws DAOException {
         try {
-            /* Verifier si le livre est prete */
             final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
             if(tupleLivre == null) {
                 throw new DAOException("Livre inexistant: "
@@ -155,13 +152,9 @@ public class PretDAO extends DAO {
                     + idLivre
                     + " n'est pas prete");
             }
-
-            /* Verifier si date renouvellement >= datePret */
             if(Date.valueOf(datePret).before(tupleLivre.getDatePret())) {
                 throw new DAOException("Date de renouvellement inferieure a la date de pret");
             }
-
-            /* Verifie s'il existe une reservation pour le livre */
             final ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
             if(tupleReservation != null) {
                 throw new DAOException("Livre reserve par : "
@@ -169,8 +162,6 @@ public class PretDAO extends DAO {
                     + " idReservation : "
                     + tupleReservation.getIdReservation());
             }
-
-            /* Enregistrement du pret. */
             final int nb1 = this.livre.preter(idLivre,
                 tupleLivre.getIdMembre(),
                 datePret);
@@ -178,9 +169,15 @@ public class PretDAO extends DAO {
                 throw new DAOException("Livre supprime par une autre transaction");
             }
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback(); //a regler plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 
@@ -190,46 +187,43 @@ public class PretDAO extends DAO {
      *
      * @param idLivre .
      * @param dateRetour .
-     * @throws SQLException .
-     * @throws BiblioException .
-     * @throws Exception .
+     * @throws DAOException .
      */
     public void retourner(int idLivre,
-        String dateRetour) throws SQLException,
-        BiblioException,
-        Exception {
+        String dateRetour) throws DAOException {
         try {
-            /* Verifier si le livre est prete*/
             final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
             if(tupleLivre == null) {
-                throw new BiblioException("Livre inexistant: "
+                throw new DAOException("Livre inexistant: "
                     + idLivre);
             }
             if(tupleLivre.getIdMembre() == 0) {
-                throw new BiblioException("Livre "
+                throw new DAOException("Livre "
                     + idLivre
                     + " n'est pas prete ");
             }
-
-            /* Verifier si date retour >= datePret */
             if(Date.valueOf(dateRetour).before(tupleLivre.getDatePret())) {
-                throw new BiblioException("Date de retour inferieure a la date de pret");
+                throw new DAOException("Date de retour inferieure a la date de pret");
             }
-
-            /* Retour du pret. */
             final int nb1 = this.livre.retourner(idLivre);
             if(nb1 == 0) {
-                throw new BiblioException("Livre supprime par une autre transaction");
+                throw new DAOException("Livre supprime par une autre transaction");
             }
 
             final int nb2 = this.membre.retourner(tupleLivre.getIdMembre());
             if(nb2 == 0) {
-                throw new BiblioException("Livre supprime par une autre transaction");
+                throw new DAOException("Livre supprime par une autre transaction");
             }
             this.cx.commit();
-        } catch(Exception e) {
-            this.cx.rollback();
-            throw e;
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 }

@@ -14,7 +14,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
- * 
+ *
  * Service de la table Livre.
  *
  * @author Gilles Bénichou
@@ -50,11 +50,12 @@ public class LivreService extends Service {
                 + "values (?,?,?,?,null,null)");
             this.stmtUpdate = cx.getConnection().prepareStatement("update livre set idMembre = ?, datePret = ? "
                 + "where idLivre = ?");
-            this.stmtDelete = cx.getConnection().prepareStatement("delete from livre where idlivre = ?");    
+            this.stmtDelete = cx.getConnection().prepareStatement("delete from livre where idlivre = ?");
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }
     }
+
     /**
      *
      * Retourner la connexion associée.
@@ -72,20 +73,25 @@ public class LivreService extends Service {
      * @param idLivre l'id du livre
      * @return true si le livre est existe, false sinon.
      * @throws ServiceException  S'il y a une erreur avec la base de données
-     * 
+     *
      */
     public boolean existe(final int idLivre) throws ServiceException {
         boolean livreExiste = false;
-        
+        ResultSet rset = null;
         try {
             this.stmtExiste.setInt(1,
-                    idLivre);
-            final ResultSet rset = this.stmtExiste.executeQuery();
+                idLivre);
+            rset = this.stmtExiste.executeQuery();
             livreExiste = rset.next();
-        } catch (SQLException sqlException) {
+        } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
+        } finally {
+            try {
+                rset.close();
+            } catch(SQLException sqlException2) {
+                throw new ServiceException(sqlException2);
+            }
         }
-
         return livreExiste;
     }
 
@@ -99,12 +105,11 @@ public class LivreService extends Service {
      */
     public LivreDTO getLivre(final int idLivre) throws ServiceException {
         LivreDTO tupleLivre = null;
-
+        ResultSet rset = null;
         try {
             this.stmtExiste.setInt(1,
                 idLivre);
-            final ResultSet rset = this.stmtExiste.executeQuery();
-
+            rset = this.stmtExiste.executeQuery();
             if(rset.next()) {
                 tupleLivre = new LivreDTO();
 
@@ -117,6 +122,12 @@ public class LivreService extends Service {
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
+        } finally {
+            try {
+                rset.close();
+            } catch(SQLException sqlException2) {
+                throw new ServiceException(sqlException2);
+            }
         }
 
         return tupleLivre;
@@ -164,7 +175,7 @@ public class LivreService extends Service {
     public int preter(final int idLivre,
         final int idMembre,
         final String datePret) throws ServiceException {
-        
+
         try {
             this.stmtUpdate.setInt(1,
                 idMembre);

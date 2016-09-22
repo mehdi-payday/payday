@@ -5,13 +5,13 @@
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
 import java.sql.Date;
-import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
@@ -40,15 +40,15 @@ public class ReservationDAO extends DAO {
      * @param livre .
      * @param membre .
      * @param reservation .
-     * @throws BiblioException .
+     * @throws DAOException .
      */
     public ReservationDAO(LivreService livre,
         MembreService membre,
-        ReservationService reservation) throws BiblioException {
+        ReservationService reservation) throws DAOException {
         super(livre.getConnexion());
         if(livre.getConnexion() != membre.getConnexion()
             || reservation.getConnexion() != membre.getConnexion()) {
-            throw new BiblioException("Les instances de livre, de membre et de reservation n'utilisent pas la même connexion au serveur");
+            throw new DAOException("Les instances de livre, de membre et de reservation n'utilisent pas la même connexion au serveur");
         }
         this.cx = livre.getConnexion();
         this.livre = livre;
@@ -107,9 +107,15 @@ public class ReservationDAO extends DAO {
                 idMembre,
                 dateReservation);
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback();//a regler plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 
@@ -176,9 +182,15 @@ public class ReservationDAO extends DAO {
 
             this.reservation.annulerRes(idReservation);
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback();//a regler plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 
@@ -197,9 +209,15 @@ public class ReservationDAO extends DAO {
             }
 
             this.cx.commit();
-        } catch(SQLException e) {
-            this.cx.rollback();//a regler plus tard
-            throw new DAOException(e);
+        } catch(ConnexionException connexionException) {
+            try {
+                this.cx.rollback();
+            } catch(ConnexionException connexionException2) {
+                throw new DAOException(connexionException2);
+            }
+            throw new DAOException(connexionException);
+        } catch(ServiceException serviceException) {
+            throw new DAOException(serviceException);
         }
     }
 }
