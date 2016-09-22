@@ -25,7 +25,6 @@ public class MembreDTO extends DTO {
     private long telephone;
 
     /**
-     *
      * Constructeur par défaut.
      *
      */
@@ -122,5 +121,5 @@ public class MembreDTO extends DTO {
     public void setNbPret(int nbPret) {
         this.nbPret = nbPret;
     }
-
+    // EndRegion Getters and Setters
 }

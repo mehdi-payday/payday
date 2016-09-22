@@ -9,6 +9,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 
 /**
  *
@@ -33,12 +34,12 @@ public class Connexion implements AutoCloseable {
      * @param schema - Nom du schéma de la base de données
      * @param nomUtilisateur - Nom d'utilisateur sur le serveur SQL
      * @param motPasse - Mot de passe sur le serveur SQL
-     * @throws SQLException - S'il y a une erreur avec la base de données
+     * @throws ConnexionException - S'il y a une erreur avec la base de données
      */
     public Connexion(final String typeServeur,
         final String schema,
         final String nomUtilisateur,
-        final String motPasse) throws SQLException {
+        final String motPasse) throws ConnexionException {
         final Driver d;
         try {
             if("local".equals(typeServeur)) {
@@ -90,43 +91,54 @@ public class Connexion implements AutoCloseable {
                     + this.conn);
             }
         } catch(SQLException e) {
-            throw e;
+            throw new ConnexionException(e);
         } catch(Exception e) {
-            e.printStackTrace(System.out);
-            throw new SQLException("JDBC Driver non instanci�");
+            throw new ConnexionException("JDBC Driver non instanci�");
         }
     }
 
     /**
      * fermeture d'une connexion.
-     * @throws SQLException Exception lors de fermeture de connection
+     * @throws ConnexionException Exception lors de fermeture de connection
      */
-    public void fermer() throws SQLException {
-        this.conn.rollback();
-        this.conn.close();
-        System.out.println("Connexion ferm�e"
-            + " "
-            + this.conn);
+    public void fermer() throws ConnexionException {
+        try {
+            this.conn.rollback();
+            this.conn.close();
+            System.out.println("Connexion fermée"
+                + " "
+                + this.conn);
+        } catch(SQLException e) {
+            throw new ConnexionException(e);
+        }
     }
 
     /**
      *
      * Effectue un commit sur la Connection JDBC.
      *
-     * @throws SQLException - S'il y a une erreur avec la base de données
+     * @throws ConnexionException - S'il y a une erreur avec la base de données
      */
-    public void commit() throws SQLException {
-        this.conn.commit();
+    public void commit() throws ConnexionException {
+        try {
+            this.conn.commit();
+        } catch(SQLException e) {
+            throw new ConnexionException(e);
+        }
     }
 
     /**
      *
      * Effectue un rollback sur la Connection JDBC.
      *
-     * @throws SQLException - S'il y a une erreur avec la base de données
+     * @throws ConnexionException - S'il y a une erreur avec la base de données
      */
-    public void rollback() throws SQLException {
-        this.conn.rollback();
+    public void rollback() throws ConnexionException {
+        try {
+            this.conn.rollback();
+        } catch(SQLException e) {
+            throw new ConnexionException(e);
+        }
     }
 
     /**
@@ -170,7 +182,12 @@ public class Connexion implements AutoCloseable {
      * @see java.lang.AutoCloseable#close()
      */
     @Override
-    public void close() throws Exception {
+    public void close() throws ConnexionException {
+        try {
+            this.conn.close();
+        } catch(SQLException e) {
+            throw new ConnexionException(e);
+        }
         // TODO Auto-generated method stub
     }
 }

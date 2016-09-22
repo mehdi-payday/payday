@@ -3,7 +3,7 @@
 // Date de création : 2016-09-12
 
 /**
- * Initialisateur du paquet Service.
+ * Service package.
  *
  * @author Vincent Laferrière
  */
