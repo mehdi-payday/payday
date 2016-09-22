@@ -2,7 +2,7 @@
 // Auteur : Vincent Laferrière
 // Date de création : 2016-09-12
 /**
- * TODO Auto-generated class javadoc.
+ * Database related package.
  *
  * @author Vincent Laferrière
  */

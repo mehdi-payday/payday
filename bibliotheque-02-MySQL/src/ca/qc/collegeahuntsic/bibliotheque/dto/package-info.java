@@ -2,8 +2,8 @@
 // Auteur : Vincent Laferrière
 // Date de création : 2016-09-12
 
-/**.
- * Data Transfer Object Class
+/**
+ * DTO exception package.
  *
  * @author Vincent Laferrière
  */
