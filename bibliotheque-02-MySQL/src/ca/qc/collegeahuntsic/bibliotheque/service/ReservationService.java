@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
  * 
@@ -36,21 +37,24 @@ public class ReservationService extends Service {
      * Crée le service de la table reservation.
      *
      * @param cx la connexion a la base données
-     * @throws SQLException erreur SQL
+     * @throws ServiceException s'il y a une erreur avec la base de données
      */
-    public ReservationService(final Connexion cx) throws SQLException {
-
-        this.cx = cx;
-        this.stmtExiste = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
-            + "from reservation where idReservation = ?");
-        this.stmtExisteLivre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
-            + "from reservation where idLivre = ? "
-            + "order by dateReservation");
-        this.stmtExisteMembre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
-            + "from reservation where idMembre = ? ");
-        this.stmtInsert = cx.getConnection().prepareStatement("insert into reservation (idReservation, idlivre, idMembre, dateReservation) "
-            + "values (?,?,?,STR_TO_DATE(?,'%Y-%m-%D'))");
-        this.stmtDelete = cx.getConnection().prepareStatement("delete from reservation where idReservation = ?");
+    public ReservationService(final Connexion cx) throws ServiceException {
+        try {
+            this.cx = cx;
+            this.stmtExiste = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
+                + "from reservation where idReservation = ?");
+            this.stmtExisteLivre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
+                + "from reservation where idLivre = ? "
+                + "order by dateReservation");
+            this.stmtExisteMembre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
+                + "from reservation where idMembre = ? ");
+            this.stmtInsert = cx.getConnection().prepareStatement("insert into reservation (idReservation, idlivre, idMembre, dateReservation) "
+                + "values (?,?,?,STR_TO_DATE(?,'%Y-%m-%D'))");
+            this.stmtDelete = cx.getConnection().prepareStatement("delete from reservation where idReservation = ?");
+        } catch(SQLException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -70,19 +74,22 @@ public class ReservationService extends Service {
      *
      * @param idReservation l'id de la réservation
      * @return true si la réservation existe, false sinon.
-     * @throws SQLException erreur SQL
+     * @throws ServiceException s'il y a une erreur avec la base de données
      */
-    public boolean existe(final int idReservation) throws SQLException {
-        boolean reservationExiste = false;
-        
-        this.stmtExiste.setInt(1,
-            idReservation);
-        try(
-            ResultSet rset = this.stmtExiste.executeQuery()) {
-            reservationExiste = rset.next();
+    public boolean existe(final int idReservation) throws ServiceException {
+        try {
+            boolean reservationExiste = false;
+            
+            this.stmtExiste.setInt(1,
+                idReservation);
+            try(
+                ResultSet rset = this.stmtExiste.executeQuery()) {
+                reservationExiste = rset.next();
+            }
+            return reservationExiste;
+        } catch(SQLException e) {
+            throw new ServiceException(e);
         }
-
-        return reservationExiste;
     }
 
     /**
@@ -91,14 +98,13 @@ public class ReservationService extends Service {
      *
      * @param idReservation l'id de la réservation
      * @return l'objet de la réservation, null si cela n'existe pas.
-     * @throws SQLException erreur SQL
+     * @throws ServiceException s'il y a une erreur avec la base de données
      */
-    public ReservationDTO getReservation(final int idReservation) throws SQLException {
-
-        this.stmtExiste.setInt(1,
-            idReservation);
-        try(
-            ResultSet rset = this.stmtExiste.executeQuery()) {
+    public ReservationDTO getReservation(final int idReservation) throws ServiceException {
+        try {
+            this.stmtExiste.setInt(1,
+                idReservation);
+            final ResultSet rset = this.stmtExiste.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -108,6 +114,8 @@ public class ReservationService extends Service {
                 tupleReservation.setDateReservation(rset.getDate(4));
                 return tupleReservation;
             }
+        } catch(SQLException e) {
+            throw new ServiceException(e);
         }
         return null;
     }
@@ -118,14 +126,14 @@ public class ReservationService extends Service {
      *
      * @param idLivre l'id du livre
      * @return l'objet de la premiere reservation du livre, null si cela n'existe pas.
-     * @throws SQLException erreur SQL
+     * @throws ServiceException s'il y a une erreur avec la base de données
      */
-    public ReservationDTO getReservationLivre(final int idLivre) throws SQLException {
-
-        this.stmtExisteLivre.setInt(1,
-            idLivre);
-        try(
-            ResultSet rset = this.stmtExisteLivre.executeQuery()) {
+    public ReservationDTO getReservationLivre(final int idLivre) throws ServiceException {
+        try {
+            this.stmtExisteLivre.setInt(1,
+                idLivre);
+     
+            final ResultSet rset = this.stmtExisteLivre.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -135,6 +143,8 @@ public class ReservationService extends Service {
                 tupleReservation.setDateReservation(rset.getDate(4));
                 return tupleReservation;
             }
+        } catch(SQLException e) {
+            throw new ServiceException(e);
         }
         return null;
     }
@@ -145,14 +155,14 @@ public class ReservationService extends Service {
      *
      * @param idMembre l'id du membre
      * @return la premiere reservation du membrem, null si cela n'existe pas.
-     * @throws SQLException erreur SQL
+     * @throws ServiceException s'il y a une erreur avec la base de données
      */
-    public ReservationDTO getReservationMembre(final int idMembre) throws SQLException {
-
-        this.stmtExisteMembre.setInt(1,
-            idMembre);
-        try(
-            ResultSet rset = this.stmtExisteMembre.executeQuery()) {
+    public ReservationDTO getReservationMembre(final int idMembre) throws ServiceException {
+        try {
+            this.stmtExisteMembre.setInt(1,
+                idMembre);
+     
+            final ResultSet rset = this.stmtExisteMembre.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -162,7 +172,10 @@ public class ReservationService extends Service {
                 tupleReservation.setDateReservation(rset.getDate(4));
                 return tupleReservation;
             }
+        } catch(SQLException e) {
+            throw new ServiceException(e);
         }
+        
         return null;
     }
 
@@ -174,21 +187,25 @@ public class ReservationService extends Service {
      * @param idLivre l'id du livre à réserver
      * @param idMembre l'id du membre à qui sera réservé le livre
      * @param dateReservation date de la réservation
-     * @throws SQLException exception MySQL
+     * @throws ServiceException Si la réservation existe déjà, si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore été prêté, si le livre est déjà prêté au membre, si le membre a déjà réservé ce livre ou s'il y a une erreur avec la base de données
      */
     public void reserver(final int idReservation,
         final int idLivre,
         final int idMembre,
-        final String dateReservation) throws SQLException {
-        this.stmtInsert.setInt(1,
-            idReservation);
-        this.stmtInsert.setInt(2,
-            idLivre);
-        this.stmtInsert.setInt(3,
-            idMembre);
-        this.stmtInsert.setString(4,
-            dateReservation);
-        this.stmtInsert.executeUpdate();
+        final String dateReservation) throws ServiceException {
+        try {
+            this.stmtInsert.setInt(1,
+                idReservation);
+            this.stmtInsert.setInt(2,
+                idLivre);
+            this.stmtInsert.setInt(3,
+                idMembre);
+            this.stmtInsert.setString(4,
+                dateReservation);
+            this.stmtInsert.executeUpdate();
+        } catch(SQLException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -198,11 +215,15 @@ public class ReservationService extends Service {
      * @param idReservation l'id de la réservation à annuler
      * @return nombre d'entrées supprimés. Si 0, alors rien n'a été supprimé (car cela n'existe pas).
      * Si plus que 0, cela veut dire que la reservation a bien été annulée.
-     * @throws SQLException erreur SQL
+     * @throws ServiceException Si la réservation n'existe pas ou s'il y a une erreur avec la base de données
      */
-    public int annulerRes(final int idReservation) throws SQLException {
-        this.stmtDelete.setInt(1,
-            idReservation);
-        return this.stmtDelete.executeUpdate();
+    public int annulerRes(final int idReservation) throws ServiceException {
+        try {
+            this.stmtDelete.setInt(1,
+                idReservation);
+            return this.stmtDelete.executeUpdate();
+        } catch(SQLException e) {
+            throw new ServiceException(e);
+        }
     }
 }

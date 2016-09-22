@@ -4,7 +4,6 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.service;
 
-import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.dao.InterrogationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
@@ -12,6 +11,9 @@ import ca.qc.collegeahuntsic.bibliotheque.dao.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
  * Système de gestion d'une bibliothèque
@@ -63,41 +65,48 @@ public class GestionBibliotheque extends Service {
       * @param password mot de passe pour le user id
       * @throws BiblioException erreur d'initialisation de la
       * bibliotheque
-      * @throws SQLException erreur SQL
+      * @throws ServiceException erreur SQL
       */
     public GestionBibliotheque(final String serveur,
         final String bd,
         final String user,
-        final String password) throws BiblioException,
-        SQLException {
+        final String password) throws ServiceException {
 
         this.cx = new Connexion(serveur,
             bd,
             user,
             password);
-        this.livre = new LivreService(this.cx);
-        this.membre = new MembreService(this.cx);
-        this.reservation = new ReservationService(this.cx);
-        this.gestionLivre = new LivreDAO(this.livre,
-            this.reservation);
-        this.gestionMembre = new MembreDAO(this.membre,
-            this.reservation);
-        this.gestionPret = new PretDAO(this.livre,
-            this.membre,
-            this.reservation);
-        this.gestionReservation = new ReservationDAO(this.livre,
-            this.membre,
-            this.reservation);
-        this.gestionInterrogation = new InterrogationDAO(this.cx);
+        try {
+            this.livre = new LivreService(this.cx);
+            this.membre = new MembreService(this.cx);
+            this.reservation = new ReservationService(this.cx);
+            this.gestionLivre = new LivreDAO(this.livre,
+                this.reservation);
+            this.gestionMembre = new MembreDAO(this.membre,
+                this.reservation);
+            this.gestionPret = new PretDAO(this.livre,
+                this.membre,
+                this.reservation);
+            this.gestionReservation = new ReservationDAO(this.livre,
+                this.membre,
+                this.reservation);
+            this.gestionInterrogation = new InterrogationDAO(this.cx);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        } catch(ConnexionException connException) {
+            throw new ServiceException(connException);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
     }
 
     /**
      * 
      * Fermer la connection a la base de données.
      *
-     * @throws SQLException erreur SQL
+     * @throws ConnexionException erreur SQL
      */
-    public void fermer() throws SQLException {
+    public void fermer() throws ConnexionException {
         this.cx.fermer();
     }
 
