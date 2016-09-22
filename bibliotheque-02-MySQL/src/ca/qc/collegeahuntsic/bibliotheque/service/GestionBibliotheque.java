@@ -104,10 +104,14 @@ public class GestionBibliotheque extends Service {
      * 
      * Fermer la connection a la base de données.
      *
-     * @throws ConnexionException erreur SQL
+     * @throws ServiceException s'il y a une erreur avec la fermeture de la connexion
      */
-    public void fermer() throws ConnexionException {
-        this.cx.fermer();
+    public void fermer() throws ServiceException {
+        try {
+            this.cx.fermer();
+        } catch(ConnexionException e) {
+            throw new ServiceException(e);
+        }
     }
 
     // Region Getters and Setters
