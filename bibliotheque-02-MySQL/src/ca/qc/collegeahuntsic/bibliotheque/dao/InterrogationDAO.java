@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 
 /**
  * Gestion des transactions d'interrogation dans une bibliothèque.
@@ -35,38 +36,45 @@ public class InterrogationDAO extends DAO {
 
     private Connexion cx;
 
-    /**.
-     * 
-     * Creation d'une instance
+    /**
+     * Creation d'une instance.
      *
-     * @param cx Reçoit une connexion en parametre
-     * @throws SQLException si erreur de SQL throw une SQLException
+     * @param cx Reçoit une connexion en parametre.
+     * @throws DAOException si erreur de SQL throw une SQLException.
      */
-     
-    public InterrogationDAO(Connexion cx) throws SQLException {
+    public InterrogationDAO(Connexion cx) throws DAOException {
         super(cx);
         this.cx = cx;
-        this.stmtLivresTitreMot = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret + 14 "
-            + "from livre t1 "
-            + "where lower(titre) like ?");
+        try {
+            this.stmtLivresTitreMot = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret + 14 "
+                + "from livre t1 "
+                + "where lower(titre) like ?");
 
-        this.stmtListeTousLivres = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret "
-            + "from livre t1");
+            this.stmtListeTousLivres = cx.getConnection().prepareStatement("select t1.idLivre, t1.titre, t1.auteur, t1.idmembre, t1.datePret "
+                + "from livre t1");
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+
     }
-    
-    /**.
-     * 
-     * Affiche les livres contenu un mot dans le titre
-     *
-     * @param mot Reçoit un mot en parametre
-     * @throws SQLException si erreur de SQL throw une SQLException
-     */
-    public void listerLivresTitre(String mot) throws SQLException {
 
-        this.stmtLivresTitreMot.setString(1,
-            "%"
-                + mot
-                + "%");
+    /**
+     * Affiche les livres contenu un mot dans le titre.
+     *
+     * @param mot Reçoit un mot en parametre.
+     * @throws DAOException si erreur de SQL throw une SQLException.
+     */
+    public void listerLivresTitre(String mot) throws DAOException {
+
+        try {
+            this.stmtLivresTitreMot.setString(1,
+                "%"
+                    + mot
+                    + "%");
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+
         try(
             ResultSet rset = this.stmtLivresTitreMot.executeQuery()) {
 
@@ -87,17 +95,19 @@ public class InterrogationDAO extends DAO {
                 }
                 System.out.println();
             }
+            this.cx.commit();
+        } catch(SQLException e) {
+            throw new DAOException();
         }
-        this.cx.commit();
+
     }
-    
-    /**.
-     * 
-     * Affiche tous les livres de la BD
+
+    /**
+     * Affiche tous les livres de la BD.
      *
-     * @throws SQLException si erreur de SQL throw une SQLException
+     * @throws DAOException si erreur de SQL throw une DAOException
      */
-    public void listerLivres() throws SQLException {
+    public void listerLivres() throws DAOException {
 
         try(
             ResultSet rset = this.stmtListeTousLivres.executeQuery()) {
@@ -119,7 +129,10 @@ public class InterrogationDAO extends DAO {
                 }
                 System.out.println();
             }
+            this.cx.commit();
+        } catch(SQLException e) {
+            throw new DAOException(e);
         }
-        this.cx.commit();
+
     }
 }

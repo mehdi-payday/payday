@@ -11,16 +11,17 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
  * Gestion des transactions de reliees aux prets de livres aux membres dans
- * une bibliotheque.
+ *      une bibliotheque.
  *
  * Ce programme permet de  gerer les transactions preter, renouveler et
- * retourner.
+ *      retourner.
  *
  * Pre-condition la base de donnees de la bibliotheque doit exister
  *
@@ -42,10 +43,9 @@ public class PretDAO extends DAO {
     private Connexion cx;
 
     /**
-     * 
      * Creation d'une instance. La connection de l'instance de livre et de
-     * membre doit etre la meme que cx, afin d'assurer l'integrite des
-     * transactions.     * 
+     *      membre doit etre la meme que cx, afin d'assurer l'integrite des
+     *      transactions.
      *
      * @param livre .
      * @param membre .
@@ -67,34 +67,28 @@ public class PretDAO extends DAO {
         this.reservation = reservation;
     }
 
-
     /**
-     * 
      * Pret d'un livre  un membre. Le livre ne doit pas etre prete. Le
-     * membre ne doit pas avoir depasse sa limite de pret.
-     * 
+     *      membre ne doit pas avoir depasse sa limite de pret.
+     *
      *
      * @param idLivre .
      * @param idMembre .
      * @param datePret .
-     * @throws SQLException .
-     * @throws BiblioException .
-     * @throws Exception .
+     * @throws DAOException .
      */
     public void preter(int idLivre,
         int idMembre,
-        String datePret) throws SQLException,
-        BiblioException,
-        Exception {
+        String datePret) throws DAOException {
         try {
             /* Verfier si le livre est disponible */
             final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
             if(tupleLivre == null) {
-                throw new BiblioException("Livre inexistant: "
+                throw new DAOException("Livre inexistant: "
                     + idLivre);
             }
             if(tupleLivre.getIdMembre() != 0) {
-                throw new BiblioException("Livre "
+                throw new DAOException("Livre "
                     + idLivre
                     + " deja prete a "
                     + tupleLivre.getIdMembre());
@@ -103,11 +97,11 @@ public class PretDAO extends DAO {
             /* Verifie si le membre existe et sa limite de pret */
             final MembreDTO tupleMembre = this.membre.getMembre(idMembre);
             if(tupleMembre == null) {
-                throw new BiblioException("Membre inexistant: "
+                throw new DAOException("Membre inexistant: "
                     + idMembre);
             }
             if(tupleMembre.getNbPret() >= tupleMembre.getLimitePret()) {
-                throw new BiblioException("Limite de pret du membre "
+                throw new DAOException("Limite de pret du membre "
                     + idMembre
                     + " atteinte");
             }
@@ -115,7 +109,7 @@ public class PretDAO extends DAO {
             /* Verifie s'il existe une reservation pour le livre */
             final ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
             if(tupleReservation != null) {
-                throw new BiblioException("Livre reserve par : "
+                throw new DAOException("Livre reserve par : "
                     + tupleReservation.getIdMembre()
                     + " idReservation : "
                     + tupleReservation.getIdReservation());
@@ -126,56 +120,51 @@ public class PretDAO extends DAO {
                 idMembre,
                 datePret);
             if(nb1 == 0) {
-                throw new BiblioException("Livre supprime par une autre transaction");
+                throw new DAOException("Livre supprime par une autre transaction");
             }
             final int nb2 = this.membre.preter(idMembre);
             if(nb2 == 0) {
-                throw new BiblioException("Membre supprime par une autre transaction");
+                throw new DAOException("Membre supprime par une autre transaction");
             }
             this.cx.commit();
-        } catch(Exception e) {
-            this.cx.rollback();
-            throw e;
+        } catch(SQLException e) {
+            this.cx.rollback();//a regler plus tard
+            throw new DAOException(e);
         }
     }
-    
+
     /**
-     * 
      * Renouvellement d'un pret. Le livre doit etre prete. Le livre ne
-     * doit pas etre reserve.
+     *      doit pas etre reserve.
      *
      * @param idLivre .
      * @param datePret .
-     * @throws SQLException .
-     * @throws BiblioException .
-     * @throws Exception .
+     * @throws DAOException .
      */
     public void renouveler(int idLivre,
-        String datePret) throws SQLException,
-        BiblioException,
-        Exception {
+        String datePret) throws DAOException {
         try {
             /* Verifier si le livre est prete */
             final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
             if(tupleLivre == null) {
-                throw new BiblioException("Livre inexistant: "
+                throw new DAOException("Livre inexistant: "
                     + idLivre);
             }
             if(tupleLivre.getIdMembre() == 0) {
-                throw new BiblioException("Livre "
+                throw new DAOException("Livre "
                     + idLivre
                     + " n'est pas prete");
             }
 
             /* Verifier si date renouvellement >= datePret */
             if(Date.valueOf(datePret).before(tupleLivre.getDatePret())) {
-                throw new BiblioException("Date de renouvellement inferieure a la date de pret");
+                throw new DAOException("Date de renouvellement inferieure a la date de pret");
             }
 
             /* Verifie s'il existe une reservation pour le livre */
             final ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
             if(tupleReservation != null) {
-                throw new BiblioException("Livre reserve par : "
+                throw new DAOException("Livre reserve par : "
                     + tupleReservation.getIdMembre()
                     + " idReservation : "
                     + tupleReservation.getIdReservation());
@@ -186,17 +175,17 @@ public class PretDAO extends DAO {
                 tupleLivre.getIdMembre(),
                 datePret);
             if(nb1 == 0) {
-                throw new BiblioException("Livre supprime par une autre transaction");
+                throw new DAOException("Livre supprime par une autre transaction");
             }
             this.cx.commit();
-        } catch(Exception e) {
-            this.cx.rollback();
-            throw e;
+        } catch(SQLException e) {
+            this.cx.rollback(); //a regler plus tard
+            throw new DAOException(e);
         }
     }
-    
+
     /**
-     * 
+     *
      * Retourner un livre prete Le livre doit etre prete.
      *
      * @param idLivre .
