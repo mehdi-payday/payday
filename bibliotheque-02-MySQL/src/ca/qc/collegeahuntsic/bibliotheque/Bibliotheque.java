@@ -39,6 +39,7 @@ final class Bibliotheque {
     private static GestionBibliotheque gestionBiblio;
 
     private static boolean lectureAuClavier;
+
     /**
      * TODO Auto-generated constructor javadoc.
      *
@@ -56,7 +57,7 @@ final class Bibliotheque {
      * @param argv Parametres de lign de commande
      * @throws Exception Exception lancee par le programme
      */
-    public static void main(String[] argv) throws Exception {
+    public static void main(final String[] argv) throws Exception {
         // validation du nombre de param�tres
         if(argv.length < 4) {
             System.out.println("Usage: java Biblio <serveur> <bd> <user> <password> [<fichier-transactions>]");
@@ -97,7 +98,7 @@ final class Bibliotheque {
      * @param reader reader pour lire la transaction
      * @throws Exception lancee lors dun erreur de lecture de transaction
      */
-    static void traiterTransactions(BufferedReader reader) throws Exception {
+    static void traiterTransactions(final BufferedReader reader) throws Exception {
         afficherAide();
         String transaction = lireTransaction(reader);
         while(!finTransaction(transaction)) {
@@ -119,7 +120,7 @@ final class Bibliotheque {
      * @return La transaction lue
      * @throws IOException lancee lors dune erreur de lecture du fichier par le parametre reader
      */
-    static String lireTransaction(BufferedReader reader) throws IOException {
+    static String lireTransaction(final BufferedReader reader) throws IOException {
         System.out.print("> ");
         final String transaction = reader.readLine();
         /* echo si lecture dans un fichier */
@@ -138,7 +139,7 @@ final class Bibliotheque {
      * @param tokenizer  L'entrée à décoder
      * @throws Exception Si une erreur survient
      */
-    static void executerTransaction(StringTokenizer tokenizer) throws Exception {
+    static void executerTransaction(final StringTokenizer tokenizer) throws Exception {
         try {
             final String command = tokenizer.nextToken();
 
@@ -185,7 +186,7 @@ final class Bibliotheque {
                 gestionBiblio.getGestionInterrogation().listerLivres();
             } else if("listerLivresTitre".startsWith(command)) {
                 gestionBiblio.getGestionInterrogation().listerLivresTitre(readString(tokenizer) /* mot */);
-            } else if(!"--".equals(command)){
+            } else if(!"--".equals(command)) {
                 System.out.println("  Transactions non reconnue.  Essayer \"aide\"");
             }
         } catch(BiblioException e) {
@@ -230,7 +231,7 @@ final class Bibliotheque {
      *
      * @return true si la fin du fichier est atteinte, false sinon
      */
-    static boolean finTransaction(String transaction) {
+    static boolean finTransaction(final String transaction) {
         /* fin de fichier atteinte */
         boolean finDeFichier = transaction == null;
 
@@ -240,7 +241,7 @@ final class Bibliotheque {
 
             if(!tokenizer.hasMoreTokens()) {
                 finDeFichier = false;
-            }else if("exit".equals(tokenizer.nextToken())){
+            } else if("exit".equals(tokenizer.nextToken())) {
                 finDeFichier = true;
             }
         }
@@ -256,7 +257,7 @@ final class Bibliotheque {
      * @return La chaîne de caractères lue
      * @throws BiblioException  Si l'élément lu est manquant
      */
-    static String readString(StringTokenizer tokenizer) throws BiblioException {
+    static String readString(final StringTokenizer tokenizer) throws BiblioException {
         if(!tokenizer.hasMoreElements()) {
             throw new BiblioException("autre paramètre attendu");
         }
@@ -274,7 +275,7 @@ final class Bibliotheque {
      * @return Le integer lu
      * @throws BiblioException  Si l'élément lu est manquant ou n'est pas un integer
      */
-    static int readInt(StringTokenizer tokenizer) throws BiblioException {
+    static int readInt(final StringTokenizer tokenizer) throws BiblioException {
         final int integerLu;
         if(tokenizer.hasMoreElements()) {
             final String token = tokenizer.nextToken();
@@ -299,7 +300,7 @@ final class Bibliotheque {
     * @return Le long lu
     * @throws BiblioException Si l'élément lu est manquant ou n'est pas un long
     */
-    static long readLong(StringTokenizer tokenizer) throws BiblioException {
+    static long readLong(final StringTokenizer tokenizer) throws BiblioException {
         final long longLu;
         if(tokenizer.hasMoreElements()) {
             final String token = tokenizer.nextToken();
@@ -327,7 +328,7 @@ final class Bibliotheque {
      * @return La date lue
      * @throws BiblioException Si l'élément lu est manquant ou n'est pas une date correctement formatée
      */
-    static String readDate(StringTokenizer tokenizer) throws BiblioException {
+    static String readDate(final StringTokenizer tokenizer) throws BiblioException {
         final String token;
         if(tokenizer.hasMoreElements()) {
             token = tokenizer.nextToken();
