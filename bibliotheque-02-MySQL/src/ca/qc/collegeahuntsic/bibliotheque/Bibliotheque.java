@@ -107,7 +107,7 @@ final class Bibliotheque {
     }
 
     /**
-     * Lecture d'une transaction
+     * Lecture d'une transaction.
      *
      * @param reader reader contenant le fichier contenant les transactions
      * @return La transaction lue
