@@ -9,7 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * Utilitaire de création d'un @see java.sql.Timestamp dans un format défini.
+ * Utilitaire de création d'un {@link java.sql.Timestamp} dans un format défini.
  *
  * @author Jeremi Cyr
  */
@@ -20,7 +20,8 @@ public final class FormatteurDate {
         formatAMJ.setLenient(false);
     }
 
-    /** constructeur privé pour empêcher toute instantiation.
+    /**
+     * Constructeur privé pour empêcher toute instantiation.
      *
      */
     private FormatteurDate() {
@@ -28,8 +29,7 @@ public final class FormatteurDate {
     }
 
     /**
-     *
-     * Convertit une chaine de caractères en Timestamp selon le format YYYY-MM-DD .
+     * Convertit une chaine de caractères en Timestamp selon le format YYYY-MM-DD.
      *
      * @param dateString - la chaine de caractètres
      * @return le timestamp issu de la conversion
@@ -40,8 +40,7 @@ public final class FormatteurDate {
     }
 
     /**
-     *
-     * Convertit Timestamp en une chaine de caractères selon le format YYYY-MM-DD .
+     * Convertit Timestamp en une chaine de caractères selon le format YYYY-MM-DD.
      *
      * @param timestamp - le timestamp
      * @return la chaine de caracteres issu de la conversion

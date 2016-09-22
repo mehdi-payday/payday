@@ -39,8 +39,9 @@ final class Bibliotheque {
     private static GestionBibliotheque gestionBiblio;
 
     private static boolean lectureAuClavier;
+
     /**
-     * TODO Auto-generated constructor javadoc.
+     * Constructeur privé pour empêcher toute instanciation.
      *
      */
     private Bibliotheque() {
@@ -50,14 +51,12 @@ final class Bibliotheque {
     }
 
     /**
-     *
      * Crée une connexion sur la base de données, traite toutes les transactions et détruit la connexion.
      *
      * @param argv Parametres de lign de commande
      * @throws Exception Exception lancee par le programme
      */
     public static void main(String[] argv) throws Exception {
-        // validation du nombre de param�tres
         if(argv.length < 4) {
             System.out.println("Usage: java Biblio <serveur> <bd> <user> <password> [<fichier-transactions>]");
             System.out.println(Connexion.serveursSupportes());
@@ -65,8 +64,6 @@ final class Bibliotheque {
         }
 
         try {
-            // ouverture du fichier de transactions
-            // s'il est spcifie comme argument
             lectureAuClavier = true;
             InputStream sourceTransaction = System.in;
             if(argv.length > 4) {
@@ -90,9 +87,8 @@ final class Bibliotheque {
         }
     }
 
-    /**.
-     *
-     * Traitement des transactions de la bibliothèque
+    /**
+     * Traitement des transactions de la bibliothèque.
      *
      * @param reader reader pour lire la transaction
      * @throws Exception lancee lors dun erreur de lecture de transaction
@@ -101,7 +97,6 @@ final class Bibliotheque {
         afficherAide();
         String transaction = lireTransaction(reader);
         while(!finTransaction(transaction)) {
-            /* d�coupage de la transaction en mots */
             final StringTokenizer tokenizer = new StringTokenizer(transaction,
                 " ");
             if(tokenizer.hasMoreTokens()) {
@@ -111,8 +106,7 @@ final class Bibliotheque {
         }
     }
 
-    /**.
-     *
+    /**
      * Lecture d'une transaction
      *
      * @param reader reader contenant le fichier contenant les transactions
@@ -122,7 +116,6 @@ final class Bibliotheque {
     static String lireTransaction(BufferedReader reader) throws IOException {
         System.out.print("> ");
         final String transaction = reader.readLine();
-        /* echo si lecture dans un fichier */
         if(!lectureAuClavier
             && transaction != null
             && !"".equals(transaction)) {
@@ -132,7 +125,6 @@ final class Bibliotheque {
     }
 
     /**
-     *
      * Décode et traite une transaction.
      *
      * @param tokenizer  L'entrée à décoder
@@ -194,7 +186,10 @@ final class Bibliotheque {
         }
     }
 
-    /** Affiche le menu des transactions acceptées par le système. */
+    /**
+     * Affiche le menu des transactions acceptées par le système.
+     *
+     */
     static void afficherAide() {
         System.out.println();
         System.out.println("Chaque transaction comporte un nom et une liste d'arguments");
@@ -220,10 +215,6 @@ final class Bibliotheque {
     }
 
     /**
-     *
-     */
-    /**
-     *
      * Vérifie si la fin du traitement des transactions est atteinte.
      *
      * @param transaction La transaction à traiter
@@ -231,7 +222,6 @@ final class Bibliotheque {
      * @return true si la fin du fichier est atteinte, false sinon
      */
     static boolean finTransaction(String transaction) {
-        /* fin de fichier atteinte */
         boolean finDeFichier = transaction == null;
 
         if(!finDeFichier) {
@@ -247,10 +237,9 @@ final class Bibliotheque {
         return finDeFichier;
     }
 
-    /**.
-     *
+    /**
      * lecture d'une chaîne de caractères de la transaction entrée à
-     * l'écran
+     *      l'écran.
      *
      * @param tokenizer tokenizer contenant la transaction
      * @return La chaîne de caractères lue
@@ -264,10 +253,6 @@ final class Bibliotheque {
     }
 
     /**
-     * lecture d'un int java de la transaction entrée à l'écran
-     */
-    /**
-     *
      * Lit un integer de la transaction.
      *
      * @param tokenizer  La transaction à décoder
@@ -292,7 +277,6 @@ final class Bibliotheque {
     }
 
     /**
-    *
     * Lit un long de la transaction.
     *
     * @param tokenizer La transaction à décoder
@@ -317,10 +301,6 @@ final class Bibliotheque {
     }
 
     /**
-     * lecture d'une date en format YYYY-MM-DD
-     */
-    /**
-     *
      * Lit une date au format YYYY-MM-DD de la transaction.
      *
      * @param tokenizer  La transaction à décoder
@@ -343,4 +323,4 @@ final class Bibliotheque {
         }
         return token;
     }
-} // class
+}
