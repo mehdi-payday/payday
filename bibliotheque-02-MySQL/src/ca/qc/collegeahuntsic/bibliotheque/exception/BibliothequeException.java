@@ -11,6 +11,8 @@ package ca.qc.collegeahuntsic.bibliotheque.exception;
  * @author Vincent Laferrière
  */
 public class BibliothequeException extends Exception {
+    private static final long serialVersionUID = 1L;
+
     /**
      *
      * Constructs a new exception with null as its detail message.
