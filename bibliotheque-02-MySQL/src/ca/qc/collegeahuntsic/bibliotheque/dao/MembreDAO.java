@@ -7,12 +7,11 @@ package ca.qc.collegeahuntsic.bibliotheque.dao;
 import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
- * 
  * DAO pour effectuer des CRUDs avec la table membre.
  *
  * @author Mehdi Hamidi
@@ -28,13 +27,12 @@ public class MembreDAO extends DAO {
 
     private ReservationService reservation;
 
-  /**
-   * 
-   * Crée un DAO à partir d'une connexion à la base de données.
-   *
-   * @param membre .
-   * @param reservation .
-   */
+    /**
+     * Crée un DAO à partir d'une connexion à la base de données.
+     *
+     * @param membre .
+     * @param reservation .
+     */
     public MembreDAO(MembreService membre,
         ReservationService reservation) {
         super(membre.getConnexion());
@@ -44,27 +42,22 @@ public class MembreDAO extends DAO {
     }
 
     /**
-     * 
      * Ajout d'un nouveau membre dans la base de donnees. S'il existe deja, une
-     * exception est levee.
+     *      exception est levee.
      *
      * @param idMembre .
      * @param nom .
      * @param telephone .
      * @param limitePret .
-     * @throws SQLException .
-     * @throws BiblioException .
-     * @throws Exception .
+     * @throws DAOException .
      */
     public void inscrire(int idMembre,
         String nom,
         long telephone,
-        int limitePret) throws SQLException,
-        BiblioException,
-        Exception {
+        int limitePret) throws DAOException {
         try {
             if(this.membre.existe(idMembre)) {
-                throw new BiblioException("Membre existe deja: "
+                throw new DAOException("Membre existe deja: "
                     + idMembre);
             }
             this.membre.inscrire(idMembre,
@@ -72,51 +65,46 @@ public class MembreDAO extends DAO {
                 telephone,
                 limitePret);
             this.cx.commit();
-        } catch(Exception e) {
-            this.cx.rollback();
-            throw e;
+        } catch(SQLException e) {
+            this.cx.rollback(); // a regler plus tard
+            throw new DAOException(e);
         }
     }
-    
+
     /**
-     * 
      * Suppression d'un membre de la base de donnees.
      *
      * @param idMembre .
-     * @throws SQLException .
-     * @throws BiblioException .
-     * @throws Exception .
+     * @throws DAOException .
      */
-    public void desinscrire(int idMembre) throws SQLException,
-        BiblioException,
-        Exception {
+    public void desinscrire(int idMembre) throws DAOException {
         try {
             final MembreDTO tupleMembre = this.membre.getMembre(idMembre);
             if(tupleMembre == null) {
-                throw new BiblioException("Membre inexistant: "
+                throw new DAOException("Membre inexistant: "
                     + idMembre);
             }
             if(tupleMembre.getNbPret() > 0) {
-                throw new BiblioException("Le membre "
+                throw new DAOException("Le membre "
                     + idMembre
                     + " a encore des prets.");
             }
             if(this.reservation.getReservationMembre(idMembre) != null) {
-                throw new BiblioException("Membre "
+                throw new DAOException("Membre "
                     + idMembre
                     + " a des r�servations");
             }
 
             final int nb = this.membre.desinscrire(idMembre);
             if(nb == 0) {
-                throw new BiblioException("Membre "
+                throw new DAOException("Membre "
                     + idMembre
                     + " inexistant");
             }
             this.cx.commit();
-        } catch(Exception e) {
-            this.cx.rollback();
-            throw e;
+        } catch(SQLException e) {
+            this.cx.rollback(); //a regler plus tard
+            throw new DAOException(e);
         }
     }
 }

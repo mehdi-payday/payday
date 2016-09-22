@@ -11,12 +11,12 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.BiblioException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
 import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
- * 
  * DAO pour effectuer des CRUDs avec la table reservation.
  *
  * @author Mehdi Hamidi
@@ -35,7 +35,6 @@ public class ReservationDAO extends DAO {
     private Connexion cx;
 
     /**
-     * 
      * Crée un DAO à partir d'une connexion à la base de données.
      *
      * @param livre .
@@ -58,177 +57,149 @@ public class ReservationDAO extends DAO {
     }
 
     /**
-     * 
      * Réservation d'un livre par un membre. Le livre doit être prêté.
      *
      * @param idReservation .
      * @param idLivre .
      * @param idMembre .
      * @param dateReservation .
-     * @throws SQLException .
-     * @throws BiblioException .
-     * @throws Exception .
+     * @throws DAOException .
      */
     public void reserver(int idReservation,
         int idLivre,
         int idMembre,
-        String dateReservation) throws SQLException,
-        BiblioException,
-        Exception {
+        String dateReservation) throws DAOException {
         try {
-            /* Verifier que le livre est prêté */
             final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
             if(tupleLivre == null) {
-                throw new BiblioException("Livre inexistant: "
+                throw new DAOException("Livre inexistant: "
                     + idLivre);
             }
             if(tupleLivre.getIdMembre() == 0) {
-                throw new BiblioException("Livre "
+                throw new DAOException("Livre "
                     + idLivre
                     + " n'est pas prete");
             }
             if(tupleLivre.getIdLivre() == idMembre) {
-                throw new BiblioException("Livre "
+                throw new DAOException("Livre "
                     + idLivre
                     + " deja prete a ce membre");
             }
 
-            /* Vérifier que le membre existe */
             final MembreDTO tupleMembre = this.membre.getMembre(idMembre);
             if(tupleMembre == null) {
-                throw new BiblioException("Membre inexistant: "
+                throw new DAOException("Membre inexistant: "
                     + idMembre);
             }
 
-            /* Verifier si date reservation >= datePret */
             if(Date.valueOf(dateReservation).before(tupleLivre.getDatePret())) {
-                throw new BiblioException("Date de reservation inferieure à la date de pret");
+                throw new DAOException("Date de reservation inferieure à la date de pret");
             }
 
-            /* Vérifier que la réservation n'existe pas */
             if(this.reservation.existe(idReservation)) {
-                throw new BiblioException("Réservation "
+                throw new DAOException("Réservation "
                     + idReservation
                     + " existe deja");
             }
 
-            /* Creation de la reservation */
             this.reservation.reserver(idReservation,
                 idLivre,
                 idMembre,
                 dateReservation);
             this.cx.commit();
-        } catch(Exception e) {
-            this.cx.rollback();
-            throw e;
+        } catch(SQLException e) {
+            this.cx.rollback();//a regler plus tard
+            throw new DAOException(e);
         }
     }
 
     /**
-     * 
      * Prise d'une réservation. Le livre ne doit pas être prêté. Le
-     * membre ne doit pas avoir dépassé sa limite de pret. La réservation
-     * doit la être la première en liste.
+     *      membre ne doit pas avoir dépassé sa limite de pret. La réservation
+     *      doit la être la première en liste.
      *
      * @param idReservation .
      * @param datePret .
-     * @throws SQLException .
-     * @throws BiblioException .
-     * @throws Exception .
+     * @throws DAOException .
      */
     public void prendreRes(int idReservation,
-        String datePret) throws SQLException,
-        BiblioException,
-        Exception {
+        String datePret) throws DAOException {
         try {
-            /* Vérifie s'il existe une réservation pour le livre */
             final ReservationDTO tupleReservation = this.reservation.getReservation(idReservation);
             if(tupleReservation == null) {
-                throw new BiblioException("Réservation inexistante : "
+                throw new DAOException("Réservation inexistante : "
                     + idReservation);
             }
 
-            /* Vérifie que c'est la première réservation pour le livre */
             final ReservationDTO tupleReservationPremiere = this.reservation.getReservationLivre(tupleReservation.getIdLivre());
             if(tupleReservation.getIdReservation() != tupleReservationPremiere.getIdReservation()) {
-                throw new BiblioException("La réservation n'est pas la première de la liste "
+                throw new DAOException("La réservation n'est pas la première de la liste "
                     + "pour ce livre; la premiere est "
                     + tupleReservationPremiere.getIdReservation());
             }
 
-            /* Verifier si le livre est disponible */
             final LivreDTO tupleLivre = this.livre.getLivre(tupleReservation.getIdLivre());
             if(tupleLivre == null) {
-                throw new BiblioException("Livre inexistant: "
+                throw new DAOException("Livre inexistant: "
                     + tupleReservation.getIdLivre());
             }
             if(tupleLivre.getIdMembre() != 0) {
-                throw new BiblioException("Livre "
+                throw new DAOException("Livre "
                     + tupleLivre.getIdLivre()
                     + " deja prêté ? "
                     + tupleLivre.getIdMembre());
             }
 
-            /* Vérifie si le membre existe et sa limite de prêt */
             final MembreDTO tupleMembre = this.membre.getMembre(tupleReservation.getIdMembre());
             if(tupleMembre == null) {
-                throw new BiblioException("Membre inexistant: "
+                throw new DAOException("Membre inexistant: "
                     + tupleReservation.getIdMembre());
             }
             if(tupleMembre.getNbPret() >= tupleMembre.getLimitePret()) {
-                throw new BiblioException("Limite de prêt du membre "
+                throw new DAOException("Limite de prêt du membre "
                     + tupleReservation.getIdMembre()
                     + " atteinte");
             }
 
-            /* Verifier si datePret >= tupleReservation.dateReservation */
             if(Date.valueOf(datePret).before(tupleReservation.getDateReservation())) {
-                throw new BiblioException("Date de prêt inférieure à la date de réservation");
+                throw new DAOException("Date de prêt inférieure à la date de réservation");
             }
 
-            /* Enregistrement du prêt. */
             if(this.livre.preter(tupleReservation.getIdLivre(),
                 tupleReservation.getIdMembre(),
                 datePret) == 0) {
-                throw new BiblioException("Livre supprimé par une autre transaction");
+                throw new DAOException("Livre supprimé par une autre transaction");
             }
             if(this.membre.preter(tupleReservation.getIdLivre()) == 0) {
-                throw new BiblioException("Membre supprimé par une autre transaction");
+                throw new DAOException("Membre supprimé par une autre transaction");
             }
-            /* Eliminer la réservation */
+
             this.reservation.annulerRes(idReservation);
             this.cx.commit();
-        } catch(Exception e) {
-            this.cx.rollback();
-            throw e;
+        } catch(SQLException e) {
+            this.cx.rollback();//a regler plus tard
+            throw new DAOException(e);
         }
     }
-    
+
     /**
-     * 
      * Annulation d'une réservation. La réservation doit exister.
      *
      * @param idReservation .
-     * @throws SQLException .
-     * @throws BiblioException .
-     * @throws Exception .
+     * @throws DAOException .
      */
-    public void annulerRes(int idReservation) throws SQLException,
-        BiblioException,
-        Exception {
+    public void annulerRes(int idReservation) throws DAOException {
         try {
-
-            /* Vérifier que la réservation existe */
             if(this.reservation.annulerRes(idReservation) == 0) {
-                throw new BiblioException("Réservation "
+                throw new DAOException("Réservation "
                     + idReservation
                     + " n'existe pas");
             }
 
             this.cx.commit();
-        } catch(Exception e) {
-            this.cx.rollback();
-            throw e;
+        } catch(SQLException e) {
+            this.cx.rollback();//a regler plus tard
+            throw new DAOException(e);
         }
     }
 }
