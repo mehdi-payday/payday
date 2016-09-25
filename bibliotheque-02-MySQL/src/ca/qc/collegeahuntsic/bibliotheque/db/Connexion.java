@@ -27,7 +27,6 @@ public class Connexion implements AutoCloseable {
     private Connection conn;
 
     /**
-     *
      * Crée une connexion en mode autocommit false.
      *
      * @param typeServeur - Type de serveur SQL de la BD
@@ -178,13 +177,16 @@ public class Connexion implements AutoCloseable {
             + "access : Microsoft Access installé localement et inscrit dans ODBC";
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.AutoCloseable#close()
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void close() throws ConnexionException {
         try {
             this.conn.close();
+            System.out.println("Connexion fermée"
+                + " "
+                + this.conn);
         } catch(SQLException e) {
             throw new ConnexionException(e);
         }
