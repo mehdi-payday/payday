@@ -1,4 +1,4 @@
-// Fichier : ConnexionException.java
+// Fichier ConnexionException.java
 // Auteur : Mehdi Hamidi
 // Date de creation : 2016-09-15
 

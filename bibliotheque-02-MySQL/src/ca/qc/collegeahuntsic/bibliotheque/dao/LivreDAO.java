@@ -1,4 +1,4 @@
-// Fichier : LivreDAO.java
+// Fichier LivreDAO.java
 // Auteur : Jeremi Cyr
 // Date de création : 2016-09-15
 

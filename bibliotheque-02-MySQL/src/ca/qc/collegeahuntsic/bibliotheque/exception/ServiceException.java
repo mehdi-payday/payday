@@ -1,4 +1,4 @@
-// Fichier : ServiceException.java
+// Fichier ServiceException.java
 // Auteur : Mehdi Hamidi
 // Date de creation : 2016-09-15
 

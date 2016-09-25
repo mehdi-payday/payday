@@ -1,4 +1,4 @@
-// Fichier : BibliothequeException.java
+// Fichier BibliothequeException.java
 // Auteur : Mehdi Hamidi
 // Date de creation : 2016-09-15
 
@@ -30,7 +30,7 @@ public class BibliothequeException extends Exception {
     * @param message - The detail message. The detail message is saved for later retrieval by the
     * {@link java.lang.Throwable#getMessage() Throwable.getMessage()} method
     */
-    public BibliothequeException(String message) {
+    public BibliothequeException(final String message) {
         super(message);
     }
 
@@ -45,8 +45,8 @@ public class BibliothequeException extends Exception {
     * {@link java.lang.Throwable#getCause() Throwable.getCause()}  method).
     *       A null value is permitted, and indicates that the cause is nonexistent or unknown
     */
-    public BibliothequeException(String message,
-        Throwable cause) {
+    public BibliothequeException(final String message,
+        final Throwable cause) {
         super(message,
             cause);
     }
@@ -61,10 +61,10 @@ public class BibliothequeException extends Exception {
     * @param enableSuppression - Whether or not suppression is enabled or disabled
     * @param writableStackTrace - Whether or not the stack trace should be writable
     */
-    public BibliothequeException(String message,
-        Throwable cause,
-        boolean enableSuppression,
-        boolean writableStackTrace) {
+    public BibliothequeException(final String message,
+        final Throwable cause,
+        final boolean enableSuppression,
+        final boolean writableStackTrace) {
         super(message,
             cause,
             enableSuppression,
@@ -83,7 +83,7 @@ public class BibliothequeException extends Exception {
     * {@link java.lang.Throwable#getCause() Throwable.getCause()}  method).
     *       A null value is permitted, and indicates that the cause is nonexistent or unknown
     */
-    public BibliothequeException(Throwable cause) {
+    public BibliothequeException(final Throwable cause) {
         super(cause);
     }
 }
