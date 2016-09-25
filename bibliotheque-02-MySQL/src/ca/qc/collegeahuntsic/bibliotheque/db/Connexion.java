@@ -77,7 +77,7 @@ public class Connexion implements AutoCloseable {
             final DatabaseMetaData dbmd = this.conn.getMetaData();
             if(dbmd.supportsTransactionIsolationLevel(Connection.TRANSACTION_SERIALIZABLE)) {
                 this.conn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
-                System.out.println("Ouverture de la connexion en mode s�rialisable :\n"
+                System.out.println("Ouverture de la connexion en mode sérialisable :\n"
                     + "Estampille "
                     + System.currentTimeMillis()
                     + " "
@@ -92,7 +92,7 @@ public class Connexion implements AutoCloseable {
         } catch(SQLException e) {
             throw new ConnexionException(e);
         } catch(Exception e) {
-            throw new ConnexionException("JDBC Driver non instanci�");
+            throw new ConnexionException("JDBC Driver non instancié");
         }
     }
 

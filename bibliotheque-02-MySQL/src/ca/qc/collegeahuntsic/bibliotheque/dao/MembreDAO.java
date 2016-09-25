@@ -99,7 +99,7 @@ public class MembreDAO extends DAO {
             if(this.reservation.getReservationMembre(idMembre) != null) {
                 throw new DAOException("Membre "
                     + idMembre
-                    + " a des r�servations");
+                    + " a des réservations");
             }
 
             final int nb = this.membre.desinscrire(idMembre);
