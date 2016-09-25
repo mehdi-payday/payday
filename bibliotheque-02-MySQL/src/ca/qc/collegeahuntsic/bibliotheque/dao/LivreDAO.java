@@ -1,4 +1,4 @@
-// Fichier LivreDAO.java
+// Fichier : LivreDAO.java
 // Auteur : Jeremi Cyr
 // Date de création : 2016-09-15
 
@@ -25,7 +25,7 @@ public class LivreDAO extends DAO {
 
     private ReservationService reservation;
 
-    private Connexion cx;
+    private Connexion connexion;
 
     /**
      * Crée un DAO à partir d'une connexion à la base de données.
@@ -36,7 +36,7 @@ public class LivreDAO extends DAO {
     public LivreDAO(LivreService livre,
         ReservationService reservation) {
         super(livre.getConnexion());
-        this.cx = livre.getConnexion();
+        this.connexion = livre.getConnexion();
         this.livre = livre;
         this.reservation = reservation;
     }
@@ -45,11 +45,11 @@ public class LivreDAO extends DAO {
      * Ajout d'un nouveau livre dans la base de données. S'il existe déjà, une
      *      exception est levée.
      *
-     * @param idLivre .
-     * @param titre .
-     * @param auteur .
-     * @param dateAcquisition .
-     * @throws DAOException .
+     * @param idLivre id du nouveau livre
+     * @param titre titre du nouveau livre
+     * @param auteur auteur du nouveau libre
+     * @param dateAcquisition date d'acquisition du nouveau libre
+     * @throws DAOException Exception DAO levée s'il y un problème avec l'acquisition
      */
     public void acquerir(int idLivre,
         String titre,
@@ -65,10 +65,10 @@ public class LivreDAO extends DAO {
                 titre,
                 auteur,
                 dateAcquisition);
-            this.cx.commit();
+            this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {
-                this.cx.rollback();
+                this.connexion.rollback();
             } catch(ConnexionException connexionException2) {
                 throw new DAOException(connexionException2);
             }
@@ -81,8 +81,8 @@ public class LivreDAO extends DAO {
     /**
      * Vente d'un livre.
      *
-     * @param idLivre .
-     * @throws DAOException .
+     * @param idLivre id du livre à vendre
+     * @throws DAOException Exception DAO levée s'il y un problème avec la vente
      */
     public void vendre(int idLivre) throws DAOException {
         try {
@@ -109,10 +109,10 @@ public class LivreDAO extends DAO {
                     + idLivre
                     + " inexistant");
             }
-            this.cx.commit();
+            this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {
-                this.cx.rollback();
+                this.connexion.rollback();
             } catch(ConnexionException connexionException2) {
                 throw new DAOException(connexionException2);
             }
