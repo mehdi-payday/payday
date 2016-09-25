@@ -157,7 +157,7 @@ public class Connexion implements AutoCloseable {
      *
      * @param connection - La valeur à utiliser pour la variable d'instance this.connection
      */
-    public void setConnection(Connection connection) {
+    public void setConnection(final Connection connection) {
         this.conn = connection;
     }
 
@@ -188,6 +188,5 @@ public class Connexion implements AutoCloseable {
         } catch(SQLException e) {
             throw new ConnexionException(e);
         }
-        // TODO Auto-generated method stub
     }
 }
