@@ -3,7 +3,7 @@
 // Date de création : 2016-09-12
 
 /**
- * DTO exception package.
+ * DTO specific package.
  *
  * @author Vincent Laferrière
  */

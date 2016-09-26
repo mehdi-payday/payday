@@ -22,7 +22,7 @@ public class MembreDAO extends DAO {
 
     private static final long serialVersionUID = 1L;
 
-    private Connexion cx;
+    private Connexion connexion;
 
     private MembreService membre;
 
@@ -31,13 +31,13 @@ public class MembreDAO extends DAO {
     /**
      * Crée un DAO à partir d'une connexion à la base de données.
      *
-     * @param membre .
-     * @param reservation .
+     * @param membre {@link ca.qc.collegeahuntsic.bibliotheque.service.MembreService} object.
+     * @param reservation {@link ca.qc.collegeahuntsic.bibliotheque.service.ReservationService} object.
      */
     public MembreDAO(MembreService membre,
         ReservationService reservation) {
         super(membre.getConnexion());
-        this.cx = membre.getConnexion();
+        this.connexion = membre.getConnexion();
         this.membre = membre;
         this.reservation = reservation;
     }
@@ -46,11 +46,11 @@ public class MembreDAO extends DAO {
      * Ajout d'un nouveau membre dans la base de donnees. S'il existe deja, une
      *      exception est levee.
      *
-     * @param idMembre .
-     * @param nom .
-     * @param telephone .
-     * @param limitePret .
-     * @throws DAOException .
+     * @param idMembre id du membre.
+     * @param nom nom du membre.
+     * @param telephone telephone du membre.
+     * @param limitePret la limite de pret du membre.
+     * @throws DAOException Exception specifique au package contenant les differentes exceptions levees.
      */
     public void inscrire(int idMembre,
         String nom,
@@ -65,10 +65,10 @@ public class MembreDAO extends DAO {
                 nom,
                 telephone,
                 limitePret);
-            this.cx.commit();
+            this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {
-                this.cx.rollback();
+                this.connexion.rollback();
             } catch(ConnexionException connexionException2) {
                 throw new DAOException(connexionException2);
             }
@@ -81,8 +81,8 @@ public class MembreDAO extends DAO {
     /**
      * Suppression d'un membre de la base de donnees.
      *
-     * @param idMembre .
-     * @throws DAOException .
+     * @param idMembre id du membre a identifier.
+     * @throws DAOException Exception specifique au package contenant les differentes exceptions levees.
      */
     public void desinscrire(int idMembre) throws DAOException {
         try {
@@ -108,10 +108,10 @@ public class MembreDAO extends DAO {
                     + idMembre
                     + " inexistant");
             }
-            this.cx.commit();
+            this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {
-                this.cx.rollback();
+                this.connexion.rollback();
             } catch(ConnexionException connexionException2) {
                 throw new DAOException(connexionException2);
             }

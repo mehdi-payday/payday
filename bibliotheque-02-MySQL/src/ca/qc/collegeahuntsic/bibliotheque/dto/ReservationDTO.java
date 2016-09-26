@@ -25,7 +25,6 @@ public class ReservationDTO extends DTO {
     private Date dateReservation;
 
     /**
-     *
      * Constructeur par défaut.
      *
      */
@@ -104,5 +103,5 @@ public class ReservationDTO extends DTO {
     public void setDateReservation(Date dateReservation) {
         this.dateReservation = dateReservation;
     }
-
+    // EndRegion
 }

@@ -29,7 +29,6 @@ public class LivreDTO extends DTO {
     private Date datePret;
 
     /**
-     *
      * Constructeur par défaut.
      *
      */
@@ -144,5 +143,5 @@ public class LivreDTO extends DTO {
     public void setDatePret(Date datePret) {
         this.datePret = datePret;
     }
-
+    // EndRegion
 }
