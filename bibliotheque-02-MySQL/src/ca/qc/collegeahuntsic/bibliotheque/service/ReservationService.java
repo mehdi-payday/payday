@@ -15,46 +15,31 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
  *
  * Service de la table reservation.
  *
- * @author Gilles Bénichou
+ * @author Adam Cherti
  */
 public class ReservationService extends Service {
     private static final long serialVersionUID = 1L;
 
-    private PreparedStatement stmtExiste;
+    private final String queryGet = "select idReservation, idLivre, idMembre, dateReservation "
+        + "from reservation where idReservation = ?";
+    private final String queryExisteLivre = "select idReservation, idLivre, idMembre, dateReservation "
+        + "from reservation where idLivre = ? "
+        + "order by dateReservation";
+    private final String queryExisteMembre = "select idReservation, idLivre, idMembre, dateReservation " + "from reservation where idMembre = ? ";
+    private final String queryInsert = "insert into reservation (idReservation, idlivre, idMembre, dateReservation) " + "values (?,?,?,STR_TO_DATE(?,'%Y-%m-%D'))";
+    private final String queryDelete = "delete from reservation where idReservation = ?";
 
-    private PreparedStatement stmtExisteLivre;
-
-    private PreparedStatement stmtExisteMembre;
-
-    private PreparedStatement stmtInsert;
-
-    private PreparedStatement stmtDelete;
-
-    private Connexion cx;
+    private Connexion connexion;
 
     /**
      *
      * Crée le service de la table reservation.
      *
-     * @param cx la connexion a la base données
+     * @param connexion la connexion a la base données
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
-    public ReservationService(final Connexion cx) throws ServiceException {
-        try {
-            this.cx = cx;
-            this.stmtExiste = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
-                + "from reservation where idReservation = ?");
-            this.stmtExisteLivre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
-                + "from reservation where idLivre = ? "
-                + "order by dateReservation");
-            this.stmtExisteMembre = cx.getConnection().prepareStatement("select idReservation, idLivre, idMembre, dateReservation "
-                + "from reservation where idMembre = ? ");
-            this.stmtInsert = cx.getConnection().prepareStatement("insert into reservation (idReservation, idlivre, idMembre, dateReservation) "
-                + "values (?,?,?,STR_TO_DATE(?,'%Y-%m-%D'))");
-            this.stmtDelete = cx.getConnection().prepareStatement("delete from reservation where idReservation = ?");
-        } catch(SQLException e) {
-            throw new ServiceException(e);
-        }
+    public ReservationService(final Connexion connexion) throws ServiceException {
+        this.connexion = connexion;
     }
 
     /**
@@ -65,7 +50,7 @@ public class ReservationService extends Service {
      */
     public Connexion getConnexion() {
 
-        return this.cx;
+        return this.connexion;
     }
 
     /**
@@ -77,13 +62,13 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public boolean existe(final int idReservation) throws ServiceException {
-        try {
+        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet);) {
             boolean reservationExiste = false;
 
-            this.stmtExiste.setInt(1,
+            statementExiste.setInt(1,
                 idReservation);
             try(
-                ResultSet rset = this.stmtExiste.executeQuery()) {
+                ResultSet rset = statementExiste.executeQuery()) {
                 reservationExiste = rset.next();
             }
             return reservationExiste;
@@ -97,15 +82,15 @@ public class ReservationService extends Service {
      * Lecture d'une réservation par id.
      *
      * @param idReservation l'id de la réservation
-     * @return l'objet de la réservation, null si cela n'existe pas.
+     * @return l'objet représentant la réservation, null si cela n'existe pas.
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservation(final int idReservation) throws ServiceException {
         ResultSet rset = null;
-        try {
-            this.stmtExiste.setInt(1,
+        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet);) {
+            statementExiste.setInt(1,
                 idReservation);
-            rset = this.stmtExiste.executeQuery();
+            rset = statementExiste.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -137,11 +122,11 @@ public class ReservationService extends Service {
      */
     public ReservationDTO getReservationLivre(final int idLivre) throws ServiceException {
         ResultSet rset = null;
-        try {
-            this.stmtExisteLivre.setInt(1,
+        try (final PreparedStatement stmtExisteLivre = this.connexion.getConnection().prepareStatement(this.queryExisteLivre);) {
+            stmtExisteLivre.setInt(1,
                 idLivre);
 
-            rset = this.stmtExisteLivre.executeQuery();
+            rset = stmtExisteLivre.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -173,11 +158,11 @@ public class ReservationService extends Service {
      */
     public ReservationDTO getReservationMembre(final int idMembre) throws ServiceException {
         ResultSet rset = null;
-        try {
-            this.stmtExisteMembre.setInt(1,
+        try (final PreparedStatement statementExisteMembre = this.connexion.getConnection().prepareStatement(this.queryExisteMembre);) {
+            statementExisteMembre.setInt(1,
                 idMembre);
 
-            rset = this.stmtExisteMembre.executeQuery();
+            rset = statementExisteMembre.executeQuery();
             if(rset.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
                 tupleReservation.setIdReservation(rset.getInt(1));
@@ -214,16 +199,16 @@ public class ReservationService extends Service {
         final int idLivre,
         final int idMembre,
         final String dateReservation) throws ServiceException {
-        try {
-            this.stmtInsert.setInt(1,
+        try (final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(this.queryInsert);) {
+            statementInsert.setInt(1,
                 idReservation);
-            this.stmtInsert.setInt(2,
+            statementInsert.setInt(2,
                 idLivre);
-            this.stmtInsert.setInt(3,
+            statementInsert.setInt(3,
                 idMembre);
-            this.stmtInsert.setString(4,
+            statementInsert.setString(4,
                 dateReservation);
-            this.stmtInsert.executeUpdate();
+            statementInsert.executeUpdate();
         } catch(SQLException e) {
             throw new ServiceException(e);
         }
@@ -239,10 +224,10 @@ public class ReservationService extends Service {
      * @throws ServiceException Si la réservation n'existe pas ou s'il y a une erreur avec la base de données
      */
     public int annulerRes(final int idReservation) throws ServiceException {
-        try {
-            this.stmtDelete.setInt(1,
+        try (final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(this.queryDelete);) {
+            statementDelete.setInt(1,
                 idReservation);
-            return this.stmtDelete.executeUpdate();
+            return statementDelete.executeUpdate();
         } catch(SQLException e) {
             throw new ServiceException(e);
         }

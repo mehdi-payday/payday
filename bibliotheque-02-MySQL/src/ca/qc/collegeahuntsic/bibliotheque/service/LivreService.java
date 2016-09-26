@@ -17,43 +17,29 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
  *
  * Service de la table Livre.
  *
- * @author Gilles Bénichou
+ * @author Adam Cherti
  */
 
 public class LivreService extends Service {
 
     private static final long serialVersionUID = 1L;
 
-    private PreparedStatement stmtExiste;
+    private final String queryGet = "select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?";
+    private final String queryInsert = "insert into livre (idLivre, titre, auteur, dateAcquisition, idMembre, datePret) " + "values (?,?,?,?,null,null)";
+    private final String queryUpdate = "update livre set idMembre = ?, datePret = ? " + "where idLivre = ?";
+    private final String queryDelete = "delete from livre where idlivre = ?";
 
-    private PreparedStatement stmtInsert;
-
-    private PreparedStatement stmtUpdate;
-
-    private PreparedStatement stmtDelete;
-
-    private Connexion cx;
+    private Connexion connexion;
 
     /**
      *
-     * Cree le service de lq table livre.
+     * Cree le service de la table livre.
      *
-     * @param cx : La connexion à la base de données
+     * @param connexion : La connexion à la base de données
      * @throws ServiceException s'il y a une erreur avec la base de donnees
      */
-    public LivreService(final Connexion cx) throws ServiceException {
-        try {
-            this.cx = cx;
-            this.stmtExiste = cx.getConnection()
-                .prepareStatement("select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?");
-            this.stmtInsert = cx.getConnection().prepareStatement("insert into livre (idLivre, titre, auteur, dateAcquisition, idMembre, datePret) "
-                + "values (?,?,?,?,null,null)");
-            this.stmtUpdate = cx.getConnection().prepareStatement("update livre set idMembre = ?, datePret = ? "
-                + "where idLivre = ?");
-            this.stmtDelete = cx.getConnection().prepareStatement("delete from livre where idlivre = ?");
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
-        }
+    public LivreService(final Connexion connexion) throws ServiceException {
+        this.connexion = connexion;
     }
 
     /**
@@ -63,7 +49,7 @@ public class LivreService extends Service {
      * @return la connexion a la base de données
      */
     public Connexion getConnexion() {
-        return this.cx;
+        return this.connexion;
     }
 
     /**
@@ -78,10 +64,10 @@ public class LivreService extends Service {
     public boolean existe(final int idLivre) throws ServiceException {
         boolean livreExiste = false;
         ResultSet rset = null;
-        try {
-            this.stmtExiste.setInt(1,
+        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet)) {
+            statementExiste.setInt(1,
                 idLivre);
-            rset = this.stmtExiste.executeQuery();
+            rset = statementExiste.executeQuery();
             livreExiste = rset.next();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
@@ -104,21 +90,21 @@ public class LivreService extends Service {
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     public LivreDTO getLivre(final int idLivre) throws ServiceException {
-        LivreDTO tupleLivre = null;
+        LivreDTO livreDTO = null;
         ResultSet rset = null;
-        try {
-            this.stmtExiste.setInt(1,
+        try (final PreparedStatement statementGet = this.connexion.getConnection().prepareStatement(this.queryGet);) {
+            statementGet.setInt(1,
                 idLivre);
-            rset = this.stmtExiste.executeQuery();
+            rset = statementGet.executeQuery();
             if(rset.next()) {
-                tupleLivre = new LivreDTO();
+                livreDTO = new LivreDTO();
 
-                tupleLivre.setIdLivre(idLivre);
-                tupleLivre.setTitre(rset.getString(2));
-                tupleLivre.setAuteur(rset.getString(3));
-                tupleLivre.setDateAcquisition(rset.getDate(4));
-                tupleLivre.setIdMembre(rset.getInt(5));
-                tupleLivre.setDatePret(rset.getDate(6));
+                livreDTO.setIdLivre(idLivre);
+                livreDTO.setTitre(rset.getString(2));
+                livreDTO.setAuteur(rset.getString(3));
+                livreDTO.setDateAcquisition(rset.getDate(4));
+                livreDTO.setIdMembre(rset.getInt(5));
+                livreDTO.setDatePret(rset.getDate(6));
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
@@ -130,7 +116,7 @@ public class LivreService extends Service {
             }
         }
 
-        return tupleLivre;
+        return livreDTO;
     }
 
     /**
@@ -147,16 +133,21 @@ public class LivreService extends Service {
         final String titre,
         final String auteur,
         final String dateAcquisition) throws ServiceException {
-        try {
-            this.stmtInsert.setInt(1,
+        try (final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(this.queryInsert);) {
+            final LivreDTO livreExistant = this.getLivre(idLivre);
+            if(livreExistant != null) {
+                throw new ServiceException("L'id du livre " + idLivre + " à ajouter existe déjà : " + livreExistant.toString());
+            }
+            
+            statementInsert.setInt(1,
                 idLivre);
-            this.stmtInsert.setString(2,
+            statementInsert.setString(2,
                 titre);
-            this.stmtInsert.setString(3,
+            statementInsert.setString(3,
                 auteur);
-            this.stmtInsert.setDate(4,
+            statementInsert.setDate(4,
                 Date.valueOf(dateAcquisition));
-            this.stmtInsert.executeUpdate();
+            statementInsert.executeUpdate();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }
@@ -164,7 +155,7 @@ public class LivreService extends Service {
 
     /**
      *
-     * Enregistrement de l'emprunteur d'un livre.
+     * Enregistrement de l'emprunt d'un livre.
      *
      * @param idLivre le livre
      * @param idMembre le membre à qui sera prêté le livre
@@ -176,14 +167,14 @@ public class LivreService extends Service {
         final int idMembre,
         final String datePret) throws ServiceException {
 
-        try {
-            this.stmtUpdate.setInt(1,
+        try (final PreparedStatement statementUpdate = this.connexion.getConnection().prepareStatement(this.queryUpdate);) {
+            statementUpdate.setInt(1,
                 idMembre);
-            this.stmtUpdate.setDate(2,
+            statementUpdate.setDate(2,
                 Date.valueOf(datePret));
-            this.stmtUpdate.setInt(3,
+            statementUpdate.setInt(3,
                 idLivre);
-            return this.stmtUpdate.executeUpdate();
+            return statementUpdate.executeUpdate();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }
@@ -193,19 +184,20 @@ public class LivreService extends Service {
      *
      * Retourne un livre.
      *
-     * @param idLivre l'id du livre a supprimer
+     * @param idLivre l'id du livre à retourner
      * @return 1 si le livre a bien été retourné. 0 si le livre n'existe pas.
+     * 
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     public int retourner(final int idLivre) throws ServiceException {
-        try {
-            this.stmtUpdate.setNull(1,
+        try (final PreparedStatement statementUpdate = this.connexion.getConnection().prepareStatement(this.queryUpdate);) {
+            statementUpdate.setNull(1,
                 Types.INTEGER);
-            this.stmtUpdate.setNull(2,
+            statementUpdate.setNull(2,
                 Types.DATE);
-            this.stmtUpdate.setInt(3,
+            statementUpdate.setInt(3,
                 idLivre);
-            return this.stmtUpdate.executeUpdate();
+            return statementUpdate.executeUpdate();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }
@@ -221,10 +213,10 @@ public class LivreService extends Service {
      * @throws ServiceException  Si le livre n'existe pas, si le livre a été prêté, si le livre a été réservé ou s'il y a une erreur avec la base de données
      */
     public int vendre(final int idLivre) throws ServiceException {
-        try {
-            this.stmtDelete.setInt(1,
+        try (final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(this.queryDelete);) {
+            statementDelete.setInt(1,
                 idLivre);
-            return this.stmtDelete.executeUpdate();
+            return statementDelete.executeUpdate();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }

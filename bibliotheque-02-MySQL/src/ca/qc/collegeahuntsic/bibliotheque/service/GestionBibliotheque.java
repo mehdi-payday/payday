@@ -37,13 +37,13 @@ public class GestionBibliotheque extends Service {
 
     private static final long serialVersionUID = 1L;
 
-    private Connexion cx;
+    private Connexion connexion;
 
-    private LivreService livre;
+    private LivreService livreService;
 
-    private MembreService membre;
+    private MembreService membreService;
 
-    private ReservationService reservation;
+    private ReservationService reservationService;
 
     private LivreDAO gestionLivre;
 
@@ -72,25 +72,25 @@ public class GestionBibliotheque extends Service {
         final String user,
         final String password) throws ServiceException {
         try {
-            this.cx = new Connexion(serveur,
+            this.connexion = new Connexion(serveur,
                 bd,
                 user,
                 password);
 
-            this.livre = new LivreService(this.cx);
-            this.membre = new MembreService(this.cx);
-            this.reservation = new ReservationService(this.cx);
-            this.gestionLivre = new LivreDAO(this.livre,
-                this.reservation);
-            this.gestionMembre = new MembreDAO(this.membre,
-                this.reservation);
-            this.gestionPret = new PretDAO(this.livre,
-                this.membre,
-                this.reservation);
-            this.gestionReservation = new ReservationDAO(this.livre,
-                this.membre,
-                this.reservation);
-            this.gestionInterrogation = new InterrogationDAO(this.cx);
+            this.livreService = new LivreService(this.connexion);
+            this.membreService = new MembreService(this.connexion);
+            this.reservationService = new ReservationService(this.connexion);
+            this.gestionLivre = new LivreDAO(this.livreService,
+                this.reservationService);
+            this.gestionMembre = new MembreDAO(this.membreService,
+                this.reservationService);
+            this.gestionPret = new PretDAO(this.livreService,
+                this.membreService,
+                this.reservationService);
+            this.gestionReservation = new ReservationDAO(this.livreService,
+                this.membreService,
+                this.reservationService);
+            this.gestionInterrogation = new InterrogationDAO(this.connexion);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         } catch(ConnexionException connException) {
@@ -106,7 +106,7 @@ public class GestionBibliotheque extends Service {
      */
     public void fermer() throws ServiceException {
         try {
-            this.cx.fermer();
+            this.connexion.fermer();
         } catch(ConnexionException e) {
             throw new ServiceException(e);
         }
@@ -120,7 +120,7 @@ public class GestionBibliotheque extends Service {
      * @return la connexion à la base de données
      */
     public Connexion getCx() {
-        return this.cx;
+        return this.connexion;
     }
 
     /**
@@ -130,7 +130,7 @@ public class GestionBibliotheque extends Service {
      * @return le service de la table livre
      */
     public LivreService getLivre() {
-        return this.livre;
+        return this.livreService;
     }
 
     /**
@@ -140,7 +140,7 @@ public class GestionBibliotheque extends Service {
      * @return le service de la table membre
      */
     public MembreService getMembre() {
-        return this.membre;
+        return this.membreService;
     }
 
     /**
@@ -150,7 +150,7 @@ public class GestionBibliotheque extends Service {
      * @return le service de la table reservation
      */
     public ReservationService getReservation() {
-        return this.reservation;
+        return this.reservationService;
     }
 
     /**

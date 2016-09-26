@@ -15,45 +15,31 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
  *
  * Service de la table Membre.
  *
- * @author Gilles Bénichou
+ * @author Adam Cherti
  */
 
 public class MembreService extends Service {
 
     private static final long serialVersionUID = 1L;
 
-    private PreparedStatement stmtExiste;
+    private final String queryGet = "select idMembre, nom, telephone, limitePret, nbpret from membre where idmembre = ?";
+    private final String queryInsert = "insert into membre (idmembre, nom, telephone, limitepret, nbpret) " + "values (?,?,?,?,0)";
+    private final String queryUpdateIncrNbPret = "update membre set nbpret = nbPret + 1 where idMembre = ?";
+    private final String queryUpdateDecNbPret = "update membre set nbpret = nbPret - 1 where idMembre = ?";
+    private final String queryDelete = "delete from membre where idmembre = ?";
 
-    private PreparedStatement stmtInsert;
-
-    private PreparedStatement stmtUpdateIncrNbPret;
-
-    private PreparedStatement stmtUpdateDecNbPret;
-
-    private PreparedStatement stmtDelete;
-
-    private Connexion cx;
+    private Connexion connexion;
 
     /**
      *
      * Crée le service de la table membre.
      *
-     * @param cx connexion à la base de données
+     * @param connexion connexion à la base de données
      * @throws ServiceException erreur de la base de données
      */
 
-    public MembreService(Connexion cx) throws ServiceException {
-        try {
-            this.cx = cx;
-            this.stmtExiste = cx.getConnection().prepareStatement("select idMembre, nom, telephone, limitePret, nbpret from membre where idmembre = ?");
-            this.stmtInsert = cx.getConnection().prepareStatement("insert into membre (idmembre, nom, telephone, limitepret, nbpret) "
-                + "values (?,?,?,?,0)");
-            this.stmtUpdateIncrNbPret = cx.getConnection().prepareStatement("update membre set nbpret = nbPret + 1 where idMembre = ?");
-            this.stmtUpdateDecNbPret = cx.getConnection().prepareStatement("update membre set nbpret = nbPret - 1 where idMembre = ?");
-            this.stmtDelete = cx.getConnection().prepareStatement("delete from membre where idmembre = ?");
-        } catch(SQLException e) {
-            throw new ServiceException(e);
-        }
+    public MembreService(Connexion connexion) throws ServiceException {
+        this.connexion = connexion;
     }
 
     /**
@@ -63,7 +49,7 @@ public class MembreService extends Service {
      * @return la connexion à la base de données
      */
     public Connexion getConnexion() {
-        return this.cx;
+        return this.connexion;
     }
 
     /**
@@ -77,10 +63,10 @@ public class MembreService extends Service {
     public boolean existe(int idMembre) throws ServiceException {
         boolean membreExiste = false;
         ResultSet rset = null;
-        try {
-            this.stmtExiste.setInt(1,
+        try(final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet)) {
+            statementExiste.setInt(1,
                 idMembre);
-            rset = this.stmtExiste.executeQuery();
+            rset = statementExiste.executeQuery();
             membreExiste = rset.next();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
@@ -105,10 +91,10 @@ public class MembreService extends Service {
      */
     public MembreDTO getMembre(int idMembre) throws ServiceException {
         ResultSet rset = null;
-        try {
-            this.stmtExiste.setInt(1,
+        try(final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet)) {
+            statementExiste.setInt(1,
                 idMembre);
-            rset = this.stmtExiste.executeQuery();
+            rset = statementExiste.executeQuery();
             if(rset.next()) {
 
                 final MembreDTO tupleMembre = new MembreDTO();
@@ -145,16 +131,16 @@ public class MembreService extends Service {
         String nom,
         long telephone,
         int limitePret) throws ServiceException {
-        try {
-            this.stmtInsert.setInt(1,
+        try(final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(this.queryInsert)) {
+            statementInsert.setInt(1,
                 idMembre);
-            this.stmtInsert.setString(2,
+            statementInsert.setString(2,
                 nom);
-            this.stmtInsert.setLong(3,
+            statementInsert.setLong(3,
                 telephone);
-            this.stmtInsert.setInt(4,
+            statementInsert.setInt(4,
                 limitePret);
-            this.stmtInsert.executeUpdate();
+            statementInsert.executeUpdate();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }
@@ -169,10 +155,10 @@ public class MembreService extends Service {
      * @throws ServiceException s'il y a une erreur dans la base de données
      */
     public int preter(int idMembre) throws ServiceException {
-        try {
-            this.stmtUpdateIncrNbPret.setInt(1,
+        try(final PreparedStatement statementUpdateIncrNbPret = this.connexion.getConnection().prepareStatement(this.queryUpdateIncrNbPret)) {
+            statementUpdateIncrNbPret.setInt(1,
                 idMembre);
-            return this.stmtUpdateIncrNbPret.executeUpdate();
+            return statementUpdateIncrNbPret.executeUpdate();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }
@@ -187,10 +173,10 @@ public class MembreService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public int retourner(int idMembre) throws ServiceException {
-        try {
-            this.stmtUpdateDecNbPret.setInt(1,
+        try(final PreparedStatement statementUpdateDecrNbPret = this.connexion.getConnection().prepareStatement(this.queryUpdateDecNbPret)) {
+            statementUpdateDecrNbPret.setInt(1,
                 idMembre);
-            return this.stmtUpdateDecNbPret.executeUpdate();
+            return statementUpdateDecrNbPret.executeUpdate();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }
@@ -206,10 +192,10 @@ public class MembreService extends Service {
      * @throws ServiceException Si le membre a encore des prêts, s'il a des réservations ou s'il y a une erreur avec la base de données
      */
     public int desinscrire(int idMembre) throws ServiceException {
-        try {
-            this.stmtDelete.setInt(1,
+        try(final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(this.queryDelete)) {
+            statementDelete.setInt(1,
                 idMembre);
-            return this.stmtDelete.executeUpdate();
+            return statementDelete.executeUpdate();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         }
