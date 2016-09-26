@@ -16,7 +16,6 @@ public final class BiblioException extends Exception {
     private static final long serialVersionUID = 1L;
 
     /**
-     *
      * Constructeur de la classe.
      *
      * @param message - message
