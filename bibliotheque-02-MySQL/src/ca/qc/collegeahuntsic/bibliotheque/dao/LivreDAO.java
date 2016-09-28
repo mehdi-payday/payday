@@ -39,7 +39,7 @@ public class LivreDAO extends DAO {
 
     private static final String GET_ALL_REQUEST = "SELECT * FROM livre";
 
-    private static final String READ_REQUEST = "SELECT * FROM livre WHERE idReservation = ?";
+    private static final String READ_REQUEST = "SELECT * FROM livre WHERE idLivre = ?";
 
     private static final String UPDATE_REQUEST = "UPDATE livre SET idLivre = ?, titre = ?, auteur = ?, dateAcquisition= ?, idMembre = ?, datePret = ? WHERE idLivre = ?";
 
@@ -152,7 +152,7 @@ public class LivreDAO extends DAO {
      */
     public void add(LivreDTO livreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ADD_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.ADD_REQUEST)) {
             preparedStatement.setInt(1,
                 livreDTO.getIdLivre());
             preparedStatement.setString(2,
@@ -180,7 +180,7 @@ public class LivreDAO extends DAO {
      */
     public LivreDTO read(int idLivre) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(READ_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.READ_REQUEST)) {
             preparedStatement.setInt(1,
                 idLivre);
 
@@ -214,7 +214,7 @@ public class LivreDAO extends DAO {
      */
     public void update(LivreDTO livreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(UPDATE_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.UPDATE_REQUEST)) {
             preparedStatement.setInt(1,
                 livreDTO.getIdLivre());
             preparedStatement.setString(2,
@@ -243,7 +243,7 @@ public class LivreDAO extends DAO {
      */
     public void delete(LivreDTO livreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(DELETE_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.DELETE_REQUEST)) {
             preparedStatement.setInt(1,
                 livreDTO.getIdLivre());
             preparedStatement.execute();
@@ -260,7 +260,7 @@ public class LivreDAO extends DAO {
      */
     public List<LivreDTO> getAll() throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(GET_ALL_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.GET_ALL_REQUEST)) {
             try(
                 ResultSet resultSet = preparedStatement.executeQuery()) {
                 final List<LivreDTO> livres = new ArrayList<>();
@@ -291,7 +291,7 @@ public class LivreDAO extends DAO {
      */
     public List<LivreDTO> findByTitre(String titre) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(FIND_BY_TITRE_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.FIND_BY_TITRE_REQUEST)) {
             preparedStatement.setString(1,
                 titre);
             try(
@@ -324,7 +324,7 @@ public class LivreDAO extends DAO {
      */
     public List<LivreDTO> finbByMembre(MembreDTO membreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(FIND_BY_MEMBRE_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE_REQUEST)) {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             try(

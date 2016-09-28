@@ -144,7 +144,7 @@ public class MembreDAO extends DAO {
      */
     public void add(MembreDTO membreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ADD_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.ADD_REQUEST)) {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             preparedStatement.setString(2,
@@ -170,7 +170,7 @@ public class MembreDAO extends DAO {
      */
     public MembreDTO read(int idMembre) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(READ_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.READ_REQUEST)) {
             preparedStatement.setInt(1,
                 idMembre);
 
@@ -204,7 +204,7 @@ public class MembreDAO extends DAO {
      */
     public void update(MembreDTO membreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(UPDATE_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.UPDATE_REQUEST)) {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             preparedStatement.setString(2,
@@ -232,7 +232,7 @@ public class MembreDAO extends DAO {
      */
     public void delete(MembreDTO membreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(DELETE_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.DELETE_REQUEST)) {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             preparedStatement.execute();
@@ -249,7 +249,7 @@ public class MembreDAO extends DAO {
      */
     public List<MembreDTO> getAll() throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(GET_ALL_REQUEST)) {
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.GET_ALL_REQUEST)) {
             try(
                 ResultSet resultSet = preparedStatement.executeQuery()) {
                 final List<MembreDTO> membres = new ArrayList<>();
