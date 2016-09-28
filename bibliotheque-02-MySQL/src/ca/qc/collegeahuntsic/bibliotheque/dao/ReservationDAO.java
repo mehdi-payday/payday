@@ -43,7 +43,7 @@ public class ReservationDAO extends DAO {
 
     private static final String READ_REQUEST = "SELECT * FROM Reservation WHERE idReservation = ?";
 
-    private static final String UPDATE_REQUEST = "UPDATE Reservation SET idReservation = ?, idLivre = ?, idMembre = ?, dateReservation = ?";
+    private static final String UPDATE_REQUEST = "UPDATE Reservation SET idReservation = ?, idLivre = ?, idMembre = ?, dateReservation = ? WHERE idReservation = ?";
 
     private LivreService livre;
 
@@ -158,6 +158,8 @@ public class ReservationDAO extends DAO {
                 reservationDTO.getIdMembre());
             preparedStatement.setDate(4,
                 reservationDTO.getDateReservation());
+            preparedStatement.setInt(5,
+                reservationDTO.getIdReservation());
             preparedStatement.execute();
         } catch(SQLException e) {
             throw new DAOException(e);
@@ -195,14 +197,11 @@ public class ReservationDAO extends DAO {
                 final List<ReservationDTO> reservations = new ArrayList<>();
                 while(resultSet.next()) {
                     final ReservationDTO reservationDTO = new ReservationDTO();
-                    preparedStatement.setInt(1,
-                        reservationDTO.getIdReservation());
-                    preparedStatement.setInt(2,
-                        reservationDTO.getIdLivre());
-                    preparedStatement.setInt(3,
-                        reservationDTO.getIdMembre());
-                    preparedStatement.setDate(4,
-                        reservationDTO.getDateReservation());
+                    reservationDTO.setIdReservation(resultSet.getInt(1));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setDateReservation(resultSet.getDate(4));
+
                     reservations.add(reservationDTO);
                 }
                 return reservations;
@@ -229,14 +228,11 @@ public class ReservationDAO extends DAO {
                 final List<ReservationDTO> reservations = new ArrayList<>();
                 while(resultSet.next()) {
                     final ReservationDTO reservationDTO = new ReservationDTO();
-                    preparedStatement.setInt(1,
-                        reservationDTO.getIdReservation());
-                    preparedStatement.setInt(2,
-                        reservationDTO.getIdLivre());
-                    preparedStatement.setInt(3,
-                        reservationDTO.getIdMembre());
-                    preparedStatement.setDate(4,
-                        reservationDTO.getDateReservation());
+                    reservationDTO.setIdReservation(resultSet.getInt(1));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setDateReservation(resultSet.getDate(4));
+
                     reservations.add(reservationDTO);
                 }
                 return reservations;
@@ -263,15 +259,11 @@ public class ReservationDAO extends DAO {
                 final List<ReservationDTO> reservations = new ArrayList<>();
                 while(resultSet.next()) {
                     final ReservationDTO reservationDTO = new ReservationDTO();
-                    preparedStatement.setInt(1,
-                        reservationDTO.getIdReservation());
-                    preparedStatement.setInt(2,
-                        reservationDTO.getIdLivre());
-                    preparedStatement.setInt(3,
-                        reservationDTO.getIdMembre());
-                    preparedStatement.setDate(4,
-                        reservationDTO.getDateReservation());
-                    reservations.add(reservationDTO);
+                    reservationDTO.setIdReservation(resultSet.getInt(1));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setDateReservation(resultSet.getDate(4));
+
                     reservations.add(reservationDTO);
                 }
                 return reservations;

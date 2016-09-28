@@ -4,6 +4,11 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
@@ -21,6 +26,16 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 public class MembreDAO extends DAO {
 
     private static final long serialVersionUID = 1L;
+
+    private static final String ADD_REQUEST = "INSERT INTO membre (idMembre, nom, telephone, limitePret, nbPret) VALUES(?, ?, ?, ?, ?)";
+
+    private static final String DELETE_REQUEST = "DELETE FROM membre WHERE idMembre = ?";
+
+    private static final String GET_ALL_REQUEST = "SELECT * FROM membre";
+
+    private static final String READ_REQUEST = "SELECT * FROM membre WHERE idMembre= ?";
+
+    private static final String UPDATE_REQUEST = "UPDATE membre SET idMembre = ?, nom = ?, telephone = ?, limitePret = ?, nbPret = ? WHERE idMembre = ?";
 
     private Connexion connexion;
 
@@ -120,4 +135,139 @@ public class MembreDAO extends DAO {
             throw new DAOException(serviceException);
         }
     }
+
+    /**
+     * Ajoute un nouveau membre.
+     *
+     * @param membreDTO - Le membre à ajouter
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     */
+    public void add(MembreDTO membreDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ADD_REQUEST)) {
+            preparedStatement.setInt(1,
+                membreDTO.getIdMembre());
+            preparedStatement.setString(2,
+                membreDTO.getNom());
+            preparedStatement.setLong(3,
+                membreDTO.getTelephone());
+            preparedStatement.setInt(4,
+                membreDTO.getLimitePret());
+            preparedStatement.setInt(5,
+                membreDTO.getNbPret());
+            preparedStatement.execute();
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Lit un membre. Si aucun membre n'est trouvé, null est retourné.
+     *
+     * @param idMembre - L'ID du membre à lire
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     * @return Le membrelu ; null sinon
+     */
+    public MembreDTO read(int idMembre) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(READ_REQUEST)) {
+            preparedStatement.setInt(1,
+                idMembre);
+
+            try(
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()) {
+                    final MembreDTO membreDTO = new MembreDTO();
+                    membreDTO.setIdMembre(resultSet.getInt(1));
+                    membreDTO.setNom(resultSet.getString(2));
+                    membreDTO.setTelephone(resultSet.getLong(3));
+                    membreDTO.setLimitePret(resultSet.getInt(4));
+                    membreDTO.setNbPret(resultSet.getInt(5));
+
+                    return membreDTO;
+                }
+
+                throw new DAOException("Le membre avec l'id "
+                    + idMembre
+                    + " n'existe pas.");
+            }
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Met à jour un membre.
+     *
+     * @param membreDTO - Le membre à mettre à jour
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     */
+    public void update(MembreDTO membreDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(UPDATE_REQUEST)) {
+            preparedStatement.setInt(1,
+                membreDTO.getIdMembre());
+            preparedStatement.setString(2,
+                membreDTO.getNom());
+            preparedStatement.setLong(3,
+                membreDTO.getTelephone());
+            preparedStatement.setInt(4,
+                membreDTO.getLimitePret());
+            preparedStatement.setInt(5,
+                membreDTO.getNbPret());
+            preparedStatement.setInt(6,
+                membreDTO.getIdMembre());
+
+            preparedStatement.execute();
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Supprime un membre.
+     *
+     * @param membreDTO - Le membre à supprimer
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     */
+    public void delete(MembreDTO membreDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(DELETE_REQUEST)) {
+            preparedStatement.setInt(1,
+                membreDTO.getIdMembre());
+            preparedStatement.execute();
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Trouve tous les membres.
+     *
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     * @return La liste des membres; une liste vide sinon
+     */
+    public List<MembreDTO> getAll() throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(GET_ALL_REQUEST)) {
+            try(
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+                final List<MembreDTO> membres = new ArrayList<>();
+                while(resultSet.next()) {
+                    final MembreDTO membreDTO = new MembreDTO();
+                    membreDTO.setIdMembre(resultSet.getInt(1));
+                    membreDTO.setNom(resultSet.getString(2));
+                    membreDTO.setTelephone(resultSet.getLong(3));
+                    membreDTO.setLimitePret(resultSet.getInt(4));
+                    membreDTO.setNbPret(resultSet.getInt(5));
+
+                    membres.add(membreDTO);
+                }
+                return membres;
+            }
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
 }
