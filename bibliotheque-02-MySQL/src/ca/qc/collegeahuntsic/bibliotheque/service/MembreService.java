@@ -39,7 +39,7 @@ public class MembreService extends Service {
      */
 
     public MembreService(Connexion connexion) throws ServiceException {
-        this.connexion = connexion;
+        this.setConnexion(connexion);
     }
 
     /**
@@ -51,6 +51,18 @@ public class MembreService extends Service {
     public Connexion getConnexion() {
         return this.connexion;
     }
+    
+    
+    /**
+     * 
+     * Changer la connexion à la base de données.
+     *
+     * @param connexion la connexion à la base de données
+     */
+    public void setConnexion(Connexion connexion)  {
+        this.connexion = connexion;
+    }
+
 
     /**
      *
@@ -62,20 +74,15 @@ public class MembreService extends Service {
      */
     public boolean existe(int idMembre) throws ServiceException {
         boolean membreExiste = false;
-        ResultSet resultatLivreExiste = null;
+        
         try(final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(MembreService.QUERY_GET)) {
             statementExiste.setInt(1,
                 idMembre);
-            resultatLivreExiste = statementExiste.executeQuery();
-            membreExiste = resultatLivreExiste.next();
+            try(final ResultSet resultatLivreExiste = statementExiste.executeQuery();) {
+                membreExiste = resultatLivreExiste.next();
+            }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
-        } finally {
-            try {
-                resultatLivreExiste.close();
-            } catch(SQLException sqlException2) {
-                throw new ServiceException(sqlException2);
-            }
         }
 
         return membreExiste;
@@ -90,29 +97,23 @@ public class MembreService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public MembreDTO getMembre(int idMembre) throws ServiceException {
-        ResultSet resultatMembreGet = null;
+        
         try(final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(MembreService.QUERY_GET)) {
             statementExiste.setInt(1,
                 idMembre);
-            resultatMembreGet = statementExiste.executeQuery();
-            if(resultatMembreGet.next()) {
-
-                final MembreDTO tupleMembre = new MembreDTO();
-                tupleMembre.setIdMembre(idMembre);
-                tupleMembre.setNom(resultatMembreGet.getString(2));
-                tupleMembre.setTelephone(resultatMembreGet.getLong(3));
-                tupleMembre.setLimitePret(resultatMembreGet.getInt(4));
-                tupleMembre.setNbPret(resultatMembreGet.getInt(5));
-                return tupleMembre;
+            try(ResultSet resultatMembreGet = statementExiste.executeQuery();) {
+                if(resultatMembreGet.next()) {
+                    final MembreDTO tupleMembre = new MembreDTO();
+                    tupleMembre.setIdMembre(idMembre);
+                    tupleMembre.setNom(resultatMembreGet.getString(2));
+                    tupleMembre.setTelephone(resultatMembreGet.getLong(3));
+                    tupleMembre.setLimitePret(resultatMembreGet.getInt(4));
+                    tupleMembre.setNbPret(resultatMembreGet.getInt(5));
+                    return tupleMembre;
+                }
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
-        } finally {
-            try {
-                resultatMembreGet.close();
-            } catch(SQLException sqlException2) {
-                throw new ServiceException(sqlException2);
-            }
         }
         return null;
     }
@@ -155,7 +156,7 @@ public class MembreService extends Service {
      * @throws ServiceException s'il y a une erreur dans la base de données
      */
     public int preter(int idMembre) throws ServiceException {
-        try(final PreparedStatement statementUpdateIncrNbPret = this.connexion.getConnection().prepareStatement(MembreService.QUERY_UPDATE_INCR_NB_PRET)) {
+        try(final PreparedStatement statementUpdateIncrNbPret = this.getConnexion().getConnection().prepareStatement(MembreService.QUERY_UPDATE_INCR_NB_PRET)) {
             statementUpdateIncrNbPret.setInt(1,
                 idMembre);
             return statementUpdateIncrNbPret.executeUpdate();
@@ -173,7 +174,7 @@ public class MembreService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public int retourner(int idMembre) throws ServiceException {
-        try(final PreparedStatement statementUpdateDecrNbPret = this.connexion.getConnection().prepareStatement(MembreService.QUERY_UPDATE_DCR_NB_PRET)) {
+        try(final PreparedStatement statementUpdateDecrNbPret = this.getConnexion().getConnection().prepareStatement(MembreService.QUERY_UPDATE_DCR_NB_PRET)) {
             statementUpdateDecrNbPret.setInt(1,
                 idMembre);
             return statementUpdateDecrNbPret.executeUpdate();
@@ -192,7 +193,7 @@ public class MembreService extends Service {
      * @throws ServiceException Si le membre a encore des prêts, s'il a des réservations ou s'il y a une erreur avec la base de données
      */
     public int desinscrire(int idMembre) throws ServiceException {
-        try(final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(MembreService.QUERY_DELETE)) {
+        try(final PreparedStatement statementDelete = this.getConnexion().getConnection().prepareStatement(MembreService.QUERY_DELETE)) {
             statementDelete.setInt(1,
                 idMembre);
             return statementDelete.executeUpdate();

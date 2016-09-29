@@ -71,15 +71,15 @@ public class GestionBibliotheque extends Service {
         final String database,
         final String user,
         final String password) throws ServiceException {
-        try {
-            this.connexion = new Connexion(serveur,
-                database,
-                user,
-                password);
+        try (final Connexion connexionBase = new Connexion(serveur,
+            database,
+            user,
+            password)) {
+            this.setConnexion(connexionBase);
 
-            this.livreService = new LivreService(this.connexion);
-            this.membreService = new MembreService(this.connexion);
-            this.reservationService = new ReservationService(this.connexion);
+            this.livreService = new LivreService(this.getConnexion());
+            this.membreService = new MembreService(this.getConnexion());
+            this.reservationService = new ReservationService(this.getConnexion());
             this.gestionLivre = new LivreDAO(this.livreService,
                 this.reservationService);
             this.gestionMembre = new MembreDAO(this.membreService,
@@ -90,7 +90,7 @@ public class GestionBibliotheque extends Service {
             this.gestionReservation = new ReservationDAO(this.livreService,
                 this.membreService,
                 this.reservationService);
-            this.gestionInterrogation = new InterrogationDAO(this.connexion);
+            this.gestionInterrogation = new InterrogationDAO(this.getConnexion());
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         } catch(ConnexionException connException) {
@@ -106,7 +106,7 @@ public class GestionBibliotheque extends Service {
      */
     public void fermer() throws ServiceException {
         try {
-            this.connexion.fermer();
+            this.getConnexion().fermer();
         } catch(ConnexionException e) {
             throw new ServiceException(e);
         }
@@ -121,6 +121,16 @@ public class GestionBibliotheque extends Service {
      */
     public Connexion getConnexion() {
         return this.connexion;
+    }
+    
+    /**
+     * 
+     * Changer la connexion à la base de données.
+     *
+     * @param connexion la connexion à la base de données
+     */
+    public void setConnexion(Connexion connexion)  {
+        this.connexion = connexion;
     }
 
     /**

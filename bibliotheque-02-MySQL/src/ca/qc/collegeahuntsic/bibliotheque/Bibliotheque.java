@@ -267,10 +267,10 @@ final class Bibliotheque {
             final String token = tokenizer.nextToken();
             try {
                 integerLu = Integer.valueOf(token).intValue();
-            } catch(NumberFormatException e) {
+            } catch(NumberFormatException numberFormatException) {
                 throw new BibliothequeException("Nombre attendu à la place de \""
                     + token
-                    + "\"");
+                    + "\"", numberFormatException);
             }
         } else {
             throw new BibliothequeException("autre paramètre attendu");
@@ -291,10 +291,10 @@ final class Bibliotheque {
             final String token = tokenizer.nextToken();
             try {
                 longLu = Long.valueOf(token).longValue();
-            } catch(NumberFormatException e) {
+            } catch(NumberFormatException numberFormatException) {
                 throw new BibliothequeException("Nombre attendu à la place de \""
                     + token
-                    + "\"");
+                    + "\"", numberFormatException);
             }
         } else {
             throw new BibliothequeException("autre paramètre attendu");
@@ -315,10 +315,10 @@ final class Bibliotheque {
             token = tokenizer.nextToken();
             try {
                 FormatteurDate.convertirDate(token);
-            } catch(ParseException e) {
+            } catch(ParseException parseException) {
                 throw new BibliothequeException("Date en format YYYY-MM-DD attendue à la place  de \""
                     + token
-                    + "\"");
+                    + "\"", parseException);
             }
         } else {
             throw new BibliothequeException("autre paramètre attendu");

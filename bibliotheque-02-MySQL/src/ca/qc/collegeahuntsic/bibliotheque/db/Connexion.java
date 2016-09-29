@@ -70,10 +70,10 @@ public class Connexion implements AutoCloseable {
                     + " "
                     + this.connection);
             }
-        } catch(SQLException e) {
-            throw new ConnexionException(e);
-        } catch(Exception e) {
-            throw new ConnexionException("JDBC Driver non instancié");
+        } catch(SQLException sqlException) {
+            throw new ConnexionException(sqlException);
+        } catch(Exception exception) {
+            throw new ConnexionException("JDBC Driver non instancié", exception);
         }
     }
 

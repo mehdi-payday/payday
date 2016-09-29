@@ -12,7 +12,6 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
- *
  * Service de la table reservation.
  *
  * @author Adam Cherti
@@ -32,18 +31,16 @@ public class ReservationService extends Service {
     private Connexion connexion;
 
     /**
-     *
      * Crée le service de la table reservation.
      *
      * @param connexion la connexion a la base données
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationService(final Connexion connexion) throws ServiceException {
-        this.connexion = connexion;
+        this.setConnexion(connexion);
     }
 
     /**
-     *
      * Retourne la connexion associée.
      *
      * @return la {@link java.sql.Connection} connexion à la base de données
@@ -53,8 +50,17 @@ public class ReservationService extends Service {
         return this.connexion;
     }
 
+    
     /**
+     * Changer la connexion à la base de données.
      *
+     * @param connexion la connexion à la base de données
+     */
+    public void setConnexion(Connexion connexion)  {
+        this.connexion = connexion;
+    }
+
+    /**
      * Vérifie si une réservation existe.
      *
      * @param idReservation l'id de la réservation
@@ -78,7 +84,7 @@ public class ReservationService extends Service {
     }
 
     /**
-     *
+
      * Lecture d'une réservation par id.
      *
      * @param idReservation l'id de la réservation
@@ -86,34 +92,29 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservation(final int idReservation) throws ServiceException {
-        ResultSet resultatReservationListe = null;
-        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_GET);) {
+        
+        try (final PreparedStatement statementExiste = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_GET);) {
             statementExiste.setInt(1,
                 idReservation);
-            resultatReservationListe = statementExiste.executeQuery();
-            if(resultatReservationListe.next()) {
-                final ReservationDTO tupleReservation = new ReservationDTO();
-                tupleReservation.setIdReservation(resultatReservationListe.getInt(1));
-                tupleReservation.setIdLivre(resultatReservationListe.getInt(2));
-
-                tupleReservation.setIdMembre(resultatReservationListe.getInt(3));
-                tupleReservation.setDateReservation(resultatReservationListe.getDate(4));
-                return tupleReservation;
+            try(final ResultSet resultatReservationListe = statementExiste.executeQuery()) {
+                if(resultatReservationListe.next()) {
+                    final ReservationDTO tupleReservation = new ReservationDTO();
+                    tupleReservation.setIdReservation(resultatReservationListe.getInt(1));
+                    tupleReservation.setIdLivre(resultatReservationListe.getInt(2));
+    
+                    tupleReservation.setIdMembre(resultatReservationListe.getInt(3));
+                    tupleReservation.setDateReservation(resultatReservationListe.getDate(4));
+                    return tupleReservation;
+                }
             }
         } catch(SQLException e) {
             throw new ServiceException(e);
-        } finally {
-            try {
-                resultatReservationListe.close();
-            } catch(SQLException SqlException) {
-                throw new ServiceException(SqlException);
-            }
         }
+        
         return null;
     }
 
     /**
-     *
      * Lecture de la première reservation d'un livre.
      *
      * @param idLivre l'id du livre
@@ -121,35 +122,30 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservationLivre(final int idLivre) throws ServiceException {
-        ResultSet resultatReservationGet = null;
-        try (final PreparedStatement stmtExisteLivre = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_EXISTE_LIVRE);) {
+        
+        try (final PreparedStatement stmtExisteLivre = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_EXISTE_LIVRE);) {
             stmtExisteLivre.setInt(1,
                 idLivre);
 
-            resultatReservationGet = stmtExisteLivre.executeQuery();
-            if(resultatReservationGet.next()) {
-                final ReservationDTO tupleReservation = new ReservationDTO();
-                tupleReservation.setIdReservation(resultatReservationGet.getInt(1));
-                tupleReservation.setIdLivre(resultatReservationGet.getInt(2));
-
-                tupleReservation.setIdMembre(resultatReservationGet.getInt(3));
-                tupleReservation.setDateReservation(resultatReservationGet.getDate(4));
-                return tupleReservation;
+            try(final ResultSet resultatReservationGet = stmtExisteLivre.executeQuery();) {
+                if(resultatReservationGet.next()) {
+                    final ReservationDTO tupleReservation = new ReservationDTO();
+                    tupleReservation.setIdReservation(resultatReservationGet.getInt(1));
+                    tupleReservation.setIdLivre(resultatReservationGet.getInt(2));
+    
+                    tupleReservation.setIdMembre(resultatReservationGet.getInt(3));
+                    tupleReservation.setDateReservation(resultatReservationGet.getDate(4));
+                    return tupleReservation;
+                }
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
-        } finally {
-            try {
-                resultatReservationGet.close();
-            } catch(SQLException sqlException2) {
-                throw new ServiceException(sqlException2);
-            }
         }
+        
         return null;
     }
 
     /**
-     *
      * Lecture de la première reservation d'un livre.
      *
      * @param idMembre l'id du membre
@@ -157,36 +153,31 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservationMembre(final int idMembre) throws ServiceException {
-        ResultSet resultatReservationGet = null;
-        try (final PreparedStatement statementExisteMembre = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_EXISTE_MEMBRE);) {
+        
+        try (final PreparedStatement statementExisteMembre = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_EXISTE_MEMBRE);) {
             statementExisteMembre.setInt(1,
                 idMembre);
 
-            resultatReservationGet = statementExisteMembre.executeQuery();
-            if(resultatReservationGet.next()) {
-                final ReservationDTO tupleReservation = new ReservationDTO();
-                tupleReservation.setIdReservation(resultatReservationGet.getInt(1));
-                tupleReservation.setIdLivre(resultatReservationGet.getInt(2));
-
-                tupleReservation.setIdMembre(resultatReservationGet.getInt(3));
-                tupleReservation.setDateReservation(resultatReservationGet.getDate(4));
-                return tupleReservation;
+            try(final ResultSet resultatReservationGet = statementExisteMembre.executeQuery();) {
+                if(resultatReservationGet.next()) {
+                    final ReservationDTO tupleReservation = new ReservationDTO();
+                    tupleReservation.setIdReservation(resultatReservationGet.getInt(1));
+                    tupleReservation.setIdLivre(resultatReservationGet.getInt(2));
+    
+                    tupleReservation.setIdMembre(resultatReservationGet.getInt(3));
+                    tupleReservation.setDateReservation(resultatReservationGet.getDate(4));
+                    return tupleReservation;
+                }
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
-        } finally {
-            try {
-                resultatReservationGet.close();
-            } catch(SQLException sqlException2) {
-                throw new ServiceException(sqlException2);
-            }
         }
+          
 
         return null;
     }
 
     /**
-     *
      * Réservation d'un livre.
      *
      * @param idReservation l'id de la réservation à créer
@@ -199,7 +190,7 @@ public class ReservationService extends Service {
         final int idLivre,
         final int idMembre,
         final String dateReservation) throws ServiceException {
-        try (final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_INSERT);) {
+        try (final PreparedStatement statementInsert = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_INSERT);) {
             statementInsert.setInt(1,
                 idReservation);
             statementInsert.setInt(2,
@@ -215,7 +206,6 @@ public class ReservationService extends Service {
     }
 
     /**
-     *
      * Suppression d'une réservation.
      *
      * @param idReservation l'id de la réservation à annuler
@@ -224,7 +214,7 @@ public class ReservationService extends Service {
      * @throws ServiceException Si la réservation n'existe pas ou s'il y a une erreur avec la base de données
      */
     public int annulerRes(final int idReservation) throws ServiceException {
-        try (final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_DELETE);) {
+        try (final PreparedStatement statementDelete = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_DELETE);) {
             statementDelete.setInt(1,
                 idReservation);
             return statementDelete.executeUpdate();
