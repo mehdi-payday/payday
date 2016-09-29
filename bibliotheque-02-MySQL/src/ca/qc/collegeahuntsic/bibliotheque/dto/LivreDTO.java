@@ -34,18 +34,28 @@ public class LivreDTO extends DTO {
      */
     public LivreDTO() {
     }
+
     /**
      * Représentation en string du livre.
-     * 
+     *
      * @return représentation du livre en string
      */
+    @Override
     public String toString() {
-        String representation = "<Livre #" + this.idLivre + " " + this.titre + ", " + this.auteur;
+        String representation = "<Livre #"
+            + this.idLivre
+            + " "
+            + this.titre
+            + ", "
+            + this.auteur;
         if(this.idMembre != 0) {
-            representation += ", réservé par " + this.idMembre + " depuis le " + this.datePret.toString();    
+            representation += ", réservé par "
+                + this.idMembre
+                + " depuis le "
+                + this.datePret.toString();
         }
         representation += ">";
-        
+
         return representation;
     }
 
