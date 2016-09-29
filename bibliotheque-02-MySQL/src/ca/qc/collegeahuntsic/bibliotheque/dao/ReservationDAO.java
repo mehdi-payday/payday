@@ -36,7 +36,7 @@ public class ReservationDAO extends DAO {
         + "                                                             ?)";
 
     private static final String DELETE_REQUEST = "DELETE FROM Reservation"
-    + "                                           WHERE idReservation = ?";
+        + "                                           WHERE idReservation = ?";
 
     private static final String FIND_BY_LIVRE_REQUEST = "SELECT idReservation, "
         + "                                                     idLivre, "
