@@ -62,17 +62,17 @@ public class MembreService extends Service {
      */
     public boolean existe(int idMembre) throws ServiceException {
         boolean membreExiste = false;
-        ResultSet rset = null;
+        ResultSet resultatLivreExiste = null;
         try(final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet)) {
             statementExiste.setInt(1,
                 idMembre);
-            rset = statementExiste.executeQuery();
-            membreExiste = rset.next();
+            resultatLivreExiste = statementExiste.executeQuery();
+            membreExiste = resultatLivreExiste.next();
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         } finally {
             try {
-                rset.close();
+                resultatLivreExiste.close();
             } catch(SQLException sqlException2) {
                 throw new ServiceException(sqlException2);
             }
@@ -90,26 +90,26 @@ public class MembreService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public MembreDTO getMembre(int idMembre) throws ServiceException {
-        ResultSet rset = null;
+        ResultSet resultatMembreGet = null;
         try(final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet)) {
             statementExiste.setInt(1,
                 idMembre);
-            rset = statementExiste.executeQuery();
-            if(rset.next()) {
+            resultatMembreGet = statementExiste.executeQuery();
+            if(resultatMembreGet.next()) {
 
                 final MembreDTO tupleMembre = new MembreDTO();
                 tupleMembre.setIdMembre(idMembre);
-                tupleMembre.setNom(rset.getString(2));
-                tupleMembre.setTelephone(rset.getLong(3));
-                tupleMembre.setLimitePret(rset.getInt(4));
-                tupleMembre.setNbPret(rset.getInt(5));
+                tupleMembre.setNom(resultatMembreGet.getString(2));
+                tupleMembre.setTelephone(resultatMembreGet.getLong(3));
+                tupleMembre.setLimitePret(resultatMembreGet.getInt(4));
+                tupleMembre.setNbPret(resultatMembreGet.getInt(5));
                 return tupleMembre;
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         } finally {
             try {
-                rset.close();
+                resultatMembreGet.close();
             } catch(SQLException sqlException2) {
                 throw new ServiceException(sqlException2);
             }

@@ -60,7 +60,7 @@ public class GestionBibliotheque extends Service {
       * alloue les gestionnaires de transactions et de tables.
       *
       * @param serveur SQL
-      * @param bd nom de la bade de données
+      * @param database nom de la base de données
       * @param user user id pour établir une connexion avec le serveur SQL
       * @param password mot de passe pour le user id
       * @throws BiblioException erreur d'initialisation de la
@@ -68,12 +68,12 @@ public class GestionBibliotheque extends Service {
       * @throws ServiceException erreur SQL
       */
     public GestionBibliotheque(final String serveur,
-        final String bd,
+        final String database,
         final String user,
         final String password) throws ServiceException {
         try {
             this.connexion = new Connexion(serveur,
-                bd,
+                database,
                 user,
                 password);
 
@@ -119,7 +119,7 @@ public class GestionBibliotheque extends Service {
      *
      * @return la connexion à la base de données
      */
-    public Connexion getCx() {
+    public Connexion getConnexion() {
         return this.connexion;
     }
 

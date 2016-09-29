@@ -86,25 +86,25 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservation(final int idReservation) throws ServiceException {
-        ResultSet rset = null;
+        ResultSet resultatReservationListe = null;
         try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet);) {
             statementExiste.setInt(1,
                 idReservation);
-            rset = statementExiste.executeQuery();
-            if(rset.next()) {
+            resultatReservationListe = statementExiste.executeQuery();
+            if(resultatReservationListe.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
-                tupleReservation.setIdReservation(rset.getInt(1));
-                tupleReservation.setIdLivre(rset.getInt(2));
+                tupleReservation.setIdReservation(resultatReservationListe.getInt(1));
+                tupleReservation.setIdLivre(resultatReservationListe.getInt(2));
 
-                tupleReservation.setIdMembre(rset.getInt(3));
-                tupleReservation.setDateReservation(rset.getDate(4));
+                tupleReservation.setIdMembre(resultatReservationListe.getInt(3));
+                tupleReservation.setDateReservation(resultatReservationListe.getDate(4));
                 return tupleReservation;
             }
         } catch(SQLException e) {
             throw new ServiceException(e);
         } finally {
             try {
-                rset.close();
+                resultatReservationListe.close();
             } catch(SQLException SqlException) {
                 throw new ServiceException(SqlException);
             }
@@ -121,26 +121,26 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservationLivre(final int idLivre) throws ServiceException {
-        ResultSet rset = null;
+        ResultSet resultatReservationGet = null;
         try (final PreparedStatement stmtExisteLivre = this.connexion.getConnection().prepareStatement(this.queryExisteLivre);) {
             stmtExisteLivre.setInt(1,
                 idLivre);
 
-            rset = stmtExisteLivre.executeQuery();
-            if(rset.next()) {
+            resultatReservationGet = stmtExisteLivre.executeQuery();
+            if(resultatReservationGet.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
-                tupleReservation.setIdReservation(rset.getInt(1));
-                tupleReservation.setIdLivre(rset.getInt(2));
+                tupleReservation.setIdReservation(resultatReservationGet.getInt(1));
+                tupleReservation.setIdLivre(resultatReservationGet.getInt(2));
 
-                tupleReservation.setIdMembre(rset.getInt(3));
-                tupleReservation.setDateReservation(rset.getDate(4));
+                tupleReservation.setIdMembre(resultatReservationGet.getInt(3));
+                tupleReservation.setDateReservation(resultatReservationGet.getDate(4));
                 return tupleReservation;
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         } finally {
             try {
-                rset.close();
+                resultatReservationGet.close();
             } catch(SQLException sqlException2) {
                 throw new ServiceException(sqlException2);
             }
@@ -157,26 +157,26 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public ReservationDTO getReservationMembre(final int idMembre) throws ServiceException {
-        ResultSet rset = null;
+        ResultSet resultatReservationGet = null;
         try (final PreparedStatement statementExisteMembre = this.connexion.getConnection().prepareStatement(this.queryExisteMembre);) {
             statementExisteMembre.setInt(1,
                 idMembre);
 
-            rset = statementExisteMembre.executeQuery();
-            if(rset.next()) {
+            resultatReservationGet = statementExisteMembre.executeQuery();
+            if(resultatReservationGet.next()) {
                 final ReservationDTO tupleReservation = new ReservationDTO();
-                tupleReservation.setIdReservation(rset.getInt(1));
-                tupleReservation.setIdLivre(rset.getInt(2));
+                tupleReservation.setIdReservation(resultatReservationGet.getInt(1));
+                tupleReservation.setIdLivre(resultatReservationGet.getInt(2));
 
-                tupleReservation.setIdMembre(rset.getInt(3));
-                tupleReservation.setDateReservation(rset.getDate(4));
+                tupleReservation.setIdMembre(resultatReservationGet.getInt(3));
+                tupleReservation.setDateReservation(resultatReservationGet.getDate(4));
                 return tupleReservation;
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         } finally {
             try {
-                rset.close();
+                resultatReservationGet.close();
             } catch(SQLException sqlException2) {
                 throw new ServiceException(sqlException2);
             }

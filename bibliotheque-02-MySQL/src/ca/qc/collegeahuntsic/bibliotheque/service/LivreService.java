@@ -91,26 +91,26 @@ public class LivreService extends Service {
      */
     public LivreDTO getLivre(final int idLivre) throws ServiceException {
         LivreDTO livreDTO = null;
-        ResultSet rset = null;
+        ResultSet resultatLivre = null;
         try (final PreparedStatement statementGet = this.connexion.getConnection().prepareStatement(this.queryGet);) {
             statementGet.setInt(1,
                 idLivre);
-            rset = statementGet.executeQuery();
-            if(rset.next()) {
+            resultatLivre = statementGet.executeQuery();
+            if(resultatLivre.next()) {
                 livreDTO = new LivreDTO();
 
                 livreDTO.setIdLivre(idLivre);
-                livreDTO.setTitre(rset.getString(2));
-                livreDTO.setAuteur(rset.getString(3));
-                livreDTO.setDateAcquisition(rset.getDate(4));
-                livreDTO.setIdMembre(rset.getInt(5));
-                livreDTO.setDatePret(rset.getDate(6));
+                livreDTO.setTitre(resultatLivre.getString(2));
+                livreDTO.setAuteur(resultatLivre.getString(3));
+                livreDTO.setDateAcquisition(resultatLivre.getDate(4));
+                livreDTO.setIdMembre(resultatLivre.getInt(5));
+                livreDTO.setDatePret(resultatLivre.getDate(6));
             }
         } catch(SQLException sqlException) {
             throw new ServiceException(sqlException);
         } finally {
             try {
-                rset.close();
+                resultatLivre.close();
             } catch(SQLException sqlException2) {
                 throw new ServiceException(sqlException2);
             }
