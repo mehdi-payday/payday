@@ -27,10 +27,6 @@ public class LivreDAO extends DAO {
 
     private static final String DELETE_REQUEST = "DELETE FROM livre WHERE idLivre = ?";
 
-    private static final String EMPRUNT_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = ?, datePret = CURRENT_TIMESTAMP WHERE idLivre = ?";
-    
-    private static final String RETOUR_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = NULL, datePret = NULL WHERE idLivre = ?";
-
     private static final String FIND_BY_TITRE = "SELECT * FROM livre WHERE LOWER(titre) like LOWER(?)";
 
     private static final String FIND_BY_MEMBRE = "SELECT * FROM livre WHERE idMembre = ?";
@@ -71,7 +67,7 @@ public class LivreDAO extends DAO {
                 throw new DAOException("Livre existe deja: "
                     + idLivre);
             }
-
+    
             this.livre.acquerir(idLivre,
                 titre,
                 auteur,
@@ -115,7 +111,7 @@ public class LivreDAO extends DAO {
                     + idLivre
                     + " reserve ");
             }
-
+    
             final int nb = this.livre.vendre(idLivre);
             if(nb == 0) {
                 throw new DAOException("Livre "
@@ -312,7 +308,7 @@ public class LivreDAO extends DAO {
      * @return La liste des livres correspondants; une liste vide sinon
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
-    public List<LivreDTO> finbByMembre(MembreDTO membreDTO) throws DAOException {
+    public List<LivreDTO> findByMembre(MembreDTO membreDTO) throws DAOException {
         final List<LivreDTO> livres = new ArrayList<>();
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE)) {
@@ -340,4 +336,3 @@ public class LivreDAO extends DAO {
     }
 
 }
-
