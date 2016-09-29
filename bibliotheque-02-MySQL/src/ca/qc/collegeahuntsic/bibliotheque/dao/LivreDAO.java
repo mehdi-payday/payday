@@ -37,9 +37,9 @@ public class LivreDAO extends DAO {
     private static final String READ_REQUEST = "SELECT * FROM livre WHERE idLivre = ?";
 
     private static final String UPDATE_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = ?, datePret = ? WHERE idLivre = ?";
-    
+
     private static final String EMPRUNT_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = ?, datePret = CURRENT_TIMESTAMP WHERE idLivre = ?";
-    
+
     private static final String RETOUR_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = NULL, datePret = NULL WHERE idLivre = ?";
 
     /**
@@ -72,7 +72,7 @@ public class LivreDAO extends DAO {
                 throw new DAOException("Livre existe deja: "
                     + idLivre);
             }
-
+    
             this.livre.acquerir(idLivre,
                 titre,
                 auteur,
@@ -116,7 +116,7 @@ public class LivreDAO extends DAO {
                     + idLivre
                     + " reserve ");
             }
-
+    
             final int nb = this.livre.vendre(idLivre);
             if(nb == 0) {
                 throw new DAOException("Livre "
@@ -136,6 +136,53 @@ public class LivreDAO extends DAO {
         }
     }
     */
+    /**
+     * Emprunte un livre.
+     *
+     * @param livreDTO Le livre à emprunter
+     * @throws DAOException S'il y a une erreur avec la base de données
+     */
+    public void emprunter(final LivreDTO livreDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.EMPRUNT_REQUEST)) {
+            preparedStatement.setString(1,
+                livreDTO.getTitre());
+            preparedStatement.setString(2,
+                livreDTO.getAuteur());
+            preparedStatement.setDate(3,
+                livreDTO.getDateAcquisition());
+            preparedStatement.setInt(4,
+                livreDTO.getIdMembre());
+            preparedStatement.setInt(6,
+                livreDTO.getIdLivre());
+            preparedStatement.execute();
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
+        }
+    }
+
+    /**
+     * Retourne un livre.
+     *
+     * @param livreDTO  Le livre à retourner
+     * @throws DAOException S'il y a une erreur avec la base de données
+     */
+    public void retour(final LivreDTO livreDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.RETOUR_REQUEST)) {
+            preparedStatement.setString(1,
+                livreDTO.getTitre());
+            preparedStatement.setString(2,
+                livreDTO.getAuteur());
+            preparedStatement.setDate(3,
+                livreDTO.getDateAcquisition());
+            preparedStatement.setInt(6,
+                livreDTO.getIdLivre());
+            preparedStatement.execute();
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
+        }
+    }
 
     /**
      * Ajoute un nouveau livre.
