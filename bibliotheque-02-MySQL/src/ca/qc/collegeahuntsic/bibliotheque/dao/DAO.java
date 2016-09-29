@@ -5,6 +5,7 @@
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 
 /**
@@ -33,6 +34,15 @@ public class DAO implements Serializable {
      */
     public Connexion getConnexion() {
         return this.connexion;
+    }
+
+    /**
+     * Retourne la {@link java.sql.Connection} JDBC.
+     *
+     * @return La {@link java.sql.Connection} JDBC.
+     */
+    protected Connection getConnection() {
+        return getConnexion().getConnection();
     }
 
     /**

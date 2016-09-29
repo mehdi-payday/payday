@@ -12,11 +12,7 @@ import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
-import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
-import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
  * DAO pour effectuer des CRUDs avec la table livre.
@@ -41,29 +37,19 @@ public class LivreDAO extends DAO {
 
     private static final String READ_REQUEST = "SELECT * FROM livre WHERE idLivre = ?";
 
-    private static final String UPDATE_REQUEST = "UPDATE livre SET idLivre = ?, titre = ?, auteur = ?, dateAcquisition= ?, idMembre = ?, datePret = ? WHERE idLivre = ?";
-
-    private LivreService livre;
-
-    private ReservationService reservation;
-
-    private Connexion connexion;
+    private static final String UPDATE_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = ?, datePret = ? WHERE idLivre = ?";
 
     /**
      * Crée un DAO à partir d'une connexion à la base de données.
      *
-     * @param livre reçoit un livre en parametre
-     * @param reservation reçoit un reservation en parametre
+     * @param connexion reçoit une connexion
      */
-    public LivreDAO(LivreService livre,
-        ReservationService reservation) {
-        super(livre.getConnexion());
-        this.connexion = livre.getConnexion();
-        this.livre = livre;
-        this.reservation = reservation;
+    public LivreDAO(Connexion connexion) {
+        super(connexion);
+
     }
 
-    /**
+    /*
      * Ajout d'un nouveau livre dans la base de données. S'il existe déjà, une
      *      exception est levée.
      *
@@ -73,6 +59,7 @@ public class LivreDAO extends DAO {
      * @param dateAcquisition date d'acquisition du nouveau libre
      * @throws DAOException Exception DAO levée s'il y un problème avec l'acquisition
      */
+    /*
     public void acquerir(int idLivre,
         String titre,
         String auteur,
@@ -99,13 +86,15 @@ public class LivreDAO extends DAO {
             throw new DAOException(serviceException);
         }
     }
+    */
 
-    /**
+    /*
      * Vente d'un livre.
      *
      * @param idLivre id du livre à vendre
      * @throws DAOException Exception DAO levée s'il y un problème avec la vente
      */
+    /*
     public void vendre(int idLivre) throws DAOException {
         try {
             final LivreDTO tupleLivre = this.livre.getLivre(idLivre);
@@ -143,6 +132,7 @@ public class LivreDAO extends DAO {
             throw new DAOException(serviceException);
         }
     }
+    */
 
     /**
      * Ajoute un nouveau livre.
@@ -152,7 +142,7 @@ public class LivreDAO extends DAO {
      */
     public void add(LivreDTO livreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.ADD_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.ADD_REQUEST)) {
             preparedStatement.setInt(1,
                 livreDTO.getIdLivre());
             preparedStatement.setString(2,
@@ -179,31 +169,29 @@ public class LivreDAO extends DAO {
      * @return Le livre lu ; null sinon
      */
     public LivreDTO read(int idLivre) throws DAOException {
+        LivreDTO livreDTO = null;
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.READ_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.READ_REQUEST)) {
             preparedStatement.setInt(1,
                 idLivre);
-
             try(
                 ResultSet resultSet = preparedStatement.executeQuery()) {
                 if(resultSet.next()) {
-                    final LivreDTO livreDTO = new LivreDTO();
+                    livreDTO = new LivreDTO();
                     livreDTO.setIdLivre(resultSet.getInt(1));
                     livreDTO.setTitre(resultSet.getString(2));
                     livreDTO.setAuteur(resultSet.getString(3));
                     livreDTO.setDateAcquisition(resultSet.getDate(4));
                     livreDTO.setIdMembre(resultSet.getInt(5));
                     livreDTO.setDatePret(resultSet.getDate(6));
-                    return livreDTO;
+
                 }
 
-                throw new DAOException("Le livre avec l'id "
-                    + idLivre
-                    + " n'existe pas.");
             }
         } catch(SQLException e) {
             throw new DAOException(e);
         }
+        return livreDTO;
     }
 
     /**
@@ -214,20 +202,18 @@ public class LivreDAO extends DAO {
      */
     public void update(LivreDTO livreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.UPDATE_REQUEST)) {
-            preparedStatement.setInt(1,
-                livreDTO.getIdLivre());
-            preparedStatement.setString(2,
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.UPDATE_REQUEST)) {
+            preparedStatement.setString(1,
                 livreDTO.getTitre());
-            preparedStatement.setString(3,
+            preparedStatement.setString(2,
                 livreDTO.getAuteur());
-            preparedStatement.setDate(4,
+            preparedStatement.setDate(3,
                 livreDTO.getDateAcquisition());
-            preparedStatement.setInt(5,
+            preparedStatement.setInt(4,
                 livreDTO.getIdMembre());
-            preparedStatement.setDate(6,
+            preparedStatement.setDate(5,
                 livreDTO.getDatePret());
-            preparedStatement.setInt(7,
+            preparedStatement.setInt(6,
                 livreDTO.getIdLivre());
             preparedStatement.execute();
         } catch(SQLException e) {
@@ -243,7 +229,7 @@ public class LivreDAO extends DAO {
      */
     public void delete(LivreDTO livreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.DELETE_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.DELETE_REQUEST)) {
             preparedStatement.setInt(1,
                 livreDTO.getIdLivre());
             preparedStatement.execute();
@@ -259,11 +245,11 @@ public class LivreDAO extends DAO {
      * @return La liste des livres; une liste vide sinon
      */
     public List<LivreDTO> getAll() throws DAOException {
+        final List<LivreDTO> livres = new ArrayList<>();
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.GET_ALL_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.GET_ALL_REQUEST)) {
             try(
                 ResultSet resultSet = preparedStatement.executeQuery()) {
-                final List<LivreDTO> livres = new ArrayList<>();
                 while(resultSet.next()) {
                     final LivreDTO livreDTO = new LivreDTO();
                     livreDTO.setIdLivre(resultSet.getInt(1));
@@ -275,11 +261,12 @@ public class LivreDAO extends DAO {
 
                     livres.add(livreDTO);
                 }
-                return livres;
+
             }
         } catch(SQLException e) {
             throw new DAOException(e);
         }
+        return livres;
     }
 
     /**
@@ -290,13 +277,13 @@ public class LivreDAO extends DAO {
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
     public List<LivreDTO> findByTitre(String titre) throws DAOException {
+        final List<LivreDTO> livres = new ArrayList<>();
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.FIND_BY_TITRE_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_TITRE_REQUEST)) {
             preparedStatement.setString(1,
                 titre);
             try(
                 ResultSet resultSet = preparedStatement.executeQuery()) {
-                final List<LivreDTO> livres = new ArrayList<>();
                 while(resultSet.next()) {
                     final LivreDTO livreDTO = new LivreDTO();
                     livreDTO.setIdLivre(resultSet.getInt(1));
@@ -308,11 +295,12 @@ public class LivreDAO extends DAO {
 
                     livres.add(livreDTO);
                 }
-                return livres;
+
             }
         } catch(SQLException e) {
             throw new DAOException(e);
         }
+        return livres;
     }
 
     /**
@@ -323,13 +311,13 @@ public class LivreDAO extends DAO {
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
     public List<LivreDTO> finbByMembre(MembreDTO membreDTO) throws DAOException {
+        final List<LivreDTO> livres = new ArrayList<>();
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE_REQUEST)) {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             try(
                 ResultSet resultSet = preparedStatement.executeQuery()) {
-                final List<LivreDTO> livres = new ArrayList<>();
                 while(resultSet.next()) {
                     final LivreDTO livreDTO = new LivreDTO();
                     livreDTO.setIdLivre(resultSet.getInt(1));
@@ -341,11 +329,12 @@ public class LivreDAO extends DAO {
 
                     livres.add(livreDTO);
                 }
-                return livres;
+
             }
         } catch(SQLException e) {
             throw new DAOException(e);
         }
+        return livres;
     }
 
 }

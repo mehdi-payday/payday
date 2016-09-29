@@ -30,11 +30,11 @@ public class InterrogationDAO extends DAO {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String QUERYLIVRESTITRESMOTS = "SELECT t1.idLivre, t1.titre, t1.auteur, t1.idmembre, (t1.datePret + 14) FROM livre t1 WHERE lower(titre) LIKE ?";
+
     private Connexion connexion;
 
-    private final String qUERYLIVRESTITRESMOTS = "SELECT t1.idLivre, t1.titre, t1.auteur, t1.idmembre, (t1.datePret + 14) FROM livre t1 WHERE lower(titre) LIKE ?";
-
-    private final String qUERYLISTETOUSLIVRES = "SELECT idLivre, titre, auteur, idmembre, datePret FROM livre";
+    //private static final String qUERYLISTETOUSLIVRES = "SELECT idLivre, titre, auteur, idmembre, datePret FROM livre";
 
     /**
      * Creation d'une instance.
@@ -57,7 +57,7 @@ public class InterrogationDAO extends DAO {
         PreparedStatement stmtLivresTitreMot = null;
         ResultSet rsetLivresTitreMot = null;
         try {
-            stmtLivresTitreMot = this.connexion.getConnection().prepareStatement(this.qUERYLIVRESTITRESMOTS);
+            stmtLivresTitreMot = this.connexion.getConnection().prepareStatement(InterrogationDAO.QUERYLIVRESTITRESMOTS);
             stmtLivresTitreMot.setString(1,
                 "%"
                     + mot
@@ -115,7 +115,7 @@ public class InterrogationDAO extends DAO {
      *
      * @throws DAOException si erreur de SQL throw une DAOException
      */
-    public void listerLivres() throws DAOException {
+    /*public void listerLivres() throws DAOException {
         PreparedStatement stmtListeTousLivres = null;
         ResultSet rsetListeTousLivres = null;
         try {
@@ -161,5 +161,5 @@ public class InterrogationDAO extends DAO {
                 sqlException.printStackTrace();
             }
         }
-    }
+    }*/
 }

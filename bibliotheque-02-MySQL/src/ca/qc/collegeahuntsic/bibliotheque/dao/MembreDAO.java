@@ -11,11 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
-import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
-import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
  * DAO pour effectuer des CRUDs avec la table membre.
@@ -35,29 +31,19 @@ public class MembreDAO extends DAO {
 
     private static final String READ_REQUEST = "SELECT * FROM membre WHERE idMembre= ?";
 
-    private static final String UPDATE_REQUEST = "UPDATE membre SET idMembre = ?, nom = ?, telephone = ?, limitePret = ?, nbPret = ? WHERE idMembre = ?";
-
-    private Connexion connexion;
-
-    private MembreService membre;
-
-    private ReservationService reservation;
+    private static final String UPDATE_REQUEST = "UPDATE membre SET nom = ?, telephone = ?, limitePret = ?, nbPret = ? WHERE idMembre = ?";
 
     /**
      * Crée un DAO à partir d'une connexion à la base de données.
      *
-     * @param membre {@link ca.qc.collegeahuntsic.bibliotheque.service.MembreService} object.
-     * @param reservation {@link ca.qc.collegeahuntsic.bibliotheque.service.ReservationService} object.
+     * @param connexion {@link java.sql.connexion} object.
      */
-    public MembreDAO(MembreService membre,
-        ReservationService reservation) {
-        super(membre.getConnexion());
-        this.connexion = membre.getConnexion();
-        this.membre = membre;
-        this.reservation = reservation;
+    public MembreDAO(Connexion connexion) {
+        super(connexion);
+
     }
 
-    /**
+    /*
      * Ajout d'un nouveau membre dans la base de donnees. S'il existe deja, une
      *      exception est levee.
      *
@@ -67,7 +53,7 @@ public class MembreDAO extends DAO {
      * @param limitePret la limite de pret du membre.
      * @throws DAOException Exception specifique au package contenant les differentes exceptions levees.
      */
-    public void inscrire(int idMembre,
+    /*public void inscrire(int idMembre,
         String nom,
         long telephone,
         int limitePret) throws DAOException {
@@ -91,15 +77,15 @@ public class MembreDAO extends DAO {
         } catch(ServiceException serviceException) {
             throw new DAOException(serviceException);
         }
-    }
+    }*/
 
-    /**
+    /*
      * Suppression d'un membre de la base de donnees.
      *
      * @param idMembre id du membre a identifier.
      * @throws DAOException Exception specifique au package contenant les differentes exceptions levees.
      */
-    public void desinscrire(int idMembre) throws DAOException {
+    /*public void desinscrire(int idMembre) throws DAOException {
         try {
             final MembreDTO tupleMembre = this.membre.getMembre(idMembre);
             if(tupleMembre == null) {
@@ -116,7 +102,7 @@ public class MembreDAO extends DAO {
                     + idMembre
                     + " a des réservations");
             }
-
+    
             final int nb = this.membre.desinscrire(idMembre);
             if(nb == 0) {
                 throw new DAOException("Membre "
@@ -134,7 +120,7 @@ public class MembreDAO extends DAO {
         } catch(ServiceException serviceException) {
             throw new DAOException(serviceException);
         }
-    }
+    }*/
 
     /**
      * Ajoute un nouveau membre.
@@ -144,7 +130,7 @@ public class MembreDAO extends DAO {
      */
     public void add(MembreDTO membreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.ADD_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.ADD_REQUEST)) {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             preparedStatement.setString(2,
@@ -169,31 +155,26 @@ public class MembreDAO extends DAO {
      * @return Le membrelu ; null sinon
      */
     public MembreDTO read(int idMembre) throws DAOException {
+        MembreDTO membreDTO = null;
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.READ_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.READ_REQUEST)) {
             preparedStatement.setInt(1,
                 idMembre);
-
             try(
                 ResultSet resultSet = preparedStatement.executeQuery()) {
                 if(resultSet.next()) {
-                    final MembreDTO membreDTO = new MembreDTO();
+                    membreDTO = new MembreDTO();
                     membreDTO.setIdMembre(resultSet.getInt(1));
                     membreDTO.setNom(resultSet.getString(2));
                     membreDTO.setTelephone(resultSet.getLong(3));
                     membreDTO.setLimitePret(resultSet.getInt(4));
                     membreDTO.setNbPret(resultSet.getInt(5));
-
-                    return membreDTO;
                 }
-
-                throw new DAOException("Le membre avec l'id "
-                    + idMembre
-                    + " n'existe pas.");
             }
         } catch(SQLException e) {
             throw new DAOException(e);
         }
+        return membreDTO;
     }
 
     /**
@@ -204,18 +185,16 @@ public class MembreDAO extends DAO {
      */
     public void update(MembreDTO membreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.UPDATE_REQUEST)) {
-            preparedStatement.setInt(1,
-                membreDTO.getIdMembre());
-            preparedStatement.setString(2,
+            PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.UPDATE_REQUEST)) {
+            preparedStatement.setString(1,
                 membreDTO.getNom());
-            preparedStatement.setLong(3,
+            preparedStatement.setLong(2,
                 membreDTO.getTelephone());
-            preparedStatement.setInt(4,
+            preparedStatement.setInt(3,
                 membreDTO.getLimitePret());
-            preparedStatement.setInt(5,
+            preparedStatement.setInt(4,
                 membreDTO.getNbPret());
-            preparedStatement.setInt(6,
+            preparedStatement.setInt(5,
                 membreDTO.getIdMembre());
 
             preparedStatement.execute();
@@ -232,7 +211,7 @@ public class MembreDAO extends DAO {
      */
     public void delete(MembreDTO membreDTO) throws DAOException {
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.DELETE_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.DELETE_REQUEST)) {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             preparedStatement.execute();
@@ -248,11 +227,11 @@ public class MembreDAO extends DAO {
      * @return La liste des membres; une liste vide sinon
      */
     public List<MembreDTO> getAll() throws DAOException {
+        final List<MembreDTO> membres = new ArrayList<>();
         try(
-            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(MembreDAO.GET_ALL_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.GET_ALL_REQUEST)) {
             try(
                 ResultSet resultSet = preparedStatement.executeQuery()) {
-                final List<MembreDTO> membres = new ArrayList<>();
                 while(resultSet.next()) {
                     final MembreDTO membreDTO = new MembreDTO();
                     membreDTO.setIdMembre(resultSet.getInt(1));
@@ -263,11 +242,11 @@ public class MembreDAO extends DAO {
 
                     membres.add(membreDTO);
                 }
-                return membres;
             }
         } catch(SQLException e) {
             throw new DAOException(e);
         }
+        return membres;
     }
 
 }
