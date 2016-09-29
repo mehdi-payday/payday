@@ -45,15 +45,15 @@ public class GestionBibliotheque extends Service {
 
     private ReservationService reservationService;
 
-    private LivreDAO gestionLivre;
+    private LivreDAO livreDAO;
 
-    private MembreDAO gestionMembre;
+    private MembreDAO membreDAO;
 
-    private PretDAO gestionPret;
+    private PretDAO pretDAO;
 
-    private ReservationDAO gestionReservation;
+    private ReservationDAO reservationDAO;
 
-    private InterrogationDAO gestionInterrogation;
+    private InterrogationDAO interrogationDAO;
 
     /**
       * Ouvre une connexion avec la BD relationnelle et
@@ -71,26 +71,21 @@ public class GestionBibliotheque extends Service {
         final String database,
         final String user,
         final String password) throws ServiceException {
-        try (final Connexion connexionBase = new Connexion(serveur,
-            database,
-            user,
-            password)) {
+        try(
+            final Connexion connexionBase = new Connexion(serveur,
+                database,
+                user,
+                password)) {
             this.setConnexion(connexionBase);
 
             this.livreService = new LivreService(this.getConnexion());
             this.membreService = new MembreService(this.getConnexion());
             this.reservationService = new ReservationService(this.getConnexion());
-            this.gestionLivre = new LivreDAO(this.livreService,
-                this.reservationService);
-            this.gestionMembre = new MembreDAO(this.membreService,
-                this.reservationService);
-            this.gestionPret = new PretDAO(this.livreService,
-                this.membreService,
-                this.reservationService);
-            this.gestionReservation = new ReservationDAO(this.livreService,
-                this.membreService,
-                this.reservationService);
-            this.gestionInterrogation = new InterrogationDAO(this.getConnexion());
+            this.livreDAO = new LivreDAO(connexionBase);
+            this.membreDAO = new MembreDAO(connexionBase);
+            //this.gestionPret = new PretDAO(connexionBase);
+            this.reservationDAO = new ReservationDAO(connexionBase);
+            this.interrogationDAO = new InterrogationDAO(this.getConnexion());
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         } catch(ConnexionException connException) {
@@ -122,14 +117,14 @@ public class GestionBibliotheque extends Service {
     public Connexion getConnexion() {
         return this.connexion;
     }
-    
+
     /**
-     * 
+     *
      * Changer la connexion à la base de données.
      *
      * @param connexion la connexion à la base de données
      */
-    public void setConnexion(Connexion connexion)  {
+    public void setConnexion(Connexion connexion) {
         this.connexion = connexion;
     }
 
@@ -170,7 +165,7 @@ public class GestionBibliotheque extends Service {
      * @return le DAO de livre
      */
     public LivreDAO getGestionLivre() {
-        return this.gestionLivre;
+        return this.livreDAO;
     }
 
     /**
@@ -180,7 +175,7 @@ public class GestionBibliotheque extends Service {
      * @return le DAO de membre
      */
     public MembreDAO getGestionMembre() {
-        return this.gestionMembre;
+        return this.membreDAO;
     }
 
     /**
@@ -190,7 +185,7 @@ public class GestionBibliotheque extends Service {
      * @return le DAO de pret
      */
     public PretDAO getGestionPret() {
-        return this.gestionPret;
+        return this.pretDAO;
     }
 
     /**
@@ -200,7 +195,7 @@ public class GestionBibliotheque extends Service {
      * @return le DAO de reservation
      */
     public ReservationDAO getGestionReservation() {
-        return this.gestionReservation;
+        return this.reservationDAO;
     }
 
     /**
@@ -210,7 +205,7 @@ public class GestionBibliotheque extends Service {
      * @return le DAO de la table interrogation
      */
     public InterrogationDAO getGestionInterrogation() {
-        return this.gestionInterrogation;
+        return this.interrogationDAO;
     }
     // EndRegion
 }
