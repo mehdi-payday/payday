@@ -102,7 +102,7 @@ public class MembreDAO extends DAO {
                     + idMembre
                     + " a des réservations");
             }
-    
+
             final int nb = this.membre.desinscrire(idMembre);
             if(nb == 0) {
                 throw new DAOException("Membre "
@@ -142,8 +142,8 @@ public class MembreDAO extends DAO {
             preparedStatement.setInt(5,
                 membreDTO.getNbPret());
             preparedStatement.execute();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
     }
 
@@ -171,8 +171,8 @@ public class MembreDAO extends DAO {
                     membreDTO.setNbPret(resultSet.getInt(5));
                 }
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return membreDTO;
     }
@@ -198,8 +198,8 @@ public class MembreDAO extends DAO {
                 membreDTO.getIdMembre());
 
             preparedStatement.execute();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
     }
 
@@ -215,8 +215,8 @@ public class MembreDAO extends DAO {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             preparedStatement.execute();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
     }
 
@@ -243,8 +243,8 @@ public class MembreDAO extends DAO {
                     membres.add(membreDTO);
                 }
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return membres;
     }
