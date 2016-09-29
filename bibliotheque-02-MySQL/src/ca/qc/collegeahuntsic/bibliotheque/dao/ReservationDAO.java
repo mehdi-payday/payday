@@ -35,13 +35,13 @@ public class ReservationDAO extends DAO {
 
     private static final String DELETE_REQUEST = "DELETE FROM Reservation WHERE idReservation = ?";
 
-    private static final String FIND_BY_LIVRE_REQUEST = "SELECT * FROM Reservation WHERE idLivre = ?";
+    private static final String FIND_BY_LIVRE_REQUEST = "SELECT idReservation, idLivre, idMembre, dateReservation FROM Reservation WHERE idLivre = ?";
 
-    private static final String FIND_BY_MEMBRE_REQUEST = "SELECT * FROM Reservation WHERE idMembre = ?";
+    private static final String FIND_BY_MEMBRE_REQUEST = "SELECT idReservation, idLivre, idMembre, dateReservation FROM Reservation WHERE idMembre = ?";
 
-    private static final String GET_ALL_REQUEST = "SELECT * FROM Reservation";
+    private static final String GET_ALL_REQUEST = "SELECT idReservation, idLivre, idMembre, dateReservation FROM Reservation";
 
-    private static final String READ_REQUEST = "SELECT * FROM Reservation WHERE idReservation = ?";
+    private static final String READ_REQUEST = "SELECT idReservation, idLivre, idMembre, dateReservation FROM Reservation WHERE idReservation = ?";
 
     private static final String UPDATE_REQUEST = "UPDATE Reservation SET idReservation = ?, idLivre = ?, idMembre = ?, dateReservation = ? WHERE idReservation = ?";
 
