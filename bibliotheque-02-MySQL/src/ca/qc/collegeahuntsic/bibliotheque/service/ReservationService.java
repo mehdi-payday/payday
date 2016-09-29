@@ -20,14 +20,14 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 public class ReservationService extends Service {
     private static final long serialVersionUID = 1L;
 
-    private final String queryGet = "select idReservation, idLivre, idMembre, dateReservation "
+    private static final String QUERY_GET = "select idReservation, idLivre, idMembre, dateReservation "
         + "from reservation where idReservation = ?";
-    private final String queryExisteLivre = "select idReservation, idLivre, idMembre, dateReservation "
+    private static final String QUERY_EXISTE_LIVRE = "select idReservation, idLivre, idMembre, dateReservation "
         + "from reservation where idLivre = ? "
         + "order by dateReservation";
-    private final String queryExisteMembre = "select idReservation, idLivre, idMembre, dateReservation " + "from reservation where idMembre = ? ";
-    private final String queryInsert = "insert into reservation (idReservation, idlivre, idMembre, dateReservation) " + "values (?,?,?,STR_TO_DATE(?,'%Y-%m-%D'))";
-    private final String queryDelete = "delete from reservation where idReservation = ?";
+    private static final String QUERY_EXISTE_MEMBRE = "select idReservation, idLivre, idMembre, dateReservation " + "from reservation where idMembre = ? ";
+    private static final String QUERY_INSERT = "insert into reservation (idReservation, idlivre, idMembre, dateReservation) " + "values (?,?,?,STR_TO_DATE(?,'%Y-%m-%D'))";
+    private static final String QUERY_DELETE = "delete from reservation where idReservation = ?";
 
     private Connexion connexion;
 
@@ -46,7 +46,7 @@ public class ReservationService extends Service {
      *
      * Retourne la connexion associée.
      *
-     * @return la connexion à la base de données
+     * @return la {@link java.sql.Connection} connexion à la base de données
      */
     public Connexion getConnexion() {
 
@@ -62,7 +62,7 @@ public class ReservationService extends Service {
      * @throws ServiceException s'il y a une erreur avec la base de données
      */
     public boolean existe(final int idReservation) throws ServiceException {
-        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet);) {
+        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_GET);) {
             boolean reservationExiste = false;
 
             statementExiste.setInt(1,
@@ -87,7 +87,7 @@ public class ReservationService extends Service {
      */
     public ReservationDTO getReservation(final int idReservation) throws ServiceException {
         ResultSet resultatReservationListe = null;
-        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet);) {
+        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_GET);) {
             statementExiste.setInt(1,
                 idReservation);
             resultatReservationListe = statementExiste.executeQuery();
@@ -122,7 +122,7 @@ public class ReservationService extends Service {
      */
     public ReservationDTO getReservationLivre(final int idLivre) throws ServiceException {
         ResultSet resultatReservationGet = null;
-        try (final PreparedStatement stmtExisteLivre = this.connexion.getConnection().prepareStatement(this.queryExisteLivre);) {
+        try (final PreparedStatement stmtExisteLivre = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_EXISTE_LIVRE);) {
             stmtExisteLivre.setInt(1,
                 idLivre);
 
@@ -158,7 +158,7 @@ public class ReservationService extends Service {
      */
     public ReservationDTO getReservationMembre(final int idMembre) throws ServiceException {
         ResultSet resultatReservationGet = null;
-        try (final PreparedStatement statementExisteMembre = this.connexion.getConnection().prepareStatement(this.queryExisteMembre);) {
+        try (final PreparedStatement statementExisteMembre = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_EXISTE_MEMBRE);) {
             statementExisteMembre.setInt(1,
                 idMembre);
 
@@ -199,7 +199,7 @@ public class ReservationService extends Service {
         final int idLivre,
         final int idMembre,
         final String dateReservation) throws ServiceException {
-        try (final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(this.queryInsert);) {
+        try (final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_INSERT);) {
             statementInsert.setInt(1,
                 idReservation);
             statementInsert.setInt(2,
@@ -224,7 +224,7 @@ public class ReservationService extends Service {
      * @throws ServiceException Si la réservation n'existe pas ou s'il y a une erreur avec la base de données
      */
     public int annulerRes(final int idReservation) throws ServiceException {
-        try (final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(this.queryDelete);) {
+        try (final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_DELETE);) {
             statementDelete.setInt(1,
                 idReservation);
             return statementDelete.executeUpdate();

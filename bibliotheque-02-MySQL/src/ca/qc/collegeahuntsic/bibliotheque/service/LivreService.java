@@ -24,10 +24,10 @@ public class LivreService extends Service {
 
     private static final long serialVersionUID = 1L;
 
-    private final String queryGet = "select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?";
-    private final String queryInsert = "insert into livre (idLivre, titre, auteur, dateAcquisition, idMembre, datePret) " + "values (?,?,?,?,null,null)";
-    private final String queryUpdate = "update livre set idMembre = ?, datePret = ? " + "where idLivre = ?";
-    private final String queryDelete = "delete from livre where idlivre = ?";
+    private static final String QUERY_GET = "select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?";
+    private static final String QUERY_INSERT = "insert into livre (idLivre, titre, auteur, dateAcquisition, idMembre, datePret) " + "values (?,?,?,?,null,null)";
+    private static final String QUERY_UPDATE = "update livre set idMembre = ?, datePret = ? " + "where idLivre = ?";
+    private static final String QUERY_DELETE = "delete from livre where idlivre = ?";
 
     private Connexion connexion;
 
@@ -46,7 +46,7 @@ public class LivreService extends Service {
      *
      * Retourner la connexion associée.
      *
-     * @return la connexion a la base de données
+     * @return la {@link java.sql.Connection} connexion a la base de données
      */
     public Connexion getConnexion() {
         return this.connexion;
@@ -64,7 +64,7 @@ public class LivreService extends Service {
     public boolean existe(final int idLivre) throws ServiceException {
         boolean livreExiste = false;
         ResultSet rset = null;
-        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(this.queryGet)) {
+        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(LivreService.QUERY_GET)) {
             statementExiste.setInt(1,
                 idLivre);
             rset = statementExiste.executeQuery();
@@ -92,7 +92,7 @@ public class LivreService extends Service {
     public LivreDTO getLivre(final int idLivre) throws ServiceException {
         LivreDTO livreDTO = null;
         ResultSet resultatLivre = null;
-        try (final PreparedStatement statementGet = this.connexion.getConnection().prepareStatement(this.queryGet);) {
+        try (final PreparedStatement statementGet = this.connexion.getConnection().prepareStatement(LivreService.QUERY_GET);) {
             statementGet.setInt(1,
                 idLivre);
             resultatLivre = statementGet.executeQuery();
@@ -133,7 +133,7 @@ public class LivreService extends Service {
         final String titre,
         final String auteur,
         final String dateAcquisition) throws ServiceException {
-        try (final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(this.queryInsert);) {
+        try (final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(LivreService.QUERY_INSERT);) {
             final LivreDTO livreExistant = this.getLivre(idLivre);
             if(livreExistant != null) {
                 throw new ServiceException("L'id du livre " + idLivre + " à ajouter existe déjà : " + livreExistant.toString());
@@ -167,7 +167,7 @@ public class LivreService extends Service {
         final int idMembre,
         final String datePret) throws ServiceException {
 
-        try (final PreparedStatement statementUpdate = this.connexion.getConnection().prepareStatement(this.queryUpdate);) {
+        try (final PreparedStatement statementUpdate = this.connexion.getConnection().prepareStatement(LivreService.QUERY_UPDATE);) {
             statementUpdate.setInt(1,
                 idMembre);
             statementUpdate.setDate(2,
@@ -190,7 +190,7 @@ public class LivreService extends Service {
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     public int retourner(final int idLivre) throws ServiceException {
-        try (final PreparedStatement statementUpdate = this.connexion.getConnection().prepareStatement(this.queryUpdate);) {
+        try (final PreparedStatement statementUpdate = this.connexion.getConnection().prepareStatement(LivreService.QUERY_UPDATE);) {
             statementUpdate.setNull(1,
                 Types.INTEGER);
             statementUpdate.setNull(2,
@@ -213,7 +213,7 @@ public class LivreService extends Service {
      * @throws ServiceException  Si le livre n'existe pas, si le livre a été prêté, si le livre a été réservé ou s'il y a une erreur avec la base de données
      */
     public int vendre(final int idLivre) throws ServiceException {
-        try (final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(this.queryDelete);) {
+        try (final PreparedStatement statementDelete = this.connexion.getConnection().prepareStatement(LivreService.QUERY_DELETE);) {
             statementDelete.setInt(1,
                 idLivre);
             return statementDelete.executeUpdate();
