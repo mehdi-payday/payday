@@ -27,11 +27,13 @@ public class LivreDAO extends DAO {
 
     private static final String DELETE_REQUEST = "DELETE FROM livre WHERE idLivre = ?";
 
-    //private static final String EMPRUNT_REQUEST = "";
+    private static final String EMPRUNT_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = ?, datePret = CURRENT_TIMESTAMP WHERE idLivre = ?";
+    
+    private static final String RETOUR_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = NULL, datePret = NULL WHERE idLivre = ?";
 
-    private static final String FIND_BY_TITRE_REQUEST = "SELECT * FROM livre WHERE titre = ?";
+    private static final String FIND_BY_TITRE = "SELECT * FROM livre WHERE LOWER(titre) like LOWER(?)";
 
-    private static final String FIND_BY_MEMBRE_REQUEST = "SELECT * FROM livre WHERE idMembre = ?";
+    private static final String FIND_BY_MEMBRE = "SELECT * FROM livre WHERE idMembre = ?";
 
     private static final String GET_ALL_REQUEST = "SELECT * FROM livre";
 
@@ -279,7 +281,7 @@ public class LivreDAO extends DAO {
     public List<LivreDTO> findByTitre(String titre) throws DAOException {
         final List<LivreDTO> livres = new ArrayList<>();
         try(
-            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_TITRE_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_TITRE)) {
             preparedStatement.setString(1,
                 titre);
             try(
@@ -313,7 +315,7 @@ public class LivreDAO extends DAO {
     public List<LivreDTO> finbByMembre(MembreDTO membreDTO) throws DAOException {
         final List<LivreDTO> livres = new ArrayList<>();
         try(
-            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE_REQUEST)) {
+            PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE)) {
             preparedStatement.setInt(1,
                 membreDTO.getIdMembre());
             try(
@@ -338,3 +340,4 @@ public class LivreDAO extends DAO {
     }
 
 }
+
