@@ -159,8 +159,8 @@ public class LivreDAO extends DAO {
             preparedStatement.setDate(6,
                 livreDTO.getDatePret());
             preparedStatement.execute();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
     }
 
@@ -191,8 +191,8 @@ public class LivreDAO extends DAO {
                 }
 
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return livreDTO;
     }
@@ -219,8 +219,8 @@ public class LivreDAO extends DAO {
             preparedStatement.setInt(6,
                 livreDTO.getIdLivre());
             preparedStatement.execute();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
     }
 
@@ -236,8 +236,8 @@ public class LivreDAO extends DAO {
             preparedStatement.setInt(1,
                 livreDTO.getIdLivre());
             preparedStatement.execute();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
     }
 
@@ -267,8 +267,8 @@ public class LivreDAO extends DAO {
                 }
 
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return livres;
     }
@@ -304,8 +304,8 @@ public class LivreDAO extends DAO {
                 }
 
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return livres;
     }
@@ -339,8 +339,8 @@ public class LivreDAO extends DAO {
                 }
 
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return livres;
     }
