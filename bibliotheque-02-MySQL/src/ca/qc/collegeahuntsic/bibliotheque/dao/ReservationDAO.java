@@ -94,8 +94,8 @@ public class ReservationDAO extends DAO {
                     reservationDTO.setDateReservation(resultSet.getDate(4));
                 }
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return reservationDTO;
     }
@@ -118,8 +118,8 @@ public class ReservationDAO extends DAO {
             preparedStatement.setInt(4,
                 reservationDTO.getIdReservation());
             preparedStatement.execute();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
     }
 
@@ -135,8 +135,8 @@ public class ReservationDAO extends DAO {
             preparedStatement.setInt(1,
                 reservationDTO.getIdReservation());
             preparedStatement.execute();
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
     }
 
@@ -163,8 +163,8 @@ public class ReservationDAO extends DAO {
                     reservations.add(reservationDTO);
                 }
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return reservations;
     }
@@ -194,8 +194,8 @@ public class ReservationDAO extends DAO {
                     reservations.add(reservationDTO);
                 }
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return reservations;
     }
@@ -226,8 +226,8 @@ public class ReservationDAO extends DAO {
                 }
 
             }
-        } catch(SQLException e) {
-            throw new DAOException(e);
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
         }
         return reservations;
     }
