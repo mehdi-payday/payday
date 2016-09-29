@@ -72,7 +72,7 @@ public class LivreDAO extends DAO {
                 throw new DAOException("Livre existe deja: "
                     + idLivre);
             }
-    
+
             this.livre.acquerir(idLivre,
                 titre,
                 auteur,
@@ -116,7 +116,7 @@ public class LivreDAO extends DAO {
                     + idLivre
                     + " reserve ");
             }
-    
+
             final int nb = this.livre.vendre(idLivre);
             if(nb == 0) {
                 throw new DAOException("Livre "
@@ -167,7 +167,7 @@ public class LivreDAO extends DAO {
      * @param livreDTO  Le livre à retourner
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void retour(final LivreDTO livreDTO) throws DAOException {
+    public void retourner(final LivreDTO livreDTO) throws DAOException {
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.RETOUR_REQUEST)) {
             preparedStatement.setString(1,
