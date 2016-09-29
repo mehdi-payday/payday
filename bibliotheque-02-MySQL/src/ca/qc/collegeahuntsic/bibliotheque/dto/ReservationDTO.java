@@ -13,7 +13,6 @@ import java.sql.Date;
  */
 
 public class ReservationDTO extends DTO {
-
     private static final long serialVersionUID = 1L;
 
     private int idReservation;
