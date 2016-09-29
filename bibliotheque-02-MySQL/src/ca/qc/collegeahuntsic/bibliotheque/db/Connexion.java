@@ -36,18 +36,18 @@ public class Connexion implements AutoCloseable {
         final String schema,
         final String nomUtilisateur,
         final String motPasse) throws ConnexionException {
-        final Driver d;
+        final Driver driver;
         try {
             if("local".equals(typeServeur)) {
-                d = (Driver) Class.forName("com.mysql.jdbc.Driver").newInstance();
-                DriverManager.registerDriver(d);
+                driver = (Driver) Class.forName("com.mysql.jdbc.Driver").newInstance();
+                DriverManager.registerDriver(driver);
                 this.connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/"
                     + schema,
                     nomUtilisateur,
                     motPasse);
             } else if("distant".equals(typeServeur)) {
-                d = (Driver) Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
-                DriverManager.registerDriver(d);
+                driver = (Driver) Class.forName("oracle.jdbc.driver.OracleDriver").newInstance();
+                DriverManager.registerDriver(driver);
                 this.connection = DriverManager.getConnection("jdbc:oracle:thin:@collegeahuntsic.info:1521:"
                     + schema,
                     nomUtilisateur,

@@ -5,6 +5,11 @@
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
 import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
@@ -26,13 +31,37 @@ public class ReservationDAO extends DAO {
 
     private static final long serialVersionUID = 1L;
 
+    private static final String ADD_REQUEST = "INSERT INTO Reservation (idReservation, idLivre, idMembre, dateReservation) VALUES(?, ?, ?, ?)";
+
+    private static final String DELETE_REQUEST = "DELETE FROM Reservation WHERE idReservation = ?";
+
+    private static final String FIND_BY_LIVRE_REQUEST = "SELECT * FROM Reservation WHERE idLivre = ?";
+
+    private static final String FIND_BY_MEMBRE_REQUEST = "SELECT * FROM Reservation WHERE idMembre = ?";
+
+    private static final String GET_ALL_REQUEST = "SELECT * FROM Reservation";
+
+    private static final String READ_REQUEST = "SELECT * FROM Reservation WHERE idReservation = ?";
+
+    private static final String UPDATE_REQUEST = "UPDATE Reservation SET idReservation = ?, idLivre = ?, idMembre = ?, dateReservation = ? WHERE idReservation = ?";
+
     private LivreService livre;
 
     private MembreService membre;
 
     private ReservationService reservation;
 
-    private Connexion cx;
+    private Connexion connexion;
+
+    /**
+     * Crée un DAO à partir d'une connexion à la base de données.
+     *
+     * @param connexion - La connexion à utiliser
+     */
+    public ReservationDAO(Connexion connexion) {
+        super(connexion);
+        this.connexion = connexion;
+    }
 
     /**
      * Crée un DAO à partir d'une connexion à la base de données.
@@ -50,10 +79,198 @@ public class ReservationDAO extends DAO {
             || reservation.getConnexion() != membre.getConnexion()) {
             throw new DAOException("Les instances de livre, de membre et de reservation n'utilisent pas la même connexion au serveur");
         }
-        this.cx = livre.getConnexion();
+        this.connexion = livre.getConnexion();
         this.livre = livre;
         this.membre = membre;
         this.reservation = reservation;
+    }
+
+    /**
+     * Ajoute une nouvelle réservation.
+     *
+     * @param reservationDTO - La réservation à ajouter
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     */
+    public void add(ReservationDTO reservationDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ReservationDAO.ADD_REQUEST)) {
+            preparedStatement.setInt(1,
+                reservationDTO.getIdReservation());
+            preparedStatement.setInt(2,
+                reservationDTO.getIdLivre());
+            preparedStatement.setInt(3,
+                reservationDTO.getIdMembre());
+            preparedStatement.setDate(4,
+                reservationDTO.getDateReservation());
+            preparedStatement.execute();
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Lit une réservation.
+     *
+     * @param idReservation - La réservation à lire
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     * @return La réservation
+     */
+    public ReservationDTO read(int idReservation) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ReservationDAO.READ_REQUEST)) {
+            preparedStatement.setInt(1,
+                idReservation);
+
+            try(
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+                if(resultSet.next()) {
+                    final ReservationDTO reservationDTO = new ReservationDTO();
+                    reservationDTO.setIdReservation(resultSet.getInt(1));
+                    reservationDTO.setIdMembre(resultSet.getInt(2));
+                    reservationDTO.setIdLivre(resultSet.getInt(3));
+                    reservationDTO.setDateReservation(resultSet.getDate(4));
+                    return reservationDTO;
+                }
+
+                throw new DAOException("La réservation avec l'id "
+                    + idReservation
+                    + " n'existe pas.");
+            }
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Met à jour une réservation.
+     *
+     * @param reservationDTO - La réservation à mettre à jour
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     */
+    public void update(ReservationDTO reservationDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ReservationDAO.UPDATE_REQUEST)) {
+            preparedStatement.setInt(1,
+                reservationDTO.getIdReservation());
+            preparedStatement.setInt(2,
+                reservationDTO.getIdLivre());
+            preparedStatement.setInt(3,
+                reservationDTO.getIdMembre());
+            preparedStatement.setDate(4,
+                reservationDTO.getDateReservation());
+            preparedStatement.setInt(5,
+                reservationDTO.getIdReservation());
+            preparedStatement.execute();
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Supprime une réservation.
+     *
+     * @param reservationDTO - La réservation à supprimer
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     */
+    public void delete(ReservationDTO reservationDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ReservationDAO.DELETE_REQUEST)) {
+            preparedStatement.setInt(1,
+                reservationDTO.getIdReservation());
+            preparedStatement.execute();
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Trouve toutes les réservations.
+     *
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     * @return La liste des réservations ; une liste vide sinon
+     */
+    public List<ReservationDTO> getAll() throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ReservationDAO.GET_ALL_REQUEST)) {
+            try(
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+                final List<ReservationDTO> reservations = new ArrayList<>();
+                while(resultSet.next()) {
+                    final ReservationDTO reservationDTO = new ReservationDTO();
+                    reservationDTO.setIdReservation(resultSet.getInt(1));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setDateReservation(resultSet.getDate(4));
+
+                    reservations.add(reservationDTO);
+                }
+                return reservations;
+            }
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Trouve les réservations à partir d'un livre.
+     *
+     * @param livreDTO - Le livre à utiliser
+     * @return La liste des réservations correspondantes, triée par date de réservation croissante ; une liste vide sinon
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     */
+    public List<ReservationDTO> findByLivre(LivreDTO livreDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ReservationDAO.FIND_BY_LIVRE_REQUEST)) {
+            preparedStatement.setInt(1,
+                livreDTO.getIdLivre());
+            try(
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+                final List<ReservationDTO> reservations = new ArrayList<>();
+                while(resultSet.next()) {
+                    final ReservationDTO reservationDTO = new ReservationDTO();
+                    reservationDTO.setIdReservation(resultSet.getInt(1));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setDateReservation(resultSet.getDate(4));
+
+                    reservations.add(reservationDTO);
+                }
+                return reservations;
+            }
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
+    }
+
+    /**
+     * Trouve les réservations à partir d'un livre.
+     *
+     * @param membreDTO - Le membre à utiliser
+     * @return La liste des réservations correspondantes, triée par date de réservation croissante ; une liste vide sinon
+     * @throws DAOException - S'il y a une erreur avec la base de données
+     */
+    public List<ReservationDTO> finbByMembre(MembreDTO membreDTO) throws DAOException {
+        try(
+            PreparedStatement preparedStatement = this.connexion.getConnection().prepareStatement(ReservationDAO.FIND_BY_MEMBRE_REQUEST)) {
+            preparedStatement.setInt(1,
+                membreDTO.getIdMembre());
+            try(
+                ResultSet resultSet = preparedStatement.executeQuery()) {
+                final List<ReservationDTO> reservations = new ArrayList<>();
+                while(resultSet.next()) {
+                    final ReservationDTO reservationDTO = new ReservationDTO();
+                    reservationDTO.setIdReservation(resultSet.getInt(1));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setDateReservation(resultSet.getDate(4));
+
+                    reservations.add(reservationDTO);
+                }
+                return reservations;
+            }
+        } catch(SQLException e) {
+            throw new DAOException(e);
+        }
     }
 
     /**
@@ -106,10 +323,10 @@ public class ReservationDAO extends DAO {
                 idLivre,
                 idMembre,
                 dateReservation);
-            this.cx.commit();
+            this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {
-                this.cx.rollback();
+                this.connexion.rollback();
             } catch(ConnexionException connexionException2) {
                 throw new DAOException(connexionException2);
             }
@@ -181,10 +398,10 @@ public class ReservationDAO extends DAO {
             }
 
             this.reservation.annulerRes(idReservation);
-            this.cx.commit();
+            this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {
-                this.cx.rollback();
+                this.connexion.rollback();
             } catch(ConnexionException connexionException2) {
                 throw new DAOException(connexionException2);
             }
@@ -208,10 +425,10 @@ public class ReservationDAO extends DAO {
                     + " n'existe pas");
             }
 
-            this.cx.commit();
+            this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {
-                this.cx.rollback();
+                this.connexion.rollback();
             } catch(ConnexionException connexionException2) {
                 throw new DAOException(connexionException2);
             }

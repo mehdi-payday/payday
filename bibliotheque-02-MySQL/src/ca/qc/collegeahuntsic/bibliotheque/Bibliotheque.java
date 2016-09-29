@@ -45,7 +45,6 @@ final class Bibliotheque {
 
     /**
      * Constructeur privé pour empêcher toute instanciation.
-     *
      */
     private Bibliotheque() {
     }
@@ -194,7 +193,6 @@ final class Bibliotheque {
 
     /**
      * Affiche le menu des transactions acceptées par le système.
-     *
      */
     static void afficherAide() {
         System.out.println();
