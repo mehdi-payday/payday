@@ -364,7 +364,7 @@ public class LivreDAO extends DAO {
      * @return La liste des livres correspondants; une liste vide sinon
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
-    public List<LivreDTO> finbByMembre(final MembreDTO membreDTO) throws DAOException {
+    public List<LivreDTO> findByMembre(final MembreDTO membreDTO) throws DAOException {
         final List<LivreDTO> livres = new ArrayList<>();
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE)) {

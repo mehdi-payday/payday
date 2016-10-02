@@ -4,13 +4,13 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.service;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
+import java.util.List;
+import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
@@ -24,201 +24,269 @@ public class LivreService extends Service {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String QUERY_GET = "select idlivre, titre, auteur, dateAcquisition, idMembre, datePret from livre where idlivre = ?";
-    private static final String QUERY_INSERT = "insert into livre (idLivre, titre, auteur, dateAcquisition, idMembre, datePret) " + "values (?,?,?,?,null,null)";
-    private static final String QUERY_UPDATE = "update livre set idMembre = ?, datePret = ? " + "where idLivre = ?";
-    private static final String QUERY_DELETE = "delete from livre where idlivre = ?";
+    private LivreDAO livreDAO;
 
-    private Connexion connexion;
+    private MembreDAO membreDAO;
+
+    private ReservationDAO reservationDAO;
 
     /**
+     * Crée le service de la table <code>livre</code>.
      *
-     * Cree le service de la table livre.
-     *
-     * @param connexion : La connexion à la base de données
-     * @throws ServiceException s'il y a une erreur avec la base de donnees
+     * @param livreDAO Le DAO de la table <code>livre</code>
+     * @param membreDAO Le DAO de la table <code>membre</code>
+     * @param reservationDAO Le DAO de la table <code>reservation</code>
      */
-    public LivreService(final Connexion connexion) throws ServiceException {
-        this.setConnexion(connexion);
+    public LivreService(final LivreDAO livreDAO,
+        final MembreDAO membreDAO,
+        final ReservationDAO reservationDAO) {
+        super();
+        setLivreDAO(livreDAO);
+        setMembreDAO(membreDAO);
+        setReservationDAO(reservationDAO);
     }
 
     /**
+     * Ajoute un nouveau livre.
      *
-     * Retourner la connexion associée.
-     *
-     * @return la {@link java.sql.Connection} connexion a la base de données
-     */
-    public Connexion getConnexion() {
-        return this.connexion;
-    }
-    
-    /**
-     * 
-     * Changer la connexion à la base de données.
-     *
-     * @param connexion la connexion à la base de données
-     */
-    public void setConnexion(Connexion connexion)  {
-        this.connexion = connexion;
-    }
-
-    /**
-     *
-     * Verifie si un livre existe.
-     *
-     * @param idLivre l'id du livre
-     * @return true si le livre est existe, false sinon.
-     * @throws ServiceException  S'il y a une erreur avec la base de données
-     *
-     */
-    public boolean existe(final int idLivre) throws ServiceException {
-        boolean livreExiste = false;
-        
-        try (final PreparedStatement statementExiste = this.getConnexion().getConnection().prepareStatement(LivreService.QUERY_GET)) {
-            statementExiste.setInt(1,
-                idLivre);
-            try (final ResultSet resultatLivreExiste = statementExiste.executeQuery()) {
-                livreExiste = resultatLivreExiste.next();
-            }
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
-        } 
-        return livreExiste;
-    }
-
-    /**
-     *
-     * Lecture d'un livre.
-     *
-     * @param idLivre id du livre a lire
-     * @return un objet représentant livre, null s'il n'existe pas.
+     * @param livreDTO Le livre à ajouter
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public LivreDTO getLivre(final int idLivre) throws ServiceException {
-        LivreDTO livreDTO = null;
-        
-        try (final PreparedStatement statementGet = this.getConnexion().getConnection().prepareStatement(LivreService.QUERY_GET);) {
-            statementGet.setInt(1,
-                idLivre);
-            try(final ResultSet resultatLivre = statementGet.executeQuery()) {
-                if(resultatLivre.next()) {
-                    livreDTO = new LivreDTO();
-    
-                    livreDTO.setIdLivre(idLivre);
-                    livreDTO.setTitre(resultatLivre.getString(2));
-                    livreDTO.setAuteur(resultatLivre.getString(3));
-                    livreDTO.setDateAcquisition(resultatLivre.getDate(4));
-                    livreDTO.setIdMembre(resultatLivre.getInt(5));
-                    livreDTO.setDatePret(resultatLivre.getDate(6));
-                }
-            }
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
-        } 
-
-        return livreDTO;
-    }
-
-    /**
-     *
-     * Acquiert un livre.
-     *
-     * @param idLivre id du livre a acquerir
-     * @param titre titre du livre a acquerir
-     * @param auteur nom de l'auteur du livre
-     * @param dateAcquisition date d'acquisition du livre
-     * @throws ServiceException Si le livre existe déjà ou s'il y a une erreur avec la base de données
-     */
-    public void acquerir(final int idLivre,
-        final String titre,
-        final String auteur,
-        final String dateAcquisition) throws ServiceException {
-        try (final PreparedStatement statementInsert = this.getConnexion().getConnection().prepareStatement(LivreService.QUERY_INSERT);) {
-            final LivreDTO livreExistant = this.getLivre(idLivre);
-            if(livreExistant != null) {
-                throw new ServiceException("L'id du livre " + idLivre + " à ajouter existe déjà : " + livreExistant.toString());
-            }
-            
-            statementInsert.setInt(1,
-                idLivre);
-            statementInsert.setString(2,
-                titre);
-            statementInsert.setString(3,
-                auteur);
-            statementInsert.setDate(4,
-                Date.valueOf(dateAcquisition));
-            statementInsert.executeUpdate();
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+    public void add(final LivreDTO livreDTO) throws ServiceException {
+        try {
+            getLivreDAO().add(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 
     /**
+     * Lit un livre. Si aucun livre n'est trouvé, <code>null</code> est retourné.
      *
-     * Enregistrement de l'emprunt d'un livre.
-     *
-     * @param idLivre le livre
-     * @param idMembre le membre à qui sera prêté le livre
-     * @param datePret la date du prêt
-     * @return 1 si le livre a été prêté. 0 si le livre n'existe pas.
+     * @param idLivre L'ID du livre à lire
+     * @return Le livre lu ; <code>null</code> sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public int preter(final int idLivre,
-        final int idMembre,
-        final String datePret) throws ServiceException {
-
-        try (final PreparedStatement statementUpdate = this.getConnexion().getConnection().prepareStatement(LivreService.QUERY_UPDATE);) {
-            statementUpdate.setInt(1,
-                idMembre);
-            statementUpdate.setDate(2,
-                Date.valueOf(datePret));
-            statementUpdate.setInt(3,
-                idLivre);
-            return statementUpdate.executeUpdate();
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+    public LivreDTO read(final int idLivre) throws ServiceException {
+        try {
+            return getLivreDAO().read(idLivre);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 
     /**
+     * Met à jour un livre.
      *
+     * @param livreDTO Le livre à mettre à jour
+     * @throws ServiceException S'il y a une erreur avec la base de données
+     */
+    public void update(final LivreDTO livreDTO) throws ServiceException {
+        try {
+            getLivreDAO().update(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Supprime un livre.
+     *
+     * @param livreDTO Le livre à supprimer
+     * @throws ServiceException S'il y a une erreur avec la base de données
+     */
+    public void delete(final LivreDTO livreDTO) throws ServiceException {
+        try {
+            getLivreDAO().delete(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Trouve tous les livres.
+     *
+     * @return La liste des livres ; une liste vide sinon
+     * @throws ServiceException S'il y a une erreur avec la base de données
+     */
+    public List<LivreDTO> getAll() throws ServiceException {
+        try {
+            return getLivreDAO().getAll();
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Trouve les livres à partir d'un titre.
+     *
+     * @param titre Le titre à utiliser
+     * @return La liste des livres correspondants ; une liste vide sinon
+     * @throws ServiceException S'il y a une erreur avec la base de données
+     */
+    public List<LivreDTO> findByTitre(final String titre) throws ServiceException {
+        try {
+            return getLivreDAO().findByTitre(titre);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Trouve les livres à partir d'un membre.
+     *
+     * @param membreDTO Le membre à utiliser
+     * @return La liste des livres correspondants ; une liste vide sinon
+     * @throws ServiceException S'il y a une erreur avec la base de données
+     */
+    public List<LivreDTO> findByMembre(final MembreDTO membreDTO) throws ServiceException {
+        try {
+            return getLivreDAO().findByMembre(membreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+    * Acquiert un livre.
+    *
+    * @param livreDTO Le livre à ajouter
+    * @throws ServiceException Si le livre existe déjà ou s'il y a une erreur avec la base de données
+    */
+    public void acquerir(final LivreDTO livreDTO) throws ServiceException {
+        if(read(livreDTO.getIdLivre()) != null) {
+            throw new ServiceException("Le livre "
+                + livreDTO.getIdLivre()
+                + " existe déjà");
+        }
+        add(livreDTO);
+    }
+
+    /**
+     * Emprunte un livre.
+     *
+     * @param livreDTO Le livre à emprunter
+     * @throws ServiceException S'il y a une erreur avec la base de données
+     */
+    public void emprunter(final LivreDTO livreDTO) throws ServiceException {
+        // On voit le manque de la table prêt avec le décalage illogique (bancal) entre MembreService.emprunte et cette méthode
+        try {
+            getLivreDAO().emprunter(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
      * Retourne un livre.
      *
-     * @param idLivre l'id du livre à retourner
-     * @return 1 si le livre a bien été retourné. 0 si le livre n'existe pas.
-     * 
+     * @param livreDTO Le livre à retourner
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public int retourner(final int idLivre) throws ServiceException {
-        try (final PreparedStatement statementUpdate = this.getConnexion().getConnection().prepareStatement(LivreService.QUERY_UPDATE);) {
-            statementUpdate.setNull(1,
-                Types.INTEGER);
-            statementUpdate.setNull(2,
-                Types.DATE);
-            statementUpdate.setInt(3,
-                idLivre);
-            return statementUpdate.executeUpdate();
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+    public void retourner(final LivreDTO livreDTO) throws ServiceException {
+        // On voit le manque de la table prêt avec le décalage illogique (bancal) entre MembreService.emprunte et cette méthode
+        try {
+            getLivreDAO().retourner(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 
     /**
+     * Vendre un livre.
      *
-     * Suppression d'un livre.
-     * TODO : soulever une exception si le livre n'existe pas, si le livre a été prêté ou si le livre a été réservé
-     *
-     * @param idLivre l'id du livre a supprimer
-     * @return 1 si le livre a bien été vendu. 0 si le livre n'existe pas.
-     * @throws ServiceException  Si le livre n'existe pas, si le livre a été prêté, si le livre a été réservé ou s'il y a une erreur avec la base de données
+     * @param livreDTO Le livre à vendre
+     * @throws ServiceException Si le livre n'existe pas, si le livre a été prêté, si le livre a été réservé ou s'il y a une erreur avec la base
+     *         de données
      */
-    public int vendre(final int idLivre) throws ServiceException {
-        try (final PreparedStatement statementDelete = this.getConnexion().getConnection().prepareStatement(LivreService.QUERY_DELETE);) {
-            statementDelete.setInt(1,
-                idLivre);
-            return statementDelete.executeUpdate();
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+    public void vendre(final LivreDTO livreDTO) throws ServiceException {
+        try {
+            final LivreDTO unLivreDTO = read(livreDTO.getIdLivre());
+            if(unLivreDTO == null) {
+                throw new ServiceException("Le livre "
+                    + livreDTO.getIdLivre()
+                    + " n'existe pas");
+            }
+            final MembreDTO membreDTO = getMembreDAO().read(unLivreDTO.getIdMembre());
+            if(!getLivreDAO().findByMembre(membreDTO).isEmpty()) {
+                throw new ServiceException("Le livre "
+                    + unLivreDTO.getTitre()
+                    + " (ID de livre : "
+                    + unLivreDTO.getIdLivre()
+                    + ") a été prêté à "
+                    + membreDTO.getNom()
+                    + " (ID de membre : "
+                    + membreDTO.getIdMembre()
+                    + ")");
+            }
+            if(!getReservationDAO().findByLivre(unLivreDTO).isEmpty()) {
+                throw new ServiceException("Le livre "
+                    + unLivreDTO.getTitre()
+                    + " (ID de livre : "
+                    + unLivreDTO.getIdLivre()
+                    + ") a des réservations");
+            }
+            delete(unLivreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
+
+    // Region Getters and Setters
+
+    /**
+     * Getter de la variable d'instance <code>this.livreDAO</code>.
+     *
+     * @return La variable d'instance <code>this.livreDAO</code>
+     */
+    private LivreDAO getLivreDAO() {
+        return this.livreDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.livreDAO</code>.
+     *
+     * @param livreDAO La valeur à utiliser pour la variable d'instance <code>this.livreDAO</code>
+     */
+    private void setLivreDAO(final LivreDAO livreDAO) {
+        this.livreDAO = livreDAO;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.membreDAO</code>.
+     *
+     * @return La variable d'instance <code>this.membreDAO</code>
+     */
+    private MembreDAO getMembreDAO() {
+        return this.membreDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.membreDAO</code>.
+     *
+     * @param membreDAO La valeur à utiliser pour la variable d'instance <code>this.membreDAO</code>
+     */
+    private void setMembreDAO(final MembreDAO membreDAO) {
+        this.membreDAO = membreDAO;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.reservationDAO</code>.
+     *
+     * @return La variable d'instance <code>this.reservationDAO</code>
+     */
+    private ReservationDAO getReservationDAO() {
+        return this.reservationDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.reservationDAO</code>.
+     *
+     * @param reservationDAO La valeur à utiliser pour la variable d'instance <code>this.reservationDAO</code>
+     */
+    private void setReservationDAO(final ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
+    }
+
+    // EndRegion
 }
