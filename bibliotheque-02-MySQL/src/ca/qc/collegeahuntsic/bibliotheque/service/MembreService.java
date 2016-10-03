@@ -135,13 +135,11 @@ public class MembreService extends Service {
      * Retourne un livre.
      *
      * @param membreDTO Le membre qui retourne.
-     * @param livreDTO Le livre à retourner.
      * @return
      * @throws ServiceException Si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore été prêté,
      *      si le livre a été prêté à quelqu'un d'autre ou s'il y a une erreur avec la base de données.
      */
-    public void desinscrire(MembreDTO membreDTO,
-        LivreDTO livreDTO) throws ServiceException {
+    public void desinscrire(MembreDTO membreDTO) throws ServiceException {
         try {
             if(read(membreDTO.getIdMembre()) == null) {
                 throw new ServiceException("Le membre avec le id: "
@@ -224,7 +222,7 @@ public class MembreService extends Service {
      * @throws ServiceException Si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore été prêté,
      *      si le livre a été prêté à quelqu'un d'autre, si le livre a été réservé ou s'il y a une erreur avec la base de données
      */
-    public void renouveller(MembreDTO membreDTO,
+    public void renouveler(MembreDTO membreDTO,
         LivreDTO livreDTO) throws ServiceException {
         try {
             if(read(membreDTO.getIdMembre()) == null) {

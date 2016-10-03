@@ -1,51 +1,58 @@
-// Fichier FormatDate.java
-// Auteur : Vincent Laferrière
-// Date de création : 15 sept. 2016
+// Fichier FormatteurDate.java
+// Auteur : Gilles Bénichou
+// Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Utilitaire de création d'une {@link java.util.Date} dans un format défini.
+ * Utilitaire de création d'un {@link java.sql.Timestamp} dans un format défini.
  *
- * @author Jeremi Cyr
+ * @author Gilles Benichou
  */
 public final class FormatteurDate {
-    private static SimpleDateFormat formatAMJ;
+    private static final String FORMAT_DATE = "yyyy-MM-dd";
+
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat(FormatteurDate.FORMAT_DATE);
+
     static {
-        formatAMJ = new SimpleDateFormat("yyyy-MM-dd");
-        formatAMJ.setLenient(false);
+        FormatteurDate.SIMPLE_DATE_FORMAT.setLenient(false);
     }
 
     /**
-     * Constructeur privé pour empêcher toute instantiation.
-     *
+     * Constructeur privé pour empêcher toute instanciation.
      */
     private FormatteurDate() {
-
+        super();
     }
 
     /**
-     * Convertit une chaine de caractères en Date selon le format YYYY-MM-DD.
+     * Convertit une chaîne de caractères en {@link java.sql.Timestamp} selon le format <code>yyyy-MM-dd</code>.
      *
-     * @param dateString - la chaine de caractètres
-     * @return la date issu de la conversion
-     * @throws ParseException - si la chaine de caractère n'est pas formatée correctement.
+     * @param date La chaîne de caractères
+     * @return Le {@link java.sql.Timestamp} issu de la conversion
+     * @throws ParseException Si la chaîne de caractères n'est pas formatée correctement
      */
-    public static Date convertirDate(final String dateString) throws ParseException {
-        return formatAMJ.parse(dateString);
+    public static Timestamp timestampValue(String date) throws ParseException {
+        final Date dateFormatee = FormatteurDate.SIMPLE_DATE_FORMAT.parse(date);
+        final Timestamp timestamp = new Timestamp(dateFormatee.getTime());
+        return timestamp;
     }
 
     /**
-     * Convertit date en une chaine de caractères selon le format YYYY-MM-DD.
+     * Convertit un {@link java.sql.Timestamp} en une chaîne de caractères selon le format <code>yyyy-MM-dd</code>.
      *
-     * @param date - la date
-     * @return la chaine de caracteres issu de la conversion
+     * @param timestamp Le {@link java.sql.Timestamp}
+     * @return La chaîne de caractères issue de la conversion
+     * @throws ParseException Si le {@link java.sql.Timestamp} n'est pas formaté correctement
      */
-    public static String toString(final Date date) {
-        return formatAMJ.format(date);
+    public static String stringValue(Timestamp timestamp) {
+        final Date date = new Date(timestamp.getTime());
+        final String dateFormatee = FormatteurDate.SIMPLE_DATE_FORMAT.format(date);
+        return dateFormatee;
     }
 }
