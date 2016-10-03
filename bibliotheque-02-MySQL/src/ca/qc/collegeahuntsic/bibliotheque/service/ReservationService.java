@@ -4,11 +4,15 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.service;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
+import java.util.Collections;
+import java.util.List;
+import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
@@ -19,207 +23,279 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 public class ReservationService extends Service {
     private static final long serialVersionUID = 1L;
 
-    private static final String QUERY_GET = "select idReservation, idLivre, idMembre, dateReservation "
-        + "from reservation where idReservation = ?";
-    private static final String QUERY_EXISTE_LIVRE = "select idReservation, idLivre, idMembre, dateReservation "
-        + "from reservation where idLivre = ? "
-        + "order by dateReservation";
-    private static final String QUERY_EXISTE_MEMBRE = "select idReservation, idLivre, idMembre, dateReservation " + "from reservation where idMembre = ? ";
-    private static final String QUERY_INSERT = "insert into reservation (idReservation, idlivre, idMembre, dateReservation) " + "values (?,?,?,STR_TO_DATE(?,'%Y-%m-%D'))";
-    private static final String QUERY_DELETE = "delete from reservation where idReservation = ?";
+    private ReservationDAO reservationDAO;
 
-    private Connexion connexion;
+    private MembreDAO membreDAO;
+
+    private LivreDAO livreDAO;
 
     /**
      * Crée le service de la table reservation.
      *
-     * @param connexion la connexion a la base données
-     * @throws ServiceException s'il y a une erreur avec la base de données
+     * @param reservationDAO - Le DAO de la table reservation
+     * @param membreDAO - Le DAO de la table membre
+     * @param livreDAO - Le DAO de la table livre
      */
-    public ReservationService(final Connexion connexion) throws ServiceException {
-        this.setConnexion(connexion);
+    public ReservationService(ReservationDAO reservationDAO,
+        MembreDAO membreDAO,
+        LivreDAO livreDAO) {
+        super();
+        this.reservationDAO = reservationDAO;
+        this.membreDAO = membreDAO;
+        this.livreDAO = livreDAO;
     }
 
     /**
-     * Retourne la connexion associée.
+     * Getter de la variable d'instance <code>this.membreDAO</code>.
      *
-     * @return la {@link java.sql.Connection} connexion à la base de données
+     * @return La variable d'instance <code>this.membreDAO</code>
      */
-    public Connexion getConnexion() {
-
-        return this.connexion;
-    }
-
-    
-    /**
-     * Changer la connexion à la base de données.
-     *
-     * @param connexion la connexion à la base de données
-     */
-    public void setConnexion(Connexion connexion)  {
-        this.connexion = connexion;
+    private MembreDAO getMembreDAO() {
+        return this.membreDAO;
     }
 
     /**
-     * Vérifie si une réservation existe.
+     * Getter de la variable d'instance <code>this.livreDAO</code>.
      *
-     * @param idReservation l'id de la réservation
-     * @return true si la réservation existe, false sinon.
-     * @throws ServiceException s'il y a une erreur avec la base de données
+     * @return La variable d'instance <code>this.livreDAO</code>
      */
-    public boolean existe(final int idReservation) throws ServiceException {
-        try (final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(ReservationService.QUERY_GET);) {
-            boolean reservationExiste = false;
+    private LivreDAO getLivreDAO() {
+        return this.livreDAO;
+    }
 
-            statementExiste.setInt(1,
-                idReservation);
-            try(
-                ResultSet rset = statementExiste.executeQuery()) {
-                reservationExiste = rset.next();
+    /**
+     * Getter de la variable d'instance <code>this.reservationDAO</code>.
+     *
+     * @return La variable d'instance <code>this.reservationDAO</code>
+     */
+    private ReservationDAO getReservationDAO() {
+        return this.reservationDAO;
+    }
+
+    /**
+     * Ajoute une nouvelle réservation.
+     *
+     * @param reservationDTO - La réservation à ajouter
+     * @throws ServiceException - S'il y a une erreur avec la base de données
+     */
+    public void add(ReservationDTO reservationDTO) throws ServiceException {
+        try {
+            getReservationDAO().add(reservationDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Lit une réservation. Si aucune réservation n'est trouvée, null est retourné.
+     *
+     * @param idReservation - L'ID de la réservation à lire
+     * @return La réservation lue ; null sinon
+     * @throws ServiceException - S'il y a une erreur avec la base de données
+     */
+    public ReservationDTO read(int idReservation) throws ServiceException {
+        ReservationDTO reservationDTO = null;
+        try {
+            reservationDTO = getReservationDAO().read(idReservation);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+        return reservationDTO;
+    }
+
+    /**
+     * Met à jour une réservation.
+     *
+     * @param reservationDTO - La réservation à mettre à jour
+     * @throws ServiceException - S'il y a une erreur avec la base de données
+     */
+    public void update(ReservationDTO reservationDTO) throws ServiceException {
+        try {
+            getReservationDAO().update(reservationDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Supprime une réservation.
+     *
+     * @param reservationDTO - La réservation à supprimer
+     * @throws ServiceException - S'il y a une erreur avec la base de données
+     */
+    public void delete(ReservationDTO reservationDTO) throws ServiceException {
+        try {
+            getReservationDAO().delete(reservationDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Trouve toutes les réservations.
+     *
+     * @return La liste des réservations ; une liste vide sinon
+     * @throws ServiceException - S'il y a une erreur avec la base de données
+     */
+    public List<ReservationDTO> getAll() throws ServiceException {
+        List<ReservationDTO> listReservationDTO = Collections.EMPTY_LIST;
+        try {
+            listReservationDTO = getReservationDAO().getAll();
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+        return listReservationDTO;
+    }
+
+    /**
+     * Trouve les réservations à partir d'un livre.
+     *
+     * @param livreDTO - Le livre à utiliser
+     * @return La liste des réservations correspondantes, triée par date de réservation croissante ; une liste vide sinon
+     * @throws ServiceException - S'il y a une erreur avec la base de données
+     */
+    public List<ReservationDTO> findByLivre(LivreDTO livreDTO) throws ServiceException {
+        List<ReservationDTO> listReservationDTO = Collections.EMPTY_LIST;
+        try {
+            listReservationDTO = getReservationDAO().findByLivre(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+        return listReservationDTO;
+    }
+
+    /**
+     * Trouve les réservations à partir d'un membre.
+     *
+     * @param membreDTO - Le membre à utiliser
+     * @return La liste des réservations correspondantes ; une liste vide sinon
+     * @throws ServiceException - S'il y a une erreur avec la base de données
+     */
+    public List<ReservationDTO> findByMembre(MembreDTO membreDTO) throws ServiceException {
+        List<ReservationDTO> listReservationDTO = Collections.EMPTY_LIST;
+        try {
+            listReservationDTO = getReservationDAO().findByMembre(membreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+        return listReservationDTO;
+    }
+
+    /**
+     * Réserve un livre.
+     *
+     * @param reservationDTO - La réservation à créer
+     * @param membreDTO - Le membre qui réserve
+     * @param livreDTO - Le livre à réserver
+     * @throws ServiceException - Si la réservation existe déjà, si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore été prêté, si le livre est déjà prêté au membre, si le membre a déjà réservé ce livre ou s'il y a une erreur avec la base de données
+     */
+    public void reserver(ReservationDTO reservationDTO,
+        MembreDTO membreDTO,
+        LivreDTO livreDTO) throws ServiceException {
+        try {
+            if(getReservationDAO().read(reservationDTO.getIdReservation()) != null) {
+                throw new ServiceException("La réservation "
+                    + reservationDTO.getIdReservation()
+                    + " existe déjà");
             }
-            return reservationExiste;
-        } catch(SQLException e) {
-            throw new ServiceException(e);
-        }
-    }
 
-    /**
-
-     * Lecture d'une réservation par id.
-     *
-     * @param idReservation l'id de la réservation
-     * @return l'objet représentant la réservation, null si cela n'existe pas.
-     * @throws ServiceException s'il y a une erreur avec la base de données
-     */
-    public ReservationDTO getReservation(final int idReservation) throws ServiceException {
-        
-        try (final PreparedStatement statementExiste = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_GET);) {
-            statementExiste.setInt(1,
-                idReservation);
-            try(final ResultSet resultatReservationListe = statementExiste.executeQuery()) {
-                if(resultatReservationListe.next()) {
-                    final ReservationDTO tupleReservation = new ReservationDTO();
-                    tupleReservation.setIdReservation(resultatReservationListe.getInt(1));
-                    tupleReservation.setIdLivre(resultatReservationListe.getInt(2));
-    
-                    tupleReservation.setIdMembre(resultatReservationListe.getInt(3));
-                    tupleReservation.setDateReservation(resultatReservationListe.getDate(4));
-                    return tupleReservation;
-                }
+            if(getMembreDAO().read(membreDTO.getIdMembre()) == null) {
+                throw new ServiceException("Le membre "
+                    + membreDTO.getIdMembre()
+                    + " n'existe pas");
             }
-        } catch(SQLException e) {
-            throw new ServiceException(e);
-        }
-        
-        return null;
-    }
 
-    /**
-     * Lecture de la première reservation d'un livre.
-     *
-     * @param idLivre l'id du livre
-     * @return l'objet de la premiere reservation du livre, null si cela n'existe pas.
-     * @throws ServiceException s'il y a une erreur avec la base de données
-     */
-    public ReservationDTO getReservationLivre(final int idLivre) throws ServiceException {
-        
-        try (final PreparedStatement stmtExisteLivre = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_EXISTE_LIVRE);) {
-            stmtExisteLivre.setInt(1,
-                idLivre);
-
-            try(final ResultSet resultatReservationGet = stmtExisteLivre.executeQuery();) {
-                if(resultatReservationGet.next()) {
-                    final ReservationDTO tupleReservation = new ReservationDTO();
-                    tupleReservation.setIdReservation(resultatReservationGet.getInt(1));
-                    tupleReservation.setIdLivre(resultatReservationGet.getInt(2));
-    
-                    tupleReservation.setIdMembre(resultatReservationGet.getInt(3));
-                    tupleReservation.setDateReservation(resultatReservationGet.getDate(4));
-                    return tupleReservation;
-                }
+            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+                throw new ServiceException("Le livre "
+                    + livreDTO.getIdLivre()
+                    + " n'existe pas");
             }
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
-        }
-        
-        return null;
-    }
 
-    /**
-     * Lecture de la première reservation d'un livre.
-     *
-     * @param idMembre l'id du membre
-     * @return la premiere reservation du membrem, null si cela n'existe pas.
-     * @throws ServiceException s'il y a une erreur avec la base de données
-     */
-    public ReservationDTO getReservationMembre(final int idMembre) throws ServiceException {
-        
-        try (final PreparedStatement statementExisteMembre = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_EXISTE_MEMBRE);) {
-            statementExisteMembre.setInt(1,
-                idMembre);
+            //livre n'a pas encore été prêté?
 
-            try(final ResultSet resultatReservationGet = statementExisteMembre.executeQuery();) {
-                if(resultatReservationGet.next()) {
-                    final ReservationDTO tupleReservation = new ReservationDTO();
-                    tupleReservation.setIdReservation(resultatReservationGet.getInt(1));
-                    tupleReservation.setIdLivre(resultatReservationGet.getInt(2));
-    
-                    tupleReservation.setIdMembre(resultatReservationGet.getInt(3));
-                    tupleReservation.setDateReservation(resultatReservationGet.getDate(4));
-                    return tupleReservation;
-                }
+            if(!getReservationDAO().findByLivre(livreDTO).isEmpty()) {
+                throw new ServiceException("Le livre "
+                    + livreDTO.getIdLivre()
+                    + " est déjà réservé");
             }
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
-        }
-          
 
-        return null;
-    }
+            getReservationDAO().add(reservationDTO);
 
-    /**
-     * Réservation d'un livre.
-     *
-     * @param idReservation l'id de la réservation à créer
-     * @param idLivre l'id du livre à réserver
-     * @param idMembre l'id du membre à qui sera réservé le livre
-     * @param dateReservation date de la réservation
-     * @throws ServiceException Si la réservation existe déjà, si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore été prêté, si le livre est déjà prêté au membre, si le membre a déjà réservé ce livre ou s'il y a une erreur avec la base de données
-     */
-    public void reserver(final int idReservation,
-        final int idLivre,
-        final int idMembre,
-        final String dateReservation) throws ServiceException {
-        try (final PreparedStatement statementInsert = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_INSERT);) {
-            statementInsert.setInt(1,
-                idReservation);
-            statementInsert.setInt(2,
-                idLivre);
-            statementInsert.setInt(3,
-                idMembre);
-            statementInsert.setString(4,
-                dateReservation);
-            statementInsert.executeUpdate();
-        } catch(SQLException e) {
-            throw new ServiceException(e);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 
     /**
-     * Suppression d'une réservation.
+     * Utilise une réservation.
      *
-     * @param idReservation l'id de la réservation à annuler
-     * @return nombre d'entrées supprimés. Si 0, alors rien n'a été supprimé (car cela n'existe pas).
-     * Si plus que 0, cela veut dire que la reservation a bien été annulée.
-     * @throws ServiceException Si la réservation n'existe pas ou s'il y a une erreur avec la base de données
+     * @param reservationDTO - La réservation à utiliser
+     * @param membreDTO - Le membre qui utilise
+     * @param livreDTO - Le livre à utilise
+     * @throws ServiceException - Si la réservation n'existe pas, si le membre n'existe pas, si le livre n'existe pas, si la réservation n'est pas la première de la liste, si le livre est déjà prété, si le membre a atteint sa limite de prêt ou s'il y a une erreur avec la base de données
      */
-    public int annulerRes(final int idReservation) throws ServiceException {
-        try (final PreparedStatement statementDelete = this.getConnexion().getConnection().prepareStatement(ReservationService.QUERY_DELETE);) {
-            statementDelete.setInt(1,
-                idReservation);
-            return statementDelete.executeUpdate();
-        } catch(SQLException e) {
-            throw new ServiceException(e);
+    public void utiliser(ReservationDTO reservationDTO,
+        MembreDTO membreDTO,
+        LivreDTO livreDTO) throws ServiceException {
+        try {
+            if(getReservationDAO().read(reservationDTO.getIdReservation()) != null) {
+                throw new ServiceException("La réservation "
+                    + reservationDTO.getIdReservation()
+                    + " existe déjà");
+            }
+
+            if(getMembreDAO().read(membreDTO.getIdMembre()) == null) {
+                throw new ServiceException("Le membre "
+                    + membreDTO.getIdMembre()
+                    + " n'existe pas");
+            }
+
+            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+                throw new ServiceException("Le livre "
+                    + livreDTO.getIdLivre()
+                    + " n'existe pas");
+            }
+
+            //livre n'a pas encore été prêté?
+
+            final List<ReservationDTO> listReservationDTO = getReservationDAO().findByLivre(livreDTO);
+            if(listReservationDTO.isEmpty()) {
+                throw new ServiceException("Le livre "
+                    + livreDTO.getIdLivre()
+                    + " n'est pas réservé");
+            }
+
+            if(listReservationDTO.get(0) != reservationDTO) {
+                throw new ServiceException("La réservation "
+                    + reservationDTO.getIdReservation()
+                    + " n'est pas première dansa la liste d'attente");
+            }
+
+            getReservationDAO().update(reservationDTO);
+
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Annule une réservation.
+     *
+     * @param reservationDTO - Le reservation à annuler
+     * @throws ServiceException - Si la réservation n'existe pas ou s'il y a une erreur avec la base de données
+     */
+    public void annuler(ReservationDTO reservationDTO) throws ServiceException {
+        try {
+            if(getReservationDAO().read(reservationDTO.getIdReservation()) == null) {
+                throw new ServiceException("La réservation "
+                    + reservationDTO.getIdReservation()
+                    + " n'existe pas");
+            }
+
+            getReservationDAO().delete(reservationDTO);
+
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 }
