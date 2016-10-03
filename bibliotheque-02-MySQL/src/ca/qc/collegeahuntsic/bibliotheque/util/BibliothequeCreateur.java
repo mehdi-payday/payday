@@ -4,7 +4,6 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
 
-import java.sql.SQLException;
 import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
@@ -42,10 +41,10 @@ public class BibliothequeCreateur {
      * @throws BibliothequeException S'il y a une erreur avec la base de données
      */
     @SuppressWarnings("resource")
-    public BibliothequeCreateur(String typeServeur,
-        String schema,
-        String nomUtilisateur,
-        String motPasse) throws BibliothequeException {
+    public BibliothequeCreateur(final String typeServeur,
+        final String schema,
+        final String nomUtilisateur,
+        final String motPasse) throws BibliothequeException {
         try {
             setConnexion(new Connexion(typeServeur,
                 schema,
@@ -84,7 +83,7 @@ public class BibliothequeCreateur {
      *
      * @param connexion La valeur à utiliser pour la variable d'instance <code>this.connexion</code>
      */
-    private void setConnexion(Connexion connexion) {
+    private void setConnexion(final Connexion connexion) {
         this.connexion = connexion;
     }
 
@@ -102,7 +101,7 @@ public class BibliothequeCreateur {
      *
      * @param livreService La valeur à utiliser pour la variable d'instance <code>this.livreService</code>
      */
-    private void setLivreService(LivreService livreService) {
+    private void setLivreService(final LivreService livreService) {
         this.livreService = livreService;
     }
 
@@ -120,7 +119,7 @@ public class BibliothequeCreateur {
      *
      * @param membreService La valeur à utiliser pour la variable d'instance <code>this.membreService</code>
      */
-    private void setMembreService(MembreService membreService) {
+    private void setMembreService(final MembreService membreService) {
         this.membreService = membreService;
     }
 
@@ -138,7 +137,7 @@ public class BibliothequeCreateur {
      *
      * @param pretService La valeur à utiliser pour la variable d'instance <code>this.pretService</code>
      */
-    private void setPretService(PretService pretService) {
+    private void setPretService(final PretService pretService) {
         this.pretService = pretService;
     }
 
@@ -156,7 +155,7 @@ public class BibliothequeCreateur {
      *
      * @param reservationService La valeur à utiliser pour la variable d'instance <code>this.reservationService</code>
      */
-    private void setReservationService(ReservationService reservationService) {
+    private void setReservationService(final ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 
@@ -170,8 +169,8 @@ public class BibliothequeCreateur {
     public void commit() throws BibliothequeException {
         try {
             getConnexion().commit();
-        } catch(SQLException sqlException) {
-            throw new BibliothequeException(sqlException);
+        } catch(ConnexionException connexionException) {
+            throw new BibliothequeException(connexionException);
         }
     }
 
@@ -183,8 +182,8 @@ public class BibliothequeCreateur {
     public void rollback() throws BibliothequeException {
         try {
             getConnexion().rollback();
-        } catch(SQLException sqlException) {
-            throw new BibliothequeException(sqlException);
+        } catch(ConnexionException connexionException) {
+            throw new BibliothequeException(connexionException);
         }
     }
 
