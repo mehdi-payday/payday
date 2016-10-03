@@ -40,9 +40,9 @@ public class ReservationService extends Service {
         MembreDAO membreDAO,
         LivreDAO livreDAO) {
         super();
-        this.reservationDAO = reservationDAO;
-        this.membreDAO = membreDAO;
-        this.livreDAO = livreDAO;
+        setReservationDAO(reservationDAO);
+        setMembreDAO(membreDAO);
+        setLivreDAO(livreDAO);
     }
 
     /**
@@ -70,6 +70,33 @@ public class ReservationService extends Service {
      */
     private ReservationDAO getReservationDAO() {
         return this.reservationDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.reservationDAO</code>.
+     *
+     * @param reservationDAO La valeur à utiliser pour la variable d'instance <code>this.reservationDAO</code>
+     */
+    private void setReservationDAO(ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.membreDAO</code>.
+     *
+     * @param membreDAO La valeur à utiliser pour la variable d'instance <code>this.membreDAO</code>
+     */
+    private void setMembreDAO(MembreDAO membreDAO) {
+        this.membreDAO = membreDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.livreDAO</code>.
+     *
+     * @param livreDAO La valeur à utiliser pour la variable d'instance <code>this.livreDAO</code>
+     */
+    private void setLivreDAO(LivreDAO livreDAO) {
+        this.livreDAO = livreDAO;
     }
 
     /**
