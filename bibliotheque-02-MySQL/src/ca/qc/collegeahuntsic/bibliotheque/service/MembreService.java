@@ -4,11 +4,13 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.service;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
+import java.util.List;
+import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
 /**
@@ -19,186 +21,342 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
  */
 
 public class MembreService extends Service {
-
     private static final long serialVersionUID = 1L;
 
-    private static final String QUERY_GET = "select idMembre, nom, telephone, limitePret, nbpret from membre where idmembre = ?";
-    private static final String QUERY_INSERT = "insert into membre (idmembre, nom, telephone, limitepret, nbpret) " + "values (?,?,?,?,0)";
-    private static final String QUERY_UPDATE_INCR_NB_PRET = "update membre set nbpret = nbPret + 1 where idMembre = ?";
-    private static final String QUERY_UPDATE_DCR_NB_PRET = "update membre set nbpret = nbPret - 1 where idMembre = ?";
-    private static final String QUERY_DELETE = "delete from membre where idmembre = ?";
+    private LivreDAO livreDAO;
 
-    private Connexion connexion;
+    private MembreDAO membreDAO;
+
+    private ReservationDAO reservationDAO;
 
     /**
-     *
      * Crée le service de la table membre.
      *
-     * @param connexion connexion à la base de données
-     * @throws ServiceException erreur de la base de données
+     * @param livreDAO Le DAO de la table livre.
+     * @param membreDAO Le DAO de la table membre.
+     * @param reservationDAO Le DAO de la table reservation
      */
-
-    public MembreService(Connexion connexion) throws ServiceException {
-        this.setConnexion(connexion);
+    public MembreService(final LivreDAO livreDAO,
+        final MembreDAO membreDAO,
+        ReservationDAO reservationDAO) {
+        setLivreDAO(livreDAO);
+        setMembreDAO(membreDAO);
+        setReservationDAO(reservationDAO);
     }
 
     /**
+     * Ajoute un nouveau membre.
      *
-     * Retourne la connexion associee.
-     *
-     * @return la {@link java.sql.Connection} connexion à la base de données
+     * @param membreDTO Le membre à ajouter.
+     * @throws ServiceException  S'il y a une erreur avec la base de données.
      */
-    public Connexion getConnexion() {
-        return this.connexion;
-    }
-    
-    
-    /**
-     * 
-     * Changer la connexion à la base de données.
-     *
-     * @param connexion la connexion à la base de données
-     */
-    public void setConnexion(Connexion connexion)  {
-        this.connexion = connexion;
+    public void add(MembreDTO membreDTO) throws ServiceException {
+        try {
+            getMembreDAO().add(membreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
     }
 
-
     /**
+     * Supprime un membre.
      *
-     * Verifie si un membre existe.
-     *
-     * @param idMembre l'id du membre
-     * @return true si le membre existe, false sinon
-     * @throws ServiceException s'il y a une erreur de la base de données
+     * @param membreDTO Le membre à supprimer.
+     * @throws ServiceException Si le membre a encore des prêts, s'il a des
+     *      réservations ou s'il y a une erreur avec la base de données.
      */
-    public boolean existe(int idMembre) throws ServiceException {
-        boolean membreExiste = false;
-        
-        try(final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(MembreService.QUERY_GET)) {
-            statementExiste.setInt(1,
-                idMembre);
-            try(final ResultSet resultatLivreExiste = statementExiste.executeQuery();) {
-                membreExiste = resultatLivreExiste.next();
+    public void delete(MembreDTO membreDTO) throws ServiceException {
+        try {
+            if(membreDTO.getNbPret() > 0) {
+                throw new ServiceException("Le membre avec le id: "
+                    + membreDTO.getIdMembre()
+                    + " a toujours "
+                    + membreDTO.getNbPret()
+                    + " en sa possession.");
             }
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
-        }
-
-        return membreExiste;
-    }
-
-    /**
-     *
-     * Lecture d'un membre.
-     *
-     * @param idMembre l'id du membre
-     * @return l'objet représentant le membre, null s'il n'existe pas.
-     * @throws ServiceException s'il y a une erreur avec la base de données
-     */
-    public MembreDTO getMembre(int idMembre) throws ServiceException {
-        
-        try(final PreparedStatement statementExiste = this.connexion.getConnection().prepareStatement(MembreService.QUERY_GET)) {
-            statementExiste.setInt(1,
-                idMembre);
-            try(ResultSet resultatMembreGet = statementExiste.executeQuery();) {
-                if(resultatMembreGet.next()) {
-                    final MembreDTO tupleMembre = new MembreDTO();
-                    tupleMembre.setIdMembre(idMembre);
-                    tupleMembre.setNom(resultatMembreGet.getString(2));
-                    tupleMembre.setTelephone(resultatMembreGet.getLong(3));
-                    tupleMembre.setLimitePret(resultatMembreGet.getInt(4));
-                    tupleMembre.setNbPret(resultatMembreGet.getInt(5));
-                    return tupleMembre;
-                }
+            if(!getReservationDAO().findByMembre(membreDTO).isEmpty()) {
+                throw new ServiceException("Le membre avec le id: "
+                    + membreDTO.getIdMembre()
+                    + " a toujours des reservations.");
             }
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+            getMembreDAO().delete(membreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
-        return null;
     }
 
     /**
+     * Lit un membre. Si aucun membre n'est trouvé, null est retourné.
      *
-     * Ajout d'un nouveau membre.
-     *
-     * @param idMembre l'id du nouveau membre
-     * @param nom le nom du membre
-     * @param telephone le numéro de téléphone
-     * @param limitePret le nombre de prêts maximums auquel le membre a droit
-     * @throws ServiceException s'il y a une erreur avec la base de données
+     * @param idMembre L'ID du membre à lire.
+     * @return Le membre lu ; null sinon.
+     * @throws ServiceException S'il y a une erreur avec la base de données.
      */
-    public void inscrire(int idMembre,
-        String nom,
-        long telephone,
-        int limitePret) throws ServiceException {
-        try(final PreparedStatement statementInsert = this.connexion.getConnection().prepareStatement(MembreService.QUERY_INSERT)) {
-            statementInsert.setInt(1,
-                idMembre);
-            statementInsert.setString(2,
-                nom);
-            statementInsert.setLong(3,
-                telephone);
-            statementInsert.setInt(4,
-                limitePret);
-            statementInsert.executeUpdate();
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+    public MembreDTO read(int idMembre) throws ServiceException {
+        try {
+            return getMembreDAO().read(idMembre);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 
     /**
+     * Met à jour un membre.
      *
+     * @param membreDTO Le membre à mettre à jour.
+     * @throws ServiceException  S'il y a une erreur avec la base de données.
+     */
+    public void update(MembreDTO membreDTO) throws ServiceException {
+        try {
+            getMembreDAO().update(membreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Trouve tous les membres.
+     *
+     * @return La liste des membres ; une liste vide sinon.
+     * @throws ServiceException S'il y a une erreur avec la base de données.
+     */
+    public List<MembreDTO> getAll() throws ServiceException {
+        try {
+            return getMembreDAO().getAll();
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Inscrit un membre.
+     *
+     * @param membreDTO Le membre à ajouter.
+     * @throws ServiceException Si le membre existe déjà ou s'il y a une erreur avec la base de données.
+     */
+    public void inscrire(MembreDTO membreDTO) throws ServiceException {
+        try {
+            if(getMembreDAO().read(membreDTO.getIdMembre()) == null) {
+                throw new ServiceException("Le membre avec le id: "
+                    + membreDTO.getIdMembre()
+                    + " n'existe pas.");
+            }
+            add(membreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
+     * Retourne un livre.
+     *
+     * @param membreDTO Le membre qui retourne.
+     * @param livreDTO Le livre à retourner.
+     * @return
+     * @throws ServiceException Si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore été prêté,
+     *      si le livre a été prêté à quelqu'un d'autre ou s'il y a une erreur avec la base de données.
+     */
+    public void desinscrire(MembreDTO membreDTO,
+        LivreDTO livreDTO) throws ServiceException {
+        try {
+            if(getMembreDAO().read(membreDTO.getIdMembre()) == null) {
+                throw new ServiceException("Le membre avec le id: "
+                    + membreDTO.getIdMembre()
+                    + " n'existe pas.");
+            }
+            delete(membreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
+    }
+
+    /**
      * Emprunte un livre.
      *
-     * @param idMembre l'id du membre qui emprunte
-     * @return 1 si le nombre de prêts du membre a été incrémenté, 0 si le membre n'existe pas
-     * @throws ServiceException s'il y a une erreur dans la base de données
+     * @param membreDTO Le membre qui emprunte.
+     * @param livreDTO Le livre à emprunter.
+     *
+     * @throws ServiceException Si le membre n'existe pas,
+     *      si le livre n'existe pas, si le livre a été prêté, si le livre a été réservé, si le membre a atteint sa limite de prêt ou s'il y a une erreur avec la base de données
      */
-    public int preter(int idMembre) throws ServiceException {
-        try(final PreparedStatement statementUpdateIncrNbPret = this.getConnexion().getConnection().prepareStatement(MembreService.QUERY_UPDATE_INCR_NB_PRET)) {
-            statementUpdateIncrNbPret.setInt(1,
-                idMembre);
-            return statementUpdateIncrNbPret.executeUpdate();
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+    public void emprunter(MembreDTO membreDTO,
+        LivreDTO livreDTO) throws ServiceException {
+        try {
+            if(getMembreDAO().read(membreDTO.getIdMembre()) == null) {
+                throw new ServiceException("Le membre avec le id: "
+                    + membreDTO.getIdMembre()
+                    + " n'existe pas.");
+            }
+            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " n'existe pas.");
+            }
+            if(livreDTO.getIdMembre() != 0) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " est deja prete.");
+            }
+            if(getReservationDAO().findByLivre(livreDTO).isEmpty()) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " est reserve.");
+            }
+            if(membreDTO.getNbPret() == membreDTO.getLimitePret()) {
+                throw new ServiceException("Le membre avec le id: "
+                    + membreDTO.getIdMembre()
+                    + " a atteint sa limite de pret.");
+            }
+            membreDTO.setNbPret(membreDTO.getNbPret()
+                + 1);
+            update(membreDTO);
+            livreDTO.setIdMembre(membreDTO.getIdMembre());
+            getLivreDAO().emprunter(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 
     /**
+     * Renouvelle le prêt d'un livre.
      *
-     * Désinscrire un membre.
+     * @param membreDTO Le membre qui renouvelle.
+     * @param livreDTO Le livre à renouveler.
      *
-     * @param idMembre l'id du membre qui emprunte
-     * @return 1 si le nombre de prêts du membre a été décrémenté, 0 si le membre n'existe pas
-     * @throws ServiceException s'il y a une erreur avec la base de données
+     * @throws ServiceException Si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore été prêté,
+     *      si le livre a été prêté à quelqu'un d'autre, si le livre a été réservé ou s'il y a une erreur avec la base de données
      */
-    public int retourner(int idMembre) throws ServiceException {
-        try(final PreparedStatement statementUpdateDecrNbPret = this.getConnexion().getConnection().prepareStatement(MembreService.QUERY_UPDATE_DCR_NB_PRET)) {
-            statementUpdateDecrNbPret.setInt(1,
-                idMembre);
-            return statementUpdateDecrNbPret.executeUpdate();
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+    public void renouveller(MembreDTO membreDTO,
+        LivreDTO livreDTO) throws ServiceException {
+        try {
+            if(getMembreDAO().read(membreDTO.getIdMembre()) == null) {
+                throw new ServiceException("Le membre avec le id: "
+                    + membreDTO.getIdMembre()
+                    + " n'existe pas.");
+            }
+            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " n'existe pas.");
+            }
+            if(livreDTO.getIdMembre() == 0) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " n'est pas presentement prete.");
+            }
+            if(livreDTO.getIdMembre() != membreDTO.getIdMembre()) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " a ete prete a quelqu'un d'autre.");
+            }
+            if(getReservationDAO().findByLivre(livreDTO).isEmpty()) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " est reserve.");
+            }
+            getLivreDAO().emprunter(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 
     /**
+     * Retourne un livre.
      *
-     * Suppression d'un membre.
-     * TODO : soulever une exception si le membre a encore de prêts / réservations
+     * @param membreDTO Le membre qui retourne.
+     * @param livreDTO  Le livre à retourner.
      *
-     * @param idMembre l'id du membre qui emprunte
-     * @return 1 si le membre a bien été supprimé. 0 si il n'existe pas.
-     * @throws ServiceException Si le membre a encore des prêts, s'il a des réservations ou s'il y a une erreur avec la base de données
+     * @throws ServiceException Si le membre n'existe pas, si le livre n'existe pas,
+     *      si le livre n'a pas encore été prêté, si le livre a été prêté à quelqu'un d'autre ou s'il y a une erreur avec la base de données
      */
-    public int desinscrire(int idMembre) throws ServiceException {
-        try(final PreparedStatement statementDelete = this.getConnexion().getConnection().prepareStatement(MembreService.QUERY_DELETE)) {
-            statementDelete.setInt(1,
-                idMembre);
-            return statementDelete.executeUpdate();
-        } catch(SQLException sqlException) {
-            throw new ServiceException(sqlException);
+    public void retourner(MembreDTO membreDTO,
+        LivreDTO livreDTO) throws ServiceException {
+        try {
+            if(getMembreDAO().read(membreDTO.getIdMembre()) == null) {
+                throw new ServiceException("Le membre avec le id: "
+                    + membreDTO.getIdMembre()
+                    + " n'existe pas.");
+            }
+            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " n'existe pas.");
+            }
+            if(livreDTO.getIdMembre() == 0) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " n'est pas presentement prete.");
+            }
+            if(livreDTO.getIdMembre() != membreDTO.getIdMembre()) {
+                throw new ServiceException("Le livre avec le id: "
+                    + livreDTO.getIdLivre()
+                    + " a ete prete a quelqu'un d'autre.");
+            }
+            membreDTO.setNbPret(membreDTO.getNbPret()
+                - 1);
+            update(membreDTO);
+            livreDTO.setIdMembre(0);
+            getLivreDAO().retourner(livreDTO);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
+
+    // Region Getters and Setters
+
+    /**
+     * Getter de la variable d'instance <code>this.livreDAO</code>.
+     *
+     * @return La variable d'instance <code>this.livreDAO</code>
+     */
+    private LivreDAO getLivreDAO() {
+        return this.livreDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.livreDAO</code>.
+     *
+     * @param livreDAO La valeur à utiliser pour la variable d'instance <code>this.livreDAO</code>
+     */
+    private void setLivreDAO(final LivreDAO livreDAO) {
+        this.livreDAO = livreDAO;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.membreDAO</code>.
+     *
+     * @return La variable d'instance <code>this.membreDAO</code>
+     */
+    private MembreDAO getMembreDAO() {
+        return this.membreDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.membreDAO</code>.
+     *
+     * @param membreDAO La valeur à utiliser pour la variable d'instance <code>this.membreDAO</code>
+     */
+    private void setMembreDAO(final MembreDAO membreDAO) {
+        this.membreDAO = membreDAO;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.reservationDAO</code>.
+     *
+     * @return La variable d'instance <code>this.reservationDAO</code>
+     */
+    private ReservationDAO getReservationDAO() {
+        return this.reservationDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.reservationDAO</code>.
+     *
+     * @param reservationDAO La valeur à utiliser pour la variable d'instance <code>this.reservationDAO</code>
+     */
+    private void setReservationDAO(final ReservationDAO reservationDAO) {
+        this.reservationDAO = reservationDAO;
+    }
+
+    // EndRegion
 }
