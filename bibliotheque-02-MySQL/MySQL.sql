@@ -15,9 +15,9 @@ CREATE TABLE livre (
             idLivre         int(3) check(idLivre > 0) ,
             titre           varchar(10) NOT NULL,
             auteur          varchar(10) NOT NULL,
-            dateAcquisition timestamp(3) not null,
+            dateAcquisition timestamp  DEFAULT CURRENT_TIMESTAMP,
             idMembre        int(3) , 
-            datePret        timestamp(3) ,
+            datePret        timestamp NULL DEFAULT NULL,
             CONSTRAINT cleLivre PRIMARY KEY (idLivre),
             CONSTRAINT refPretMembre FOREIGN KEY (idMembre) REFERENCES membre(idMembre)
             );
@@ -26,7 +26,7 @@ CREATE TABLE reservation (
             idReservation   int(3) ,
             idMembre        int(3) ,
             idLivre         int(3) ,
-            dateReservation timestamp(3),
+            dateReservation timestamp DEFAULT CURRENT_TIMESTAMP,
            CONSTRAINT cleReservation PRIMARY KEY (idReservation) ,
             CONSTRAINT cleCandidateReservation UNIQUE (idMembre,idLivre) ,
             CONSTRAINT refReservationMembre FOREIGN KEY (idMembre) REFERENCES membre(idMembre)
