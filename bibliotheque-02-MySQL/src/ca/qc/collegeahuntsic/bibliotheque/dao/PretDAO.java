@@ -25,6 +25,12 @@ public class PretDAO extends DAO {
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     *
+     * Initialise PretDAO avec la connexion
+     *
+     * @param connexion {@link java.sql.connexion} la connexion à la base de données
+     */
     public PretDAO(Connexion connexion) {
         super(connexion);
     }

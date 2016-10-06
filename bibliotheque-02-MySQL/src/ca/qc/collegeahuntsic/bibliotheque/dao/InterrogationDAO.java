@@ -54,33 +54,34 @@ public class InterrogationDAO extends DAO {
      * @throws DAOException si erreur de SQL throw une SQLException.
      */
     public void listerLivresTitre(String mot) throws DAOException {
-        PreparedStatement stmtLivresTitreMot = null;
-        ResultSet rsetLivresTitreMot = null;
-        try {
-            stmtLivresTitreMot = this.connexion.getConnection().prepareStatement(InterrogationDAO.QUERYLIVRESTITRESMOTS);
+        try(
+            PreparedStatement stmtLivresTitreMot = this.connexion.getConnection().prepareStatement(InterrogationDAO.QUERYLIVRESTITRESMOTS);) {
+
             stmtLivresTitreMot.setString(1,
                 "%"
                     + mot
                     + "%");
-            rsetLivresTitreMot = stmtLivresTitreMot.executeQuery();
-            int idMembre;
-            System.out.println("idLivre titre auteur idMembre dateRetour");
-            while(rsetLivresTitreMot.next()) {
-                System.out.print(rsetLivresTitreMot.getInt(1)
-                    + " "
-                    + rsetLivresTitreMot.getString(2)
-                    + " "
-                    + rsetLivresTitreMot.getString(3));
-                idMembre = rsetLivresTitreMot.getInt(4);
-                if(!rsetLivresTitreMot.wasNull()) {
-                    System.out.print(" "
-                        + idMembre
+            try(
+                ResultSet rsetLivresTitreMot = stmtLivresTitreMot.executeQuery();) {
+                int idMembre;
+                System.out.println("idLivre titre auteur idMembre dateRetour");
+                while(rsetLivresTitreMot.next()) {
+                    System.out.print(rsetLivresTitreMot.getInt(1)
                         + " "
-                        + rsetLivresTitreMot.getDate(5));
+                        + rsetLivresTitreMot.getString(2)
+                        + " "
+                        + rsetLivresTitreMot.getString(3));
+                    idMembre = rsetLivresTitreMot.getInt(4);
+                    if(!rsetLivresTitreMot.wasNull()) {
+                        System.out.print(" "
+                            + idMembre
+                            + " "
+                            + rsetLivresTitreMot.getDate(5));
+                    }
+                    System.out.println();
                 }
-                System.out.println();
             }
-            rsetLivresTitreMot.close();
+
             this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {
@@ -90,23 +91,7 @@ public class InterrogationDAO extends DAO {
             }
             throw new DAOException(connexionException);
         } catch(SQLException sqlException) {
-            try {
-                rsetLivresTitreMot.close();
-            } catch(SQLException sqlException2) {
-                sqlException2.printStackTrace();
-            }
             throw new DAOException(sqlException);
-        } finally {
-            try {
-                if(stmtLivresTitreMot != null) {
-                    stmtLivresTitreMot.close();
-                }
-                if(rsetLivresTitreMot != null) {
-                    rsetLivresTitreMot.close();
-                }
-            } catch(SQLException sqlException) {
-                sqlException.printStackTrace();
-            }
         }
     }
 
@@ -121,7 +106,7 @@ public class InterrogationDAO extends DAO {
         try {
             stmtListeTousLivres = this.connexion.getConnection().prepareStatement(this.qUERYLISTETOUSLIVRES);
             rsetListeTousLivres = stmtListeTousLivres.executeQuery();
-
+    
             System.out.println("idLivre titre auteur idMembre datePret");
             int idMembre;
             while(rsetListeTousLivres.next()) {

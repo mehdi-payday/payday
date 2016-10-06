@@ -11,6 +11,8 @@ import java.io.Serializable;
  * @author Mehdi Hamidi
  */
 public class PretService implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     /**
      *Crée le service de la table pret.
      */
