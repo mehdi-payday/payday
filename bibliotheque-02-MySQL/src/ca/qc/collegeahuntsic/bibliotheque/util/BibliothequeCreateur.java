@@ -44,15 +44,17 @@ public class BibliothequeCreateur {
         final String schema,
         final String nomUtilisateur,
         final String motPasse) throws BibliothequeException {
-        try(
+        try {
             Connexion new_connexion = new Connexion(typeServeur,
                 schema,
                 nomUtilisateur,
-                motPasse)) {
+                motPasse);
             setConnexion(new_connexion);
+
             final LivreDAO livreDAO = new LivreDAO(getConnexion());
             final MembreDAO membreDAO = new MembreDAO(getConnexion());
             final ReservationDAO reservationDAO = new ReservationDAO(getConnexion());
+
             setLivreService(new LivreService(livreDAO,
                 membreDAO,
                 reservationDAO));
@@ -65,9 +67,6 @@ public class BibliothequeCreateur {
                 livreDAO));
         } catch(ConnexionException connexionException) {
             throw new BibliothequeException(connexionException);
-        } catch(Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
     }
 

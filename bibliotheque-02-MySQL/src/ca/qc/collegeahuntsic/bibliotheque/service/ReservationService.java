@@ -238,13 +238,15 @@ public class ReservationService extends Service {
                     + " n'existe pas");
             }
 
-            //livre n'a pas encore été prêté?
+            reservationDTO.setIdLivre(livreDTO.getIdLivre());
+            reservationDTO.setIdMembre(membreDTO.getIdMembre());
 
+            /*
             if(!getReservationDAO().findByLivre(livreDTO).isEmpty()) {
                 throw new ServiceException("Le livre "
                     + livreDTO.getIdLivre()
                     + " est déjà réservé");
-            }
+            }*/
 
             getReservationDAO().add(reservationDTO);
 
@@ -264,42 +266,61 @@ public class ReservationService extends Service {
     public void utiliser(ReservationDTO reservationDTO,
         MembreDTO membreDTO,
         LivreDTO livreDTO) throws ServiceException {
+
+        ReservationDTO realReservationDTO = null;
+        MembreDTO realMembreDTO = null;
+        LivreDTO realLivreDTO = null;
         try {
-            if(getReservationDAO().read(reservationDTO.getIdReservation()) != null) {
+            realMembreDTO = getMembreDAO().read(membreDTO.getIdMembre());
+            realLivreDTO = getLivreDAO().read(livreDTO.getIdLivre());
+            realReservationDTO = getReservationDAO().read(reservationDTO.getIdReservation());
+        } catch(DAOException e) {
+            throw new ServiceException(e);
+        }
+
+        try {
+            if(realReservationDTO == null) {
                 throw new ServiceException("La réservation "
                     + reservationDTO.getIdReservation()
-                    + " existe déjà");
+                    + " n'existe pas");
             }
 
-            if(getMembreDAO().read(membreDTO.getIdMembre()) == null) {
+            if(realMembreDTO == null) {
                 throw new ServiceException("Le membre "
                     + membreDTO.getIdMembre()
                     + " n'existe pas");
             }
 
-            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+            if(realLivreDTO == null) {
                 throw new ServiceException("Le livre "
                     + livreDTO.getIdLivre()
                     + " n'existe pas");
             }
 
-            //livre n'a pas encore été prêté?
+            // le livre n'a pas encore été réservé ?
 
-            final List<ReservationDTO> listReservationDTO = getReservationDAO().findByLivre(livreDTO);
+            final List<ReservationDTO> listReservationDTO = getReservationDAO().findByLivre(realLivreDTO);
             if(listReservationDTO.isEmpty()) {
                 throw new ServiceException("Le livre "
                     + livreDTO.getIdLivre()
                     + " n'est pas réservé");
             }
 
-            if(listReservationDTO.get(0) != reservationDTO) {
+            if(listReservationDTO.get(0).getIdReservation() != realReservationDTO.getIdReservation()) {
                 throw new ServiceException("La réservation "
                     + reservationDTO.getIdReservation()
-                    + " n'est pas première dansa la liste d'attente");
+                    + " n'est pas première dans la liste d'attente");
             }
 
-            getReservationDAO().update(reservationDTO);
+            //getReservationDAO().update(realReservationDTO);
 
+            MembreService membreService = new MembreService(this.livreDAO,
+                this.membreDAO,
+                this.reservationDAO);
+            membreService.emprunter(realMembreDTO,
+                realLivreDTO);
+
+            getReservationDAO().delete(realReservationDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }

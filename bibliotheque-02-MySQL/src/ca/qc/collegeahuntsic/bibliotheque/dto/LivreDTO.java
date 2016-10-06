@@ -23,7 +23,7 @@ public class LivreDTO extends DTO {
 
     private Timestamp dateAcquisition;
 
-    private int idMembre;
+    private int idMembre = 0;
 
     private Timestamp datePret;
 

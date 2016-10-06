@@ -26,7 +26,7 @@ public class ReservationDAO extends DAO {
 
     private static final long serialVersionUID = 1L;
 
-    private static final String ADD_REQUEST = "INSERT INTO Reservation (idReservation,"
+    private static final String ADD_REQUEST = "INSERT INTO reservation (idReservation,"
         + "                                                             idLivre, "
         + "                                                             idMembre, "
         + "                                                             dateReservation)"
@@ -35,14 +35,14 @@ public class ReservationDAO extends DAO {
         + "                                                             ?, "
         + "                                                             ?)";
 
-    private static final String DELETE_REQUEST = "DELETE FROM Reservation"
+    private static final String DELETE_REQUEST = "DELETE FROM reservation"
         + "                                           WHERE idReservation = ?";
 
     private static final String FIND_BY_LIVRE_REQUEST = "SELECT idReservation, "
         + "                                                     idLivre, "
         + "                                                     idMembre, "
         + "                                                     dateReservation "
-        + "                                              FROM Reservation "
+        + "                                              FROM reservation "
         + "                                              WHERE idLivre = ?"
         + "                                              ORDER BY dateReservation ASC";
 
@@ -50,23 +50,23 @@ public class ReservationDAO extends DAO {
         + "                                                      idLivre, "
         + "                                                      idMembre, "
         + "                                                      dateReservation "
-        + "                                               FROM Reservation "
+        + "                                               FROM reservation "
         + "                                               WHERE idMembre = ?";
 
     private static final String GET_ALL_REQUEST = "SELECT idReservation, "
         + "                                               idLivre, "
         + "                                               idMembre, "
         + "                                               dateReservation "
-        + "                                        FROM Reservation";
+        + "                                        FROM reservation";
 
     private static final String READ_REQUEST = "SELECT idReservation, "
         + "                                            idLivre, "
         + "                                            idMembre, "
         + "                                            dateReservation "
-        + "                                     FROM Reservation "
+        + "                                     FROM reservation "
         + "                                     WHERE idReservation = ?";
 
-    private static final String UPDATE_REQUEST = "UPDATE Reservation"
+    private static final String UPDATE_REQUEST = "UPDATE reservation"
         + "                                       SET idLivre = ?, "
         + "                                           idMembre = ?, "
         + "                                           dateReservation = ? "
@@ -210,7 +210,7 @@ public class ReservationDAO extends DAO {
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
     public List<ReservationDTO> findByLivre(LivreDTO livreDTO) throws DAOException {
-        final List<ReservationDTO> reservations = Collections.emptyList();
+        final ArrayList<ReservationDTO> reservations = new ArrayList<>();
         try(
             PreparedStatement findByLivrePreparedStatement = getConnection().prepareStatement(ReservationDAO.FIND_BY_LIVRE_REQUEST)) {
             findByLivrePreparedStatement.setInt(1,
@@ -221,7 +221,7 @@ public class ReservationDAO extends DAO {
                     final ReservationDTO reservationDTO = new ReservationDTO();
                     reservationDTO.setIdReservation(resultSet.getInt(1));
                     reservationDTO.setIdLivre(resultSet.getInt(2));
-                    reservationDTO.setIdLivre(resultSet.getInt(2));
+                    reservationDTO.setIdMembre(resultSet.getInt(3));
                     reservationDTO.setDateReservation(resultSet.getTimestamp(4));
 
                     reservations.add(reservationDTO);

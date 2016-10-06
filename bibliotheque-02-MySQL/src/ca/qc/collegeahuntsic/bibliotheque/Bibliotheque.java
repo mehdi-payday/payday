@@ -43,7 +43,7 @@ import ca.qc.collegeahuntsic.bibliotheque.util.FormatteurDate;
  * @author Gilles Bénichou
  */
 public final class Bibliotheque {
-    private static BibliothequeCreateur gestionnaireBibliotheque;
+    private static BibliothequeCreateur gestionnaireBibliotheque = null;
 
     /**
      * Constructeur privé pour empêcher toute instanciation.
@@ -56,9 +56,9 @@ public final class Bibliotheque {
      * Crée une connexion sur la base de données, traite toutes les transactions et détruit la connexion.
      *
      * @param arguments Les arguments du main
-     * @throws Exception Si une erreur survient
+     * @throws BibliothequeException Si une erreur avec le gestionnaire de biblio survient
      */
-    public static void main(String[] arguments) throws Exception {
+    public static void main(String[] arguments) throws BibliothequeException {
         // Validation du nombre de paramètres
         if(arguments.length < 5) {
             System.out.println("Usage: java Bibliotheque <serveur> <bd> <user> <password> <fichier-transactions>");
@@ -66,37 +66,47 @@ public final class Bibliotheque {
             return;
         }
 
-        try {
-            // Ouverture du fichier de transactions
-            final InputStream sourceTransaction = Bibliotheque.class.getResourceAsStream("/"
-                + arguments[4]);
-            try(
-                BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))) {
+        // Ouverture du fichier de transactions
 
-                Bibliotheque.gestionnaireBibliotheque = new BibliothequeCreateur(arguments[0],
-                    arguments[1],
-                    arguments[2],
-                    arguments[3]);
-                Bibliotheque.traiterTransactions(reader);
-            }
-        } catch(Exception exception) {
-            Bibliotheque.gestionnaireBibliotheque.rollback();
-            exception.printStackTrace(System.out);
-        } finally {
-            Bibliotheque.gestionnaireBibliotheque.close();
+        String serveur = arguments[0];
+        String bd = arguments[1];
+        String user = arguments[2];
+        String password = arguments[3];
+        String transaction_filename = arguments[4];
+
+        final InputStream sourceTransaction = Bibliotheque.class.getResourceAsStream(transaction_filename);
+        try(
+            BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))) {
+
+            Bibliotheque.gestionnaireBibliotheque = new BibliothequeCreateur(serveur,
+                bd,
+                user,
+                password);
+
+            Bibliotheque.traiterTransactions(reader);
+        } catch(IOException e) {
+            System.out.println("Cannot read the file "
+                + arguments[4]);
+            e.printStackTrace();
         }
+
     }
 
     /**
      * Traite le fichier de transactions.
      *
      * @param reader Le flux d'entrée à lire
-     * @throws Exception Si une erreur survient
+     * @throws BibliothequeException Si une erreur survient
      */
-    private static void traiterTransactions(BufferedReader reader) throws Exception {
+    private static void traiterTransactions(BufferedReader reader) throws BibliothequeException {
         Bibliotheque.afficherAide();
         System.out.println("\n\n\n");
-        String transaction = Bibliotheque.lireTransaction(reader);
+        String transaction;
+        try {
+            transaction = Bibliotheque.lireTransaction(reader);
+        } catch(IOException ioException) {
+            throw new BibliothequeException(ioException);
+        }
         while(!Bibliotheque.finTransaction(transaction)) {
             // Découpage de la transaction en mots
             final StringTokenizer tokenizer = new StringTokenizer(transaction,
@@ -104,7 +114,11 @@ public final class Bibliotheque {
             if(tokenizer.hasMoreTokens()) {
                 Bibliotheque.executerTransaction(tokenizer);
             }
-            transaction = Bibliotheque.lireTransaction(reader);
+            try {
+                transaction = Bibliotheque.lireTransaction(reader);
+            } catch(IOException ioException) {
+                throw new BibliothequeException(ioException);
+            }
         }
     }
 
@@ -229,15 +243,15 @@ public final class Bibliotheque {
         } catch(InterruptedException interruptedException) {
             System.out.println("** "
                 + interruptedException.toString());
-            Bibliotheque.gestionnaireBibliotheque.rollback();
+            //Bibliotheque.gestionnaireBibliotheque.rollback();
         } catch(ServiceException serviceException) {
             System.out.println("** "
                 + serviceException.toString());
-            Bibliotheque.gestionnaireBibliotheque.rollback();
+            //Bibliotheque.gestionnaireBibliotheque.rollback();
         } catch(BibliothequeException bibliothequeException) {
             System.out.println("** "
                 + bibliothequeException.toString());
-            Bibliotheque.gestionnaireBibliotheque.rollback();
+            //Bibliotheque.gestionnaireBibliotheque.rollback();
         }
     }
 

@@ -201,32 +201,32 @@ public class LivreService extends Service {
      */
     public void vendre(final LivreDTO livreDTO) throws ServiceException {
         try {
-            final LivreDTO unLivreDTO = read(livreDTO.getIdLivre());
-            if(unLivreDTO == null) {
+            final LivreDTO realLivreDTO = read(livreDTO.getIdLivre());
+            if(realLivreDTO == null) {
                 throw new ServiceException("Le livre "
                     + livreDTO.getIdLivre()
                     + " n'existe pas");
             }
-            final MembreDTO membreDTO = getMembreDAO().read(unLivreDTO.getIdMembre());
+            final MembreDTO membreDTO = getMembreDAO().read(realLivreDTO.getIdMembre());
             if(!getLivreDAO().findByMembre(membreDTO).isEmpty()) {
                 throw new ServiceException("Le livre "
-                    + unLivreDTO.getTitre()
+                    + realLivreDTO.getTitre()
                     + " (ID de livre : "
-                    + unLivreDTO.getIdLivre()
+                    + realLivreDTO.getIdLivre()
                     + ") a été prêté à "
                     + membreDTO.getNom()
                     + " (ID de membre : "
                     + membreDTO.getIdMembre()
                     + ")");
             }
-            if(!getReservationDAO().findByLivre(unLivreDTO).isEmpty()) {
+            if(!getReservationDAO().findByLivre(realLivreDTO).isEmpty()) {
                 throw new ServiceException("Le livre "
-                    + unLivreDTO.getTitre()
+                    + realLivreDTO.getTitre()
                     + " (ID de livre : "
-                    + unLivreDTO.getIdLivre()
+                    + realLivreDTO.getIdLivre()
                     + ") a des réservations");
             }
-            delete(unLivreDTO);
+            delete(realLivreDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }

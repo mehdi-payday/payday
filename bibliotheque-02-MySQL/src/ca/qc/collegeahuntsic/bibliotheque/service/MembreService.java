@@ -10,6 +10,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
@@ -123,10 +124,10 @@ public class MembreService extends Service {
      * @throws ServiceException Si le membre existe déjà ou s'il y a une erreur avec la base de données.
      */
     public void inscrire(MembreDTO membreDTO) throws ServiceException {
-        if(read(membreDTO.getIdMembre()) == null) {
+        if(read(membreDTO.getIdMembre()) != null) {
             throw new ServiceException("Le membre avec le id: "
                 + membreDTO.getIdMembre()
-                + " n'existe pas.");
+                + " existe deja.");
         }
         add(membreDTO);
     }
@@ -175,39 +176,58 @@ public class MembreService extends Service {
      */
     public void emprunter(MembreDTO membreDTO,
         LivreDTO livreDTO) throws ServiceException {
+        MembreDTO realMembreDTO = null;
+        LivreDTO realLivreDTO = null;
         try {
-            if(read(membreDTO.getIdMembre()) == null) {
+            realMembreDTO = read(membreDTO.getIdMembre());
+            realLivreDTO = getLivreDAO().read(livreDTO.getIdLivre());
+        } catch(DAOException e) {
+            throw new ServiceException(e);
+        }
+        try {
+            if(realMembreDTO == null) {
                 throw new ServiceException("Le membre avec le id: "
                     + membreDTO.getIdMembre()
                     + " n'existe pas.");
             }
-            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+            if(realLivreDTO == null) {
                 throw new ServiceException("Le livre avec le id: "
                     + livreDTO.getIdLivre()
                     + " n'existe pas.");
             }
-            final MembreDTO emprunteur = read(livreDTO.getIdMembre());
+            final MembreDTO emprunteur = read(realLivreDTO.getIdMembre());
             if(emprunteur != null) {
                 throw new ServiceException("Le livre avec le id: "
                     + livreDTO.getIdLivre()
                     + " est deja prete a "
                     + emprunteur.getNom());
             }
-            if(!getReservationDAO().findByLivre(livreDTO).isEmpty()) {
+            List<ReservationDTO> reservations = getReservationDAO().findByLivre(livreDTO);
+
+            if(!reservations.isEmpty()
+                && reservations.get(0).getIdMembre() != realMembreDTO.getIdMembre()) {
                 throw new ServiceException("Le livre avec le id: "
                     + livreDTO.getIdLivre()
-                    + " est reserve.");
+                    + " est reserve a quelqu'un d'autre dont l'id est "
+                    + reservations.get(0).getIdMembre());
             }
-            if(read(membreDTO.getIdMembre()).getNbPret() == membreDTO.getLimitePret()) {
+
+            int nbPrets = realMembreDTO.getNbPret();
+            if(nbPrets >= realMembreDTO.getLimitePret()) {
                 throw new ServiceException("Le membre avec le id: "
-                    + membreDTO.getIdMembre()
-                    + " a atteint sa limite de pret.");
+                    + realMembreDTO.getIdMembre()
+                    + " a atteint sa limite de pret ("
+                    + nbPrets
+                    + "/"
+                    + realMembreDTO.getLimitePret()
+                    + ").");
             }
-            membreDTO.setNbPret(membreDTO.getNbPret()
+            realMembreDTO.setNbPret(membreDTO.getNbPret()
                 + 1);
-            update(membreDTO);
-            livreDTO.setIdMembre(membreDTO.getIdMembre());
-            getLivreDAO().emprunter(livreDTO);
+            update(realMembreDTO);
+            realLivreDTO.setIdMembre(realMembreDTO.getIdMembre());
+            getLivreDAO().update(realLivreDTO);
+            //getLivreDAO().emprunter(realLivreDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
@@ -224,34 +244,43 @@ public class MembreService extends Service {
      */
     public void renouveler(MembreDTO membreDTO,
         LivreDTO livreDTO) throws ServiceException {
+        MembreDTO realMembreDTO = null;
+        LivreDTO realLivreDTO = null;
         try {
-            if(read(membreDTO.getIdMembre()) == null) {
+            realMembreDTO = read(membreDTO.getIdMembre());
+            realLivreDTO = getLivreDAO().read(livreDTO.getIdLivre());
+        } catch(DAOException e) {
+            throw new ServiceException(e);
+        }
+        try {
+
+            if(realMembreDTO == null) {
                 throw new ServiceException("Le membre avec le id: "
                     + membreDTO.getIdMembre()
                     + " n'existe pas.");
             }
-            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+            if(realLivreDTO == null) {
                 throw new ServiceException("Le livre avec le id: "
                     + livreDTO.getIdLivre()
                     + " n'existe pas.");
             }
-            final MembreDTO emprunteur = read(livreDTO.getIdMembre());
+            final MembreDTO emprunteur = read(realLivreDTO.getIdMembre());
             if(emprunteur == null) {
                 throw new ServiceException("Le livre avec le id: "
-                    + livreDTO.getIdLivre()
+                    + realLivreDTO.getIdLivre()
                     + " n'est pas presentement prete.");
             }
-            if(emprunteur.getIdMembre() != membreDTO.getIdMembre()) {
+            if(emprunteur.getIdMembre() != realMembreDTO.getIdMembre()) {
                 throw new ServiceException("Le livre avec le id: "
-                    + livreDTO.getIdLivre()
+                    + realLivreDTO.getIdLivre()
                     + " a ete prete a quelqu'un d'autre.");
             }
-            if(getReservationDAO().findByLivre(livreDTO).isEmpty()) {
+            if(!getReservationDAO().findByLivre(realLivreDTO).isEmpty()) {
                 throw new ServiceException("Le livre avec le id: "
-                    + livreDTO.getIdLivre()
+                    + realLivreDTO.getIdLivre()
                     + " est reserve.");
             }
-            getLivreDAO().emprunter(livreDTO);
+            getLivreDAO().emprunter(realLivreDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
@@ -268,31 +297,41 @@ public class MembreService extends Service {
      */
     public void retourner(MembreDTO membreDTO,
         LivreDTO livreDTO) throws ServiceException {
+
+        MembreDTO realMembreDTO = null;
+        LivreDTO realLivreDTO = null;
         try {
-            if(read(membreDTO.getIdMembre()) == null) {
+            realMembreDTO = read(membreDTO.getIdMembre());
+            realLivreDTO = getLivreDAO().read(livreDTO.getIdLivre());
+        } catch(DAOException e) {
+            throw new ServiceException(e);
+        }
+
+        try {
+            if(read(realMembreDTO.getIdMembre()) == null) {
                 throw new ServiceException("Le membre avec le id: "
-                    + membreDTO.getIdMembre()
+                    + realMembreDTO.getIdMembre()
                     + " n'existe pas.");
             }
-            if(getLivreDAO().read(livreDTO.getIdLivre()) == null) {
+            if(getLivreDAO().read(realLivreDTO.getIdLivre()) == null) {
                 throw new ServiceException("Le livre avec le id: "
-                    + livreDTO.getIdLivre()
+                    + realLivreDTO.getIdLivre()
                     + " n'existe pas.");
             }
-            if(getLivreDAO().read(livreDTO.getIdMembre()) == null) {
+            if(realLivreDTO.getIdMembre() == 0) {
                 throw new ServiceException("Le livre avec le id: "
-                    + livreDTO.getIdLivre()
+                    + realLivreDTO.getIdLivre()
                     + " n'est pas presentement prete.");
             }
-            if(read(livreDTO.getIdMembre()).getIdMembre() != membreDTO.getIdMembre()) {
+            if(realLivreDTO.getIdMembre() != realMembreDTO.getIdMembre()) {
                 throw new ServiceException("Le livre avec le id: "
-                    + livreDTO.getIdLivre()
+                    + realLivreDTO.getIdLivre()
                     + " a ete prete a quelqu'un d'autre.");
             }
-            membreDTO.setNbPret(membreDTO.getNbPret()
+            realMembreDTO.setNbPret(realMembreDTO.getNbPret()
                 - 1);
-            update(membreDTO);
-            livreDTO.setIdMembre(0);
+            update(realMembreDTO);
+            realLivreDTO.setIdMembre(0);
             getLivreDAO().retourner(livreDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);

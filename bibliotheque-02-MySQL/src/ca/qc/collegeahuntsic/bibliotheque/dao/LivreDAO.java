@@ -72,7 +72,7 @@ public class LivreDAO extends DAO {
                 throw new DAOException("Livre existe deja: "
                     + idLivre);
             }
-
+    
             this.livre.acquerir(idLivre,
                 titre,
                 auteur,
@@ -116,7 +116,7 @@ public class LivreDAO extends DAO {
                     + idLivre
                     + " reserve ");
             }
-
+    
             final int nb = this.livre.vendre(idLivre);
             if(nb == 0) {
                 throw new DAOException("Livre "
@@ -143,18 +143,19 @@ public class LivreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void emprunter(final LivreDTO livreDTO) throws DAOException {
+        LivreDTO realLivreDTO = this.read(livreDTO.getIdLivre());
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.EMPRUNT_REQUEST)) {
             preparedStatement.setString(1,
-                livreDTO.getTitre());
+                realLivreDTO.getTitre());
             preparedStatement.setString(2,
-                livreDTO.getAuteur());
+                realLivreDTO.getAuteur());
             preparedStatement.setTimestamp(3,
-                livreDTO.getDateAcquisition());
+                realLivreDTO.getDateAcquisition());
             preparedStatement.setInt(4,
-                livreDTO.getIdMembre());
-            preparedStatement.setInt(6,
-                livreDTO.getIdLivre());
+                realLivreDTO.getIdMembre());
+            preparedStatement.setInt(5,
+                realLivreDTO.getIdLivre());
             preparedStatement.execute();
         } catch(SQLException sqlException) {
             throw new DAOException(sqlException);
@@ -168,16 +169,17 @@ public class LivreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void retourner(final LivreDTO livreDTO) throws DAOException {
+        LivreDTO realLivreDTO = this.read(livreDTO.getIdLivre());
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.RETOUR_REQUEST)) {
             preparedStatement.setString(1,
-                livreDTO.getTitre());
+                realLivreDTO.getTitre());
             preparedStatement.setString(2,
-                livreDTO.getAuteur());
+                realLivreDTO.getAuteur());
             preparedStatement.setTimestamp(3,
-                livreDTO.getDateAcquisition());
-            preparedStatement.setInt(6,
-                livreDTO.getIdLivre());
+                realLivreDTO.getDateAcquisition());
+            preparedStatement.setInt(4,
+                realLivreDTO.getIdLivre());
             preparedStatement.execute();
         } catch(SQLException sqlException) {
             throw new DAOException(sqlException);
@@ -201,8 +203,14 @@ public class LivreDAO extends DAO {
                 livreDTO.getAuteur());
             preparedStatement.setTimestamp(4,
                 livreDTO.getDateAcquisition());
-            preparedStatement.setInt(5,
-                livreDTO.getIdMembre());
+            if(livreDTO.getIdMembre() == 0) {
+                preparedStatement.setNull(5,
+                    java.sql.Types.INTEGER);
+            } else {
+                preparedStatement.setInt(5,
+                    livreDTO.getIdMembre());
+            }
+
             preparedStatement.setTimestamp(6,
                 livreDTO.getDatePret());
             preparedStatement.execute();

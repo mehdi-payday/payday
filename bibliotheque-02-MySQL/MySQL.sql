@@ -16,7 +16,7 @@ CREATE TABLE livre (
             titre           varchar(10) NOT NULL,
             auteur          varchar(10) NOT NULL,
             dateAcquisition timestamp  DEFAULT CURRENT_TIMESTAMP,
-            idMembre        int(3) , 
+            idMembre        int(3) NULL, 
             datePret        timestamp NULL DEFAULT NULL,
             CONSTRAINT cleLivre PRIMARY KEY (idLivre),
             CONSTRAINT refPretMembre FOREIGN KEY (idMembre) REFERENCES membre(idMembre)
