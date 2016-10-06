@@ -4,17 +4,7 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
-import java.sql.Date;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
-import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
-import ca.qc.collegeahuntsic.bibliotheque.service.LivreService;
-import ca.qc.collegeahuntsic.bibliotheque.service.MembreService;
-import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 
 /**
  * Gestion des transactions de reliées aux prêts de livres aux membres dans
@@ -27,7 +17,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
  *
  * Post-condition le programme effectue les mises à jour associées à chaque
  * transaction
- * 
+ *
  *  @author Mehdi Hamidi
  */
 
@@ -35,13 +25,9 @@ public class PretDAO extends DAO {
 
     private static final long serialVersionUID = 1L;
 
-    private LivreService livre;
-
-    private MembreService membre;
-
-    private ReservationService reservation;
-
-    private Connexion connexion;
+    public PretDAO(Connexion connexion) {
+        super(connexion);
+    }
 
     /**
      * Creation d'une instance. La connexion de l'instance de livre et de
@@ -52,7 +38,7 @@ public class PretDAO extends DAO {
      * @param membre le service de la table membre
      * @param reservation le service de la table reservation
      * @throws DAOException si les service de livre, membre et réservation n'utilisent pas la même connexion au serveur
-     */
+     *
     public PretDAO(LivreService livre,
         MembreService membre,
         ReservationService reservation) throws DAOException {
@@ -66,19 +52,19 @@ public class PretDAO extends DAO {
         this.livre = livre;
         this.membre = membre;
         this.reservation = reservation;
-    }
+    }*/
 
     /**
      * Prêt d'un livre à un membre.
-     * 
+     *
      * Pré-conditions :
      * - Le livre doit être existant.
      * - Le livre ne doit pas être déjà prêté à un membre.
      * - Le membre ne doit pas avoir dépassé sa limite de prêts.
      * - Le livre ne doit pas être réservé par un autre membre que le membre qui veut le prêter.
-     * 
+     *
      * Post-conditions :
-     * Le livre est marqué comme étant prêté au membre en la date de prêt datePret 
+     * Le livre est marqué comme étant prêté au membre en la date de prêt datePret
      *
      * @param idLivre l'id du livre à prêter
      * @param idMembre l'id du membre à qui prêter le livre
@@ -86,7 +72,7 @@ public class PretDAO extends DAO {
      * @throws DAOException si le livre est inexistant, si le livre a déjà été prêté,
      * si la limite de prêts du membre a été atteinte, si le livre est déjà réservé par quelqu'un d'autre que le membre qui essaie de le prêter,
      * ou si le membre/le livre ont été supprimés en cours de transaction
-     */
+     *
     public void preter(int idLivre,
         int idMembre,
         String datePret) throws DAOException {
@@ -113,8 +99,9 @@ public class PretDAO extends DAO {
                     + " atteinte");
             }
             final ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
-            
-            if(tupleReservation != null && tupleReservation.getIdMembre() != idMembre) {
+    
+            if(tupleReservation != null
+                && tupleReservation.getIdMembre() != idMembre) {
                 throw new DAOException("Livre reserve par : "
                     + tupleReservation.getIdMembre()
                     + " idReservation : "
@@ -141,7 +128,7 @@ public class PretDAO extends DAO {
         } catch(ServiceException serviceException) {
             throw new DAOException(serviceException);
         }
-    }
+    }*/
 
     /**
      * Renouvellement d'un prêt.
@@ -150,12 +137,12 @@ public class PretDAO extends DAO {
      * - Le livre est déjà prêté à un membre.
      * - Le livre ne doit pas être déjà réservé par un membre.
      * Post-conditions :
-     * La datePret du livre est réaffectée à la date de renouvellement 
+     * La datePret du livre est réaffectée à la date de renouvellement
      *
      * @param idLivre l'id du livre à renouveler
      * @param dateRenouvellement la date de renouvellement
-     * @throws DAOException si le livre est inexistant ou n'est pas prêté, si sa date de renouvellement est inférieure à la date de prêt ultérieure ou si le livre a déjà été réservé 
-     */
+     * @throws DAOException si le livre est inexistant ou n'est pas prêté, si sa date de renouvellement est inférieure à la date de prêt ultérieure ou si le livre a déjà été réservé
+     *
     public void renouveler(int idLivre,
         String dateRenouvellement) throws DAOException {
         try {
@@ -174,7 +161,9 @@ public class PretDAO extends DAO {
             }
             final ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
             if(tupleReservation != null) {
-                throw new DAOException("Livre " + livreDTO.toString() + " déjà réservé par : "
+                throw new DAOException("Livre "
+                    + livreDTO.toString()
+                    + " déjà réservé par : "
                     + tupleReservation.getIdMembre()
                     + " idReservation : "
                     + tupleReservation.getIdReservation());
@@ -196,15 +185,15 @@ public class PretDAO extends DAO {
         } catch(ServiceException serviceException) {
             throw new DAOException(serviceException);
         }
-    }
+    }*/
 
     /**
      *
      * Retourne un livre prêté.
-     * 
-     * Pré-conditions : 
+     *
+     * Pré-conditions :
      * Le livre existe et est être déjà prêté à quelqu'un.
-     * 
+     *
      * Post-conditions :
      * Le membre est marqué comme n'ayant pas de livre prêté
      * Le livre est marqué comme n'étant plus prêté au membre
@@ -212,8 +201,8 @@ public class PretDAO extends DAO {
      * @param idLivre l'id du livre
      * @param dateRetour la date de retour du livre. Doit être supérieur a sa date de prêt.
      * @throws DAOException Si le livre est inexistant, le livre n'est pas prêté, la date de retour est inférieur a la date de prêt ou le livre a été supprimé par une autre transaction
-     * 
-     */
+     *
+     *
     public void retourner(int idLivre,
         String dateRetour) throws DAOException {
         try {
@@ -234,7 +223,7 @@ public class PretDAO extends DAO {
             if(livreRetourCountUpdates == 0) {
                 throw new DAOException("Livre supprime par une autre transaction");
             }
-
+    
             final int membreRetourCountUpdates = this.membre.retourner(livreDTO.getIdMembre());
             if(membreRetourCountUpdates == 0) {
                 throw new DAOException("Livre supprime par une autre transaction");
@@ -250,5 +239,5 @@ public class PretDAO extends DAO {
         } catch(ServiceException serviceException) {
             throw new DAOException(serviceException);
         }
-    }
+    }*/
 }

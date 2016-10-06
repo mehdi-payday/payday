@@ -96,7 +96,7 @@ public class ReservationDAO extends DAO {
                 reservationDTO.getIdLivre());
             preparedStatement.setInt(3,
                 reservationDTO.getIdMembre());
-            preparedStatement.setDate(4,
+            preparedStatement.setTimestamp(4,
                 reservationDTO.getDateReservation());
             preparedStatement.execute();
         } catch(SQLException e) {
@@ -124,7 +124,7 @@ public class ReservationDAO extends DAO {
                     reservationDTO.setIdReservation(resultSet.getInt(1));
                     reservationDTO.setIdMembre(resultSet.getInt(2));
                     reservationDTO.setIdLivre(resultSet.getInt(3));
-                    reservationDTO.setDateReservation(resultSet.getDate(4));
+                    reservationDTO.setDateReservation(resultSet.getTimestamp(4));
                 }
             }
         } catch(SQLException sqlException) {
@@ -146,7 +146,7 @@ public class ReservationDAO extends DAO {
                 reservationDTO.getIdLivre());
             updatePreparedStatement.setInt(2,
                 reservationDTO.getIdMembre());
-            updatePreparedStatement.setDate(3,
+            updatePreparedStatement.setTimestamp(3,
                 reservationDTO.getDateReservation());
             updatePreparedStatement.setInt(4,
                 reservationDTO.getIdReservation());
@@ -191,7 +191,7 @@ public class ReservationDAO extends DAO {
                     reservationDTO.setIdReservation(resultSet.getInt(1));
                     reservationDTO.setIdLivre(resultSet.getInt(2));
                     reservationDTO.setIdLivre(resultSet.getInt(2));
-                    reservationDTO.setDateReservation(resultSet.getDate(4));
+                    reservationDTO.setDateReservation(resultSet.getTimestamp(4));
 
                     reservations.add(reservationDTO);
                 }
@@ -222,7 +222,7 @@ public class ReservationDAO extends DAO {
                     reservationDTO.setIdReservation(resultSet.getInt(1));
                     reservationDTO.setIdLivre(resultSet.getInt(2));
                     reservationDTO.setIdLivre(resultSet.getInt(2));
-                    reservationDTO.setDateReservation(resultSet.getDate(4));
+                    reservationDTO.setDateReservation(resultSet.getTimestamp(4));
 
                     reservations.add(reservationDTO);
                 }
@@ -253,7 +253,7 @@ public class ReservationDAO extends DAO {
                     reservationDTO.setIdReservation(resultSet.getInt(1));
                     reservationDTO.setIdLivre(resultSet.getInt(2));
                     reservationDTO.setIdLivre(resultSet.getInt(2));
-                    reservationDTO.setDateReservation(resultSet.getDate(4));
+                    reservationDTO.setDateReservation(resultSet.getTimestamp(4));
 
                     reservations.add(reservationDTO);
                 }
@@ -294,23 +294,23 @@ public class ReservationDAO extends DAO {
                     + idLivre
                     + " deja prete a ce membre");
             }
-    
+
             final MembreDTO tupleMembre = this.membre.getMembre(idMembre);
             if(tupleMembre == null) {
                 throw new DAOException("Membre inexistant: "
                     + idMembre);
             }
-    
+
             if(Date.valueOf(dateReservation).before(tupleLivre.getDatePret())) {
                 throw new DAOException("Date de reservation inferieure à la date de pret");
             }
-    
+
             if(this.reservation.existe(idReservation)) {
                 throw new DAOException("Réservation "
                     + idReservation
                     + " existe deja");
             }
-    
+
             this.reservation.reserver(idReservation,
                 idLivre,
                 idMembre,
@@ -345,14 +345,14 @@ public class ReservationDAO extends DAO {
                 throw new DAOException("Réservation inexistante : "
                     + idReservation);
             }
-    
+
             final ReservationDTO tupleReservationPremiere = this.reservation.getReservationLivre(tupleReservation.getIdLivre());
             if(tupleReservation.getIdReservation() != tupleReservationPremiere.getIdReservation()) {
                 throw new DAOException("La réservation n'est pas la première de la liste "
                     + "pour ce livre; la premiere est "
                     + tupleReservationPremiere.getIdReservation());
             }
-    
+
             final LivreDTO tupleLivre = this.livre.getLivre(tupleReservation.getIdLivre());
             if(tupleLivre == null) {
                 throw new DAOException("Livre inexistant: "
@@ -364,7 +364,7 @@ public class ReservationDAO extends DAO {
                     + " deja prêté ? "
                     + tupleLivre.getIdMembre());
             }
-    
+
             final MembreDTO tupleMembre = this.membre.getMembre(tupleReservation.getIdMembre());
             if(tupleMembre == null) {
                 throw new DAOException("Membre inexistant: "
@@ -375,11 +375,11 @@ public class ReservationDAO extends DAO {
                     + tupleReservation.getIdMembre()
                     + " atteinte");
             }
-    
+
             if(Date.valueOf(datePret).before(tupleReservation.getDateReservation())) {
                 throw new DAOException("Date de prêt inférieure à la date de réservation");
             }
-    
+
             if(this.livre.preter(tupleReservation.getIdLivre(),
                 tupleReservation.getIdMembre(),
                 datePret) == 0) {
@@ -388,7 +388,7 @@ public class ReservationDAO extends DAO {
             if(this.membre.preter(tupleReservation.getIdLivre()) == 0) {
                 throw new DAOException("Membre supprimé par une autre transaction");
             }
-    
+
             this.reservation.annulerRes(idReservation);
             this.connexion.commit();
         } catch(ConnexionException connexionException) {
@@ -416,7 +416,7 @@ public class ReservationDAO extends DAO {
                     + idReservation
                     + " n'existe pas");
             }
-    
+
             this.connexion.commit();
         } catch(ConnexionException connexionException) {
             try {

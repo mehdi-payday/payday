@@ -149,7 +149,7 @@ public class LivreDAO extends DAO {
                 livreDTO.getTitre());
             preparedStatement.setString(2,
                 livreDTO.getAuteur());
-            preparedStatement.setDate(3,
+            preparedStatement.setTimestamp(3,
                 livreDTO.getDateAcquisition());
             preparedStatement.setInt(4,
                 livreDTO.getIdMembre());
@@ -174,7 +174,7 @@ public class LivreDAO extends DAO {
                 livreDTO.getTitre());
             preparedStatement.setString(2,
                 livreDTO.getAuteur());
-            preparedStatement.setDate(3,
+            preparedStatement.setTimestamp(3,
                 livreDTO.getDateAcquisition());
             preparedStatement.setInt(6,
                 livreDTO.getIdLivre());
@@ -199,11 +199,11 @@ public class LivreDAO extends DAO {
                 livreDTO.getTitre());
             preparedStatement.setString(3,
                 livreDTO.getAuteur());
-            preparedStatement.setDate(4,
+            preparedStatement.setTimestamp(4,
                 livreDTO.getDateAcquisition());
             preparedStatement.setInt(5,
                 livreDTO.getIdMembre());
-            preparedStatement.setDate(6,
+            preparedStatement.setTimestamp(6,
                 livreDTO.getDatePret());
             preparedStatement.execute();
         } catch(SQLException sqlException) {
@@ -231,9 +231,9 @@ public class LivreDAO extends DAO {
                     livreDTO.setIdLivre(resultSet.getInt(1));
                     livreDTO.setTitre(resultSet.getString(2));
                     livreDTO.setAuteur(resultSet.getString(3));
-                    livreDTO.setDateAcquisition(resultSet.getDate(4));
+                    livreDTO.setDateAcquisition(resultSet.getTimestamp(4));
                     livreDTO.setIdMembre(resultSet.getInt(5));
-                    livreDTO.setDatePret(resultSet.getDate(6));
+                    livreDTO.setDatePret(resultSet.getTimestamp(6));
 
                 }
 
@@ -257,11 +257,11 @@ public class LivreDAO extends DAO {
                 livreDTO.getTitre());
             preparedStatement.setString(2,
                 livreDTO.getAuteur());
-            preparedStatement.setDate(3,
+            preparedStatement.setTimestamp(3,
                 livreDTO.getDateAcquisition());
             preparedStatement.setInt(4,
                 livreDTO.getIdMembre());
-            preparedStatement.setDate(5,
+            preparedStatement.setTimestamp(5,
                 livreDTO.getDatePret());
             preparedStatement.setInt(6,
                 livreDTO.getIdLivre());
@@ -306,9 +306,9 @@ public class LivreDAO extends DAO {
                     livreDTO.setIdLivre(resultSet.getInt(1));
                     livreDTO.setTitre(resultSet.getString(2));
                     livreDTO.setAuteur(resultSet.getString(3));
-                    livreDTO.setDateAcquisition(resultSet.getDate(4));
+                    livreDTO.setDateAcquisition(resultSet.getTimestamp(4));
                     livreDTO.setIdMembre(resultSet.getInt(5));
-                    livreDTO.setDatePret(resultSet.getDate(6));
+                    livreDTO.setDatePret(resultSet.getTimestamp(6));
 
                     livres.add(livreDTO);
                 }
@@ -328,7 +328,7 @@ public class LivreDAO extends DAO {
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
     public List<LivreDTO> findByTitre(final String titre) throws DAOException {
-        final List<LivreDTO> livres = Collections.EMPTY_LIST;
+        final List<LivreDTO> livres = Collections.emptyList();
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_TITRE)) {
             preparedStatement.setString(1,
@@ -343,9 +343,9 @@ public class LivreDAO extends DAO {
                     livreDTO.setIdLivre(resultSet.getInt(1));
                     livreDTO.setTitre(resultSet.getString(2));
                     livreDTO.setAuteur(resultSet.getString(3));
-                    livreDTO.setDateAcquisition(resultSet.getDate(4));
+                    livreDTO.setDateAcquisition(resultSet.getTimestamp(4));
                     livreDTO.setIdMembre(resultSet.getInt(5));
-                    livreDTO.setDatePret(resultSet.getDate(6));
+                    livreDTO.setDatePret(resultSet.getTimestamp(6));
 
                     livres.add(livreDTO);
                 }
@@ -378,9 +378,9 @@ public class LivreDAO extends DAO {
                     livreDTO.setIdLivre(resultSet.getInt(1));
                     livreDTO.setTitre(resultSet.getString(2));
                     livreDTO.setAuteur(resultSet.getString(3));
-                    livreDTO.setDateAcquisition(resultSet.getDate(4));
+                    livreDTO.setDateAcquisition(resultSet.getTimestamp(4));
                     livreDTO.setIdMembre(resultSet.getInt(5));
-                    livreDTO.setDatePret(resultSet.getDate(6));
+                    livreDTO.setDatePret(resultSet.getTimestamp(6));
 
                     livres.add(livreDTO);
                 }

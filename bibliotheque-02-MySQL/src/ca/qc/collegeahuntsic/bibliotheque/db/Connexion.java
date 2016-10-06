@@ -135,9 +135,14 @@ public class Connexion implements AutoCloseable {
      * {@inheritDoc}
      */
     @Override
-    public void close() throws Exception {
+    public void close() throws ConnexionException {
         rollback();
-        getConnection().close();
+        try {
+            getConnection().close();
+        } catch(Exception closeException) {
+            throw new ConnexionException(closeException);
+        }
+
         System.out.println("\nConnexion fermée"
             + " "
             + getConnection());

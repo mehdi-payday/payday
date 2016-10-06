@@ -165,7 +165,7 @@ public class ReservationService extends Service {
      * @throws ServiceException - S'il y a une erreur avec la base de données
      */
     public List<ReservationDTO> getAll() throws ServiceException {
-        List<ReservationDTO> listReservationDTO = Collections.EMPTY_LIST;
+        List<ReservationDTO> listReservationDTO = Collections.emptyList();
         try {
             listReservationDTO = getReservationDAO().getAll();
         } catch(DAOException daoException) {
@@ -182,7 +182,7 @@ public class ReservationService extends Service {
      * @throws ServiceException - S'il y a une erreur avec la base de données
      */
     public List<ReservationDTO> findByLivre(LivreDTO livreDTO) throws ServiceException {
-        List<ReservationDTO> listReservationDTO = Collections.EMPTY_LIST;
+        List<ReservationDTO> listReservationDTO = Collections.emptyList();
         try {
             listReservationDTO = getReservationDAO().findByLivre(livreDTO);
         } catch(DAOException daoException) {
@@ -199,7 +199,7 @@ public class ReservationService extends Service {
      * @throws ServiceException - S'il y a une erreur avec la base de données
      */
     public List<ReservationDTO> findByMembre(MembreDTO membreDTO) throws ServiceException {
-        List<ReservationDTO> listReservationDTO = Collections.EMPTY_LIST;
+        List<ReservationDTO> listReservationDTO = Collections.emptyList();
         try {
             listReservationDTO = getReservationDAO().findByMembre(membreDTO);
         } catch(DAOException daoException) {

@@ -1,10 +1,10 @@
 // Fichier ReservationDTO.java
 // Auteur : Alexandre Barone
-// Date de création : 2016-09-15
+// Timestamp de création : 2016-09-15
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * DTO de la table reservation.
@@ -21,7 +21,7 @@ public class ReservationDTO extends DTO {
 
     private int idMembre;
 
-    private Date dateReservation;
+    private Timestamp dateReservation;
 
     /**
      * Constructeur par défaut.
@@ -90,7 +90,7 @@ public class ReservationDTO extends DTO {
      *
      * @return La variable d'instance <code>this.dateReservation</code>
      */
-    public Date getDateReservation() {
+    public Timestamp getDateReservation() {
         return this.dateReservation;
     }
 
@@ -99,7 +99,7 @@ public class ReservationDTO extends DTO {
      *
      * @param dateReservation La valeur à utiliser pour la variable d'instance <code>this.dateReservation</code>
      */
-    public void setDateReservation(Date dateReservation) {
+    public void setDateReservation(Timestamp dateReservation) {
         this.dateReservation = dateReservation;
     }
     // EndRegion
