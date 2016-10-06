@@ -26,8 +26,7 @@ public class PretDAO extends DAO {
     private static final long serialVersionUID = 1L;
 
     /**
-     *
-     * Initialise PretDAO avec la connexion
+     * Initialise PretDAO avec la connexion.
      *
      * @param connexion {@link java.sql.connexion} la connexion à la base de données
      */
@@ -53,7 +52,7 @@ public class PretDAO extends DAO {
             || reservation.getConnexion() != membre.getConnexion()) {
             throw new DAOException("Les instances de livre, de membre et de reservation n'utilisent pas la meme connexion au serveur");
         }
-
+    
         this.connexion = livre.getConnexion();
         this.livre = livre;
         this.membre = membre;
@@ -105,7 +104,7 @@ public class PretDAO extends DAO {
                     + " atteinte");
             }
             final ReservationDTO tupleReservation = this.reservation.getReservationLivre(idLivre);
-    
+
             if(tupleReservation != null
                 && tupleReservation.getIdMembre() != idMembre) {
                 throw new DAOException("Livre reserve par : "
@@ -229,7 +228,7 @@ public class PretDAO extends DAO {
             if(livreRetourCountUpdates == 0) {
                 throw new DAOException("Livre supprime par une autre transaction");
             }
-    
+
             final int membreRetourCountUpdates = this.membre.retourner(livreDTO.getIdMembre());
             if(membreRetourCountUpdates == 0) {
                 throw new DAOException("Livre supprime par une autre transaction");
