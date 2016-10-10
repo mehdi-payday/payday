@@ -23,7 +23,7 @@ public class LivreDTO extends DTO {
 
     private Timestamp dateAcquisition;
 
-    private int idMembre = 0;
+    private int idMembre;
 
     private Timestamp datePret;
 
@@ -73,7 +73,7 @@ public class LivreDTO extends DTO {
      *
      * @param titre La valeur à utiliser pour la variable d'instance <code>this.titre</code>
      */
-    public void setTitre(String titre) {
+    public void setTitre(final String titre) {
         this.titre = titre;
     }
 
@@ -91,7 +91,7 @@ public class LivreDTO extends DTO {
      *
      * @param auteur La valeur à utiliser pour la variable d'instance <code>this.auteur</code>
      */
-    public void setAuteur(String auteur) {
+    public void setAuteur(final String auteur) {
         this.auteur = auteur;
     }
 
@@ -109,7 +109,7 @@ public class LivreDTO extends DTO {
      *
      * @param dateAcquisition La valeur à utiliser pour la variable d'instance <code>this.dateAcquisition</code>
      */
-    public void setDateAcquisition(Timestamp dateAcquisition) {
+    public void setDateAcquisition(final Timestamp dateAcquisition) {
         this.dateAcquisition = dateAcquisition;
     }
 
@@ -127,7 +127,7 @@ public class LivreDTO extends DTO {
      *
      * @param idLivre La valeur à utiliser pour la variable d'instance <code>this.idLivre</code>
      */
-    public void setIdLivre(int idLivre) {
+    public void setIdLivre(final int idLivre) {
         this.idLivre = idLivre;
     }
 
@@ -145,7 +145,7 @@ public class LivreDTO extends DTO {
      *
      * @param idMembre La valeur à utiliser pour la variable d'instance <code>this.idMembre</code>
      */
-    public void setIdMembre(int idMembre) {
+    public void setIdMembre(final int idMembre) {
         this.idMembre = idMembre;
     }
 
@@ -163,7 +163,7 @@ public class LivreDTO extends DTO {
      *
      * @param datePret La valeur à utiliser pour la variable d'instance <code>this.datePret</code>
      */
-    public void setDatePret(Timestamp datePret) {
+    public void setDatePret(final Timestamp datePret) {
         this.datePret = datePret;
     }
     // EndRegion

@@ -72,7 +72,7 @@ public class LivreDAO extends DAO {
                 throw new DAOException("Livre existe deja: "
                     + idLivre);
             }
-    
+
             this.livre.acquerir(idLivre,
                 titre,
                 auteur,
@@ -116,7 +116,7 @@ public class LivreDAO extends DAO {
                     + idLivre
                     + " reserve ");
             }
-    
+
             final int nb = this.livre.vendre(idLivre);
             if(nb == 0) {
                 throw new DAOException("Livre "
@@ -143,7 +143,7 @@ public class LivreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void emprunter(final LivreDTO livreDTO) throws DAOException {
-        LivreDTO realLivreDTO = this.read(livreDTO.getIdLivre());
+        final LivreDTO realLivreDTO = this.read(livreDTO.getIdLivre());
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.EMPRUNT_REQUEST)) {
             preparedStatement.setString(1,
@@ -169,7 +169,7 @@ public class LivreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void retourner(final LivreDTO livreDTO) throws DAOException {
-        LivreDTO realLivreDTO = this.read(livreDTO.getIdLivre());
+        final LivreDTO realLivreDTO = this.read(livreDTO.getIdLivre());
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(LivreDAO.RETOUR_REQUEST)) {
             preparedStatement.setString(1,

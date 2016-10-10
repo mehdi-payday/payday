@@ -40,16 +40,18 @@ public class BibliothequeCreateur {
      * @param motPasse Mot de passe sur le serveur SQL
      * @throws BibliothequeException S'il y a une erreur avec la base de données
      */
+    @SuppressWarnings("resource")
     public BibliothequeCreateur(final String typeServeur,
         final String schema,
         final String nomUtilisateur,
         final String motPasse) throws BibliothequeException {
         try {
-            Connexion new_connexion = new Connexion(typeServeur,
+
+            final Connexion newConnexion = new Connexion(typeServeur,
                 schema,
                 nomUtilisateur,
                 motPasse);
-            setConnexion(new_connexion);
+            setConnexion(newConnexion);
 
             final LivreDAO livreDAO = new LivreDAO(getConnexion());
             final MembreDAO membreDAO = new MembreDAO(getConnexion());
