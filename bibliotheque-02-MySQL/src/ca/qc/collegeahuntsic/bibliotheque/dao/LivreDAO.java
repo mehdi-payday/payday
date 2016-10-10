@@ -28,13 +28,13 @@ public class LivreDAO extends DAO {
 
     private static final String DELETE_REQUEST = "DELETE FROM livre WHERE idLivre = ?";
 
-    private static final String FIND_BY_TITRE = "SELECT * FROM livre WHERE LOWER(titre) like LOWER(?)";
+    private static final String FIND_BY_TITRE = "SELECT idLivre, titre, auteur, dateAcquisition, idMembre, datePret FROM livre WHERE LOWER(titre) like LOWER(?)";
 
-    private static final String FIND_BY_MEMBRE = "SELECT * FROM livre WHERE idMembre = ?";
+    private static final String FIND_BY_MEMBRE = "SELECT idLivre, titre, auteur, dateAcquisition, idMembre, datePret FROM livre WHERE idMembre = ?";
 
-    private static final String GET_ALL_REQUEST = "SELECT * FROM livre";
+    private static final String GET_ALL_REQUEST = "SELECT idLivre, titre, auteur, dateAcquisition, idMembre, datePret FROM livre";
 
-    private static final String READ_REQUEST = "SELECT * FROM livre WHERE idLivre = ?";
+    private static final String READ_REQUEST = "SELECT idLivre, titre, auteur, dateAcquisition, idMembre, datePret FROM livre WHERE idLivre = ?";
 
     private static final String UPDATE_REQUEST = "UPDATE livre SET titre = ?, auteur = ?, dateAcquisition= ?, idMembre = ?, datePret = ? WHERE idLivre = ?";
 
@@ -72,7 +72,7 @@ public class LivreDAO extends DAO {
                 throw new DAOException("Livre existe deja: "
                     + idLivre);
             }
-
+    
             this.livre.acquerir(idLivre,
                 titre,
                 auteur,
@@ -116,7 +116,7 @@ public class LivreDAO extends DAO {
                     + idLivre
                     + " reserve ");
             }
-
+    
             final int nb = this.livre.vendre(idLivre);
             if(nb == 0) {
                 throw new DAOException("Livre "

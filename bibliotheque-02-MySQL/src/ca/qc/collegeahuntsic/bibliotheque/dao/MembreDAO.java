@@ -27,9 +27,9 @@ public class MembreDAO extends DAO {
 
     private static final String DELETE_REQUEST = "DELETE FROM membre WHERE idMembre = ?";
 
-    private static final String GET_ALL_REQUEST = "SELECT * FROM membre";
+    private static final String GET_ALL_REQUEST = "SELECT idMembre, nom, telephone, limitePret, nbpret FROM membre";
 
-    private static final String READ_REQUEST = "SELECT * FROM membre WHERE idMembre= ?";
+    private static final String READ_REQUEST = "SELECT idMembre, nom, telephone, limitePret, nbpret FROM membre WHERE idMembre= ?";
 
     private static final String UPDATE_REQUEST = "UPDATE membre SET nom = ?, telephone = ?, limitePret = ?, nbPret = ? WHERE idMembre = ?";
 
@@ -38,7 +38,7 @@ public class MembreDAO extends DAO {
      *
      * @param connexion {@link java.sql.connexion} object.
      */
-    public MembreDAO(Connexion connexion) {
+    public MembreDAO(final Connexion connexion) {
         super(connexion);
 
     }
@@ -102,7 +102,7 @@ public class MembreDAO extends DAO {
                     + idMembre
                     + " a des réservations");
             }
-
+    
             final int nb = this.membre.desinscrire(idMembre);
             if(nb == 0) {
                 throw new DAOException("Membre "
@@ -128,7 +128,7 @@ public class MembreDAO extends DAO {
      * @param membreDTO - Le membre à ajouter
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
-    public void add(MembreDTO membreDTO) throws DAOException {
+    public void add(final MembreDTO membreDTO) throws DAOException {
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.ADD_REQUEST)) {
             preparedStatement.setInt(1,
@@ -154,7 +154,7 @@ public class MembreDAO extends DAO {
      * @throws DAOException - S'il y a une erreur avec la base de données
      * @return Le membrelu ; null sinon
      */
-    public MembreDTO read(int idMembre) throws DAOException {
+    public MembreDTO read(final int idMembre) throws DAOException {
         MembreDTO membreDTO = null;
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.READ_REQUEST)) {
@@ -183,7 +183,7 @@ public class MembreDAO extends DAO {
      * @param membreDTO - Le membre à mettre à jour
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
-    public void update(MembreDTO membreDTO) throws DAOException {
+    public void update(final MembreDTO membreDTO) throws DAOException {
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.UPDATE_REQUEST)) {
             preparedStatement.setString(1,
@@ -209,7 +209,7 @@ public class MembreDAO extends DAO {
      * @param membreDTO - Le membre à supprimer
      * @throws DAOException - S'il y a une erreur avec la base de données
      */
-    public void delete(MembreDTO membreDTO) throws DAOException {
+    public void delete(final MembreDTO membreDTO) throws DAOException {
         try(
             PreparedStatement preparedStatement = getConnection().prepareStatement(MembreDAO.DELETE_REQUEST)) {
             preparedStatement.setInt(1,
