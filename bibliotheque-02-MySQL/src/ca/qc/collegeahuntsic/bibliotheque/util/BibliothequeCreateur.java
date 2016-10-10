@@ -1,5 +1,5 @@
 // Fichier BibliothequeCreateur.java
-// Auteur : Gilles Bénichou
+// Auteur : Mehdi Hamidi
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
@@ -18,7 +18,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 /**
  * Utilitaire de création des outils de la bibliothèque.
  *
- * @author Gilles Benichou
+ * @author Mehdi Hamidi
  */
 public class BibliothequeCreateur {
     private Connexion connexion;

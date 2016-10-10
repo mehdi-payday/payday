@@ -1,5 +1,5 @@
 // Fichier Connexion.java
-// Auteur : Gilles Bénichou
+// Auteur : Mehdi Hamidi
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.db;
@@ -20,7 +20,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
  * Post-condition :
  *     La connexion est créée en mode autocommit false.
  *
- * @author Gilles Benichou
+ * @author Mehdi Hamidi
  */
 public class Connexion implements AutoCloseable {
     private static final String TYPE_SERVEUR_LOCAL = "local";
@@ -61,10 +61,10 @@ public class Connexion implements AutoCloseable {
      * @throws ConnexionException Si le driver n'existe pas, S'il y a une erreur avec la base de données ou si <code>typeServeur</code> n'est
      *         pas valide
      */
-    public Connexion(String typeServeur,
-        String schema,
-        String nomUtilisateur,
-        String motPasse) throws ConnexionException {
+    public Connexion(final String typeServeur,
+        final String schema,
+        final String nomUtilisateur,
+        final String motPasse) throws ConnexionException {
         String urlBD = null;
 
         try {
@@ -125,7 +125,7 @@ public class Connexion implements AutoCloseable {
      *
      * @param connection La valeur à utiliser pour la variable d'instance <code>this.connection</code>
      */
-    private void setConnection(Connection connection) {
+    private void setConnection(final Connection connection) {
         this.connection = connection;
     }
 
