@@ -20,8 +20,6 @@ public class MembreDTO extends DTO {
 
     private int limitePret;
 
-    private int nbPret;
-
     /**
      * Constructeur par défaut.
      */
@@ -102,22 +100,5 @@ public class MembreDTO extends DTO {
         this.limitePret = limitePret;
     }
 
-    /**
-     * Getter de la variable d'instance <code>this.nbPret</code>.
-     *
-     * @return La variable d'instance <code>this.nbPret</code>
-     */
-    public int getNbPret() {
-        return this.nbPret;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.nbPret</code>.
-     *
-     * @param nbPret La valeur à utiliser pour la variable d'instance <code>this.nbPret</code>
-     */
-    public void setNbPret(int nbPret) {
-        this.nbPret = nbPret;
-    }
     // EndRegion Getters and Setters
 }

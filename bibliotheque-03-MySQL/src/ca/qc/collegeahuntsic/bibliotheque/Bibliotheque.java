@@ -316,7 +316,8 @@ public final class Bibliotheque {
             } catch(NumberFormatException numberFormatException) {
                 throw new BibliothequeException("Nombre attendu à la place de \""
                     + token
-                    + "\"");
+                    + "\"",
+                    numberFormatException);
             }
         }
         throw new BibliothequeException("Autre paramètre attendu");
@@ -337,7 +338,8 @@ public final class Bibliotheque {
             } catch(NumberFormatException numberFormatException) {
                 throw new BibliothequeException("Nombre attendu à la place de \""
                     + token
-                    + "\"");
+                    + "\"",
+                    numberFormatException);
             }
         }
         throw new BibliothequeException("Autre paramètre attendu");
@@ -358,7 +360,8 @@ public final class Bibliotheque {
             } catch(ParseException parseException) {
                 throw new BibliothequeException("Date en format YYYY-MM-DD attendue à la place  de \""
                     + token
-                    + "\"");
+                    + "\"",
+                    parseException);
             }
         }
         throw new BibliothequeException("Autre paramètre attendu");

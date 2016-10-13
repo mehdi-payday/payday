@@ -211,7 +211,7 @@ public class LivreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<LivreDTO> getAll() throws DAOException {
-        List<LivreDTO> livres = Collections.EMPTY_LIST;
+        List<LivreDTO> livres = Collections.emptyList();
         try(
             PreparedStatement getAllPreparedStatement = getConnection().prepareStatement(LivreDAO.GET_ALL_REQUEST)) {
             try(
@@ -245,7 +245,7 @@ public class LivreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<LivreDTO> findByTitre(String titre) throws DAOException {
-        List<LivreDTO> livres = Collections.EMPTY_LIST;
+        List<LivreDTO> livres = Collections.emptyList();
         try(
             PreparedStatement findByTitrePreparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_TITRE)) {
             findByTitrePreparedStatement.setString(1,
@@ -283,7 +283,7 @@ public class LivreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<LivreDTO> findByMembre(int idMembre) throws DAOException {
-        List<LivreDTO> livres = Collections.EMPTY_LIST;
+        List<LivreDTO> livres = Collections.emptyList();
         try(
             PreparedStatement findByMembrePreparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE)) {
             findByMembrePreparedStatement.setInt(1,

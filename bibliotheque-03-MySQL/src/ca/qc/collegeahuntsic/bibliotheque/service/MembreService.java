@@ -7,6 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.service;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
@@ -26,6 +27,8 @@ public class MembreService extends Service {
     private LivreDAO livreDAO;
 
     private ReservationDAO reservationDAO;
+    
+    private PretDAO pretDAO;
 
     /**
      * Crée le service de la table <code>membre</code>.
@@ -36,11 +39,13 @@ public class MembreService extends Service {
      */
     public MembreService(MembreDAO membreDAO,
         LivreDAO livreDAO,
-        ReservationDAO reservationDAO) {
+        ReservationDAO reservationDAO,
+        PretDAO pretDAO) {
         super();
         setMembreDAO(membreDAO);
         setLivreDAO(livreDAO);
         setReservationDAO(reservationDAO);
+        setPretDAO(pretDAO);
     }
 
     // Region Getters and Setters
@@ -96,6 +101,25 @@ public class MembreService extends Service {
      */
     private void setReservationDAO(ReservationDAO reservationDAO) {
         this.reservationDAO = reservationDAO;
+    }
+    
+
+    /**
+     * Getter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @return La variable d'instance <code>this.pretDAO</code>
+     */
+    private PretDAO getPretDAO() {
+        return this.pretDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
+     */
+    private void setPretDAO(PretDAO pretDAO) {
+        this.pretDAO = pretDAO;
     }
 
     // EndRegion Getters and Setters
@@ -221,7 +245,7 @@ public class MembreService extends Service {
                     + emprunteur.getIdMembre()
                     + ")");
             }
-            if(unMembreDTO.getNbPret() == unMembreDTO.getLimitePret()) {
+            /*if(unMembreDTO.getNbPret() == unMembreDTO.getLimitePret()) {
                 throw new ServiceException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
@@ -229,7 +253,7 @@ public class MembreService extends Service {
                     + ") a atteint sa limite de prêt ("
                     + unMembreDTO.getLimitePret()
                     + " emprunt(s) maximum)");
-            }
+            }*/
             if(!getReservationDAO().findByLivre(unLivreDTO.getIdLivre()).isEmpty()) {
                 throw new ServiceException("Le livre "
                     + unLivreDTO.getTitre()
@@ -383,13 +407,13 @@ public class MembreService extends Service {
                     + membreDTO.getIdMembre()
                     + " n'existe pas");
             }
-            if(unMembreDTO.getNbPret() > 0) {
+            /*if(unMembreDTO.getNbPret() > 0) {
                 throw new ServiceException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
                     + unMembreDTO.getIdMembre()
                     + ") a encore des prêts");
-            }
+            }*/
             if(!getReservationDAO().findByMembre(unMembreDTO.getIdMembre()).isEmpty()) {
                 throw new ServiceException("Le membre "
                     + unMembreDTO.getNom()

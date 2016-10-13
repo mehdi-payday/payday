@@ -174,7 +174,7 @@ public class ReservationDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<ReservationDTO> getAll() throws DAOException {
-        List<ReservationDTO> reservations = Collections.EMPTY_LIST;
+        List<ReservationDTO> reservations = Collections.emptyList();
         try(
             PreparedStatement getAllPreparedStatement = getConnection().prepareStatement(ReservationDAO.GET_ALL_REQUEST)) {
             try(
@@ -206,7 +206,7 @@ public class ReservationDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<ReservationDTO> findByLivre(int idLivre) throws DAOException {
-        List<ReservationDTO> reservations = Collections.EMPTY_LIST;
+        List<ReservationDTO> reservations = Collections.emptyList();
         try(
             PreparedStatement findByLivrePreparedStatement = getConnection().prepareStatement(ReservationDAO.FIND_BY_LIVRE_REQUEST)) {
             findByLivrePreparedStatement.setInt(1,
@@ -240,7 +240,7 @@ public class ReservationDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<ReservationDTO> findByMembre(int idMembre) throws DAOException {
-        List<ReservationDTO> reservations = Collections.EMPTY_LIST;
+        List<ReservationDTO> reservations = Collections.emptyList();
         try(
             PreparedStatement findByMembrePreparedStatement = getConnection().prepareStatement(ReservationDAO.FIND_BY_MEMBRE_REQUEST)) {
             findByMembrePreparedStatement.setInt(1,

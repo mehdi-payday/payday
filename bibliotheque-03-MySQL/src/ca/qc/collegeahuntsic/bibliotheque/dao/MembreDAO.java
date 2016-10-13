@@ -111,7 +111,7 @@ public class MembreDAO extends DAO {
                     membreDTO.setNom(resultSet.getString(2));
                     membreDTO.setTelephone(resultSet.getLong(3));
                     membreDTO.setLimitePret(resultSet.getInt(4));
-                    membreDTO.setNbPret(resultSet.getInt(5));
+                    //membreDTO.setNbPret(resultSet.getInt(5));
                 }
             }
         } catch(SQLException sqlException) {
@@ -135,9 +135,9 @@ public class MembreDAO extends DAO {
                 membreDTO.getTelephone());
             updatePreparedStatement.setInt(3,
                 membreDTO.getLimitePret());
-            updatePreparedStatement.setInt(4,
-                membreDTO.getNbPret());
-            updatePreparedStatement.setInt(5,
+            /*updatePreparedStatement.setInt(4,
+                membreDTO.getNbPret());*/
+            updatePreparedStatement.setInt(/*5*/4,
                 membreDTO.getIdMembre());
             updatePreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
@@ -169,7 +169,7 @@ public class MembreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<MembreDTO> getAll() throws DAOException {
-        List<MembreDTO> membres = Collections.EMPTY_LIST;
+        List<MembreDTO> membres = Collections.emptyList();
         try(
             PreparedStatement getAll = getConnection().prepareStatement(MembreDAO.GET_ALL_REQUEST)) {
             try(
@@ -183,7 +183,7 @@ public class MembreDAO extends DAO {
                         membreDTO.setNom(resultSet.getString(2));
                         membreDTO.setTelephone(resultSet.getLong(3));
                         membreDTO.setLimitePret(resultSet.getInt(4));
-                        membreDTO.setNbPret(resultSet.getInt(5));
+                        //membreDTO.setNbPret(resultSet.getInt(5));
                         membres.add(membreDTO);
                     } while(resultSet.next());
                 }
@@ -201,8 +201,8 @@ public class MembreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void emprunter(MembreDTO membreDTO) throws DAOException {
-        membreDTO.setNbPret(membreDTO.getNbPret()
-            + 1);
+        /*membreDTO.setNbPret(membreDTO.getNbPret()
+            + 1);*/
         update(membreDTO);
     }
 
@@ -213,8 +213,8 @@ public class MembreDAO extends DAO {
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void retourner(MembreDTO membreDTO) throws DAOException {
-        membreDTO.setNbPret(membreDTO.getNbPret()
-            - 1);
+        /*membreDTO.setNbPret(membreDTO.getNbPret()
+            - 1);*/
         update(membreDTO);
     }
 }

@@ -7,6 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.service;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
@@ -27,20 +28,25 @@ public class LivreService extends Service {
 
     private ReservationDAO reservationDAO;
 
+    private PretDAO pretDAO;
+
     /**
      * Crée le service de la table <code>livre</code>.
      *
      * @param livreDAO Le DAO de la table <code>livre</code>
      * @param membreDAO Le DAO de la table <code>membre</code>
      * @param reservationDAO Le DAO de la table <code>reservation</code>
+     * @param pretDAO Le DAO de la table <code>pret</code>
      */
     public LivreService(LivreDAO livreDAO,
         MembreDAO membreDAO,
-        ReservationDAO reservationDAO) {
+        ReservationDAO reservationDAO,
+        PretDAO pretDAO) {
         super();
         setLivreDAO(livreDAO);
         setMembreDAO(membreDAO);
         setReservationDAO(reservationDAO);
+        setPretDAO(pretDAO);
     }
 
     // Region Getters and Setters
@@ -70,6 +76,7 @@ public class LivreService extends Service {
     private MembreDAO getMembreDAO() {
         return this.membreDAO;
     }
+   
 
     /**
      * Setter de la variable d'instance <code>this.membreDAO</code>.
@@ -96,6 +103,24 @@ public class LivreService extends Service {
      */
     private void setReservationDAO(ReservationDAO reservationDAO) {
         this.reservationDAO = reservationDAO;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.membreDAO</code>.
+     *
+     * @return La variable d'instance <code>this.membreDAO</code>
+     */
+    private MembreDAO getMembreDAO() {
+        return this.membreDAO;
+    }
+    
+    /**
+     * Setter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
+     */
+    private void setPretDAO(PretDAO pretDAO) {
+        this.pretDAO = pretDAO;
     }
 
     // EndRegion Getters and Setters

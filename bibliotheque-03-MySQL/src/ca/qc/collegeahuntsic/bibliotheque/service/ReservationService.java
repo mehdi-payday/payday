@@ -7,6 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.service;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
@@ -28,6 +29,8 @@ public class ReservationService extends Service {
 
     private MembreDAO membreDAO;
 
+    private PretDAO pretDAO;
+
     /**
      * Crée le service de la table <code>reservation</code>.
      *
@@ -37,11 +40,13 @@ public class ReservationService extends Service {
      */
     public ReservationService(ReservationDAO reservationDAO,
         LivreDAO livreDAO,
-        MembreDAO membreDAO) {
+        MembreDAO membreDAO,
+        PretDAO pretDAO) {
         super();
         setReservationDAO(reservationDAO);
         setMembreDAO(membreDAO);
         setLivreDAO(livreDAO);
+        setPretDAO(pretDAO);
     }
 
     // Region Getters and Setters
@@ -99,7 +104,27 @@ public class ReservationService extends Service {
         this.membreDAO = membreDAO;
     }
 
+    /**
+     * Getter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @return La variable d'instance <code>this.pretDAO</code>
+     */
+    private PretDAO getPretDAO() {
+        return this.pretDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
+     */
+    private void setPretDAO(PretDAO pretDAO) {
+        this.pretDAO = pretDAO;
+    }
+    
     // EndRegion Getters and Setters
+
+    
 
     /**
      * Ajoute une nouvelle réservation.
@@ -341,7 +366,7 @@ public class ReservationService extends Service {
                     + emprunteur.getIdMembre()
                     + ")");
             }
-            if(unMembreDTO.getNbPret() == unMembreDTO.getLimitePret()) {
+            /*if(unMembreDTO.getNbPret() == unMembreDTO.getLimitePret()) {
                 throw new ServiceException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
@@ -349,7 +374,7 @@ public class ReservationService extends Service {
                     + ") a atteint sa limite de prêt ("
                     + unMembreDTO.getLimitePret()
                     + " emprunt(s) maximum)");
-            }
+            }*/
 
             // Cas éliminé en utilisant la date de prêt et de réservation comme étant la date système de la base de données
 
