@@ -1,17 +1,16 @@
 // Fichier LivreDTO.java
-// Auteur : Alexandre Barone
-// Date de création : 2016-09-15
+// Auteur : Gilles Bénichou
+// Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;
 
 import java.sql.Timestamp;
 
 /**
- * DTO de la table livre.
+ * DTO de la table <code>livre</code>.
  *
- * @author Alexandre Barone
+ * @author Gilles Bénichou
  */
-
 public class LivreDTO extends DTO {
     private static final long serialVersionUID = 1L;
 
@@ -29,36 +28,30 @@ public class LivreDTO extends DTO {
 
     /**
      * Constructeur par défaut.
-     *
      */
     public LivreDTO() {
-    }
-
-    /**
-     * Représentation en string du livre.
-     *
-     * @return représentation du livre en string
-     */
-    @Override
-    public String toString() {
-        String representation = "<Livre #"
-            + this.idLivre
-            + " "
-            + this.titre
-            + ", "
-            + this.auteur;
-        if(this.idMembre != 0) {
-            representation += ", réservé par "
-                + this.idMembre
-                + " depuis le "
-                + this.datePret.toString();
-        }
-        representation += ">";
-
-        return representation;
+        super();
     }
 
     // Region Getters and Setters
+    /**
+     * Getter de la variable d'instance <code>this.idLivre</code>.
+     *
+     * @return La variable d'instance <code>this.idLivre</code>
+     */
+    public int getIdLivre() {
+        return this.idLivre;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.idLivre</code>.
+     *
+     * @param idLivre La valeur à utiliser pour la variable d'instance <code>this.idLivre</code>
+     */
+    public void setIdLivre(int idLivre) {
+        this.idLivre = idLivre;
+    }
+
     /**
      * Getter de la variable d'instance <code>this.titre</code>.
      *
@@ -73,7 +66,7 @@ public class LivreDTO extends DTO {
      *
      * @param titre La valeur à utiliser pour la variable d'instance <code>this.titre</code>
      */
-    public void setTitre(final String titre) {
+    public void setTitre(String titre) {
         this.titre = titre;
     }
 
@@ -91,7 +84,7 @@ public class LivreDTO extends DTO {
      *
      * @param auteur La valeur à utiliser pour la variable d'instance <code>this.auteur</code>
      */
-    public void setAuteur(final String auteur) {
+    public void setAuteur(String auteur) {
         this.auteur = auteur;
     }
 
@@ -109,26 +102,8 @@ public class LivreDTO extends DTO {
      *
      * @param dateAcquisition La valeur à utiliser pour la variable d'instance <code>this.dateAcquisition</code>
      */
-    public void setDateAcquisition(final Timestamp dateAcquisition) {
+    public void setDateAcquisition(Timestamp dateAcquisition) {
         this.dateAcquisition = dateAcquisition;
-    }
-
-    /**
-     * Getter de la variable d'instance <code>this.idLivre</code>.
-     *
-     * @return La variable d'instance <code>this.idLivre</code>
-     */
-    public int getIdLivre() {
-        return this.idLivre;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.idLivre</code>.
-     *
-     * @param idLivre La valeur à utiliser pour la variable d'instance <code>this.idLivre</code>
-     */
-    public void setIdLivre(final int idLivre) {
-        this.idLivre = idLivre;
     }
 
     /**
@@ -145,7 +120,7 @@ public class LivreDTO extends DTO {
      *
      * @param idMembre La valeur à utiliser pour la variable d'instance <code>this.idMembre</code>
      */
-    public void setIdMembre(final int idMembre) {
+    public void setIdMembre(int idMembre) {
         this.idMembre = idMembre;
     }
 
@@ -163,8 +138,8 @@ public class LivreDTO extends DTO {
      *
      * @param datePret La valeur à utiliser pour la variable d'instance <code>this.datePret</code>
      */
-    public void setDatePret(final Timestamp datePret) {
+    public void setDatePret(Timestamp datePret) {
         this.datePret = datePret;
     }
-    // EndRegion
+    // EndRegion Getters and Setters
 }

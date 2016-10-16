@@ -1,6 +1,6 @@
 // Fichier DAO.java
-// Auteur : Jeremi Cyr
-// Date de création : 2016-09-15
+// Auteur : Gilles Bénichou
+// Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
@@ -11,7 +11,7 @@ import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 /**
  * Classe de base pour tous les DAOs.
  *
- * @author Mehdi Hamidi
+ * @author Gilles Bénichou
  */
 public class DAO implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -21,28 +21,21 @@ public class DAO implements Serializable {
     /**
      * Crée un DAO à partir d'une connexion à la base de données.
      *
-     * @param connexion Reçoit une connexion en param
+     * @param connexion La connexion à utiliser
      */
-    public DAO(final Connexion connexion) {
+    public DAO(Connexion connexion) {
+        super();
         setConnexion(connexion);
     }
 
+    // Region Getters and Setters
     /**
      * Getter de la variable d'instance <code>this.connexion</code>.
      *
      * @return La variable d'instance <code>this.connexion</code>
      */
-    public Connexion getConnexion() {
+    private Connexion getConnexion() {
         return this.connexion;
-    }
-
-    /**
-     * Retourne la {@link java.sql.Connection} JDBC.
-     *
-     * @return La {@link java.sql.Connection} JDBC.
-     */
-    protected Connection getConnection() {
-        return getConnexion().getConnection();
     }
 
     /**
@@ -50,8 +43,17 @@ public class DAO implements Serializable {
      *
      * @param connexion La valeur à utiliser pour la variable d'instance <code>this.connexion</code>
      */
-    public void setConnexion(final Connexion connexion) {
+    private void setConnexion(Connexion connexion) {
         this.connexion = connexion;
     }
+    // EndRegion Getters and Setters
 
+    /**
+     * Retourne la {@link java.sql.Connection} JDBC.
+     *
+     * @return La {@link java.sql.Connection} JDBC
+     */
+    protected Connection getConnection() {
+        return getConnexion().getConnection();
+    }
 }

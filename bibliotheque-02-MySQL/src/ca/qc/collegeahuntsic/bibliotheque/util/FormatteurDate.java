@@ -1,5 +1,5 @@
 // Fichier FormatteurDate.java
-// Auteur : Mehdi Hamidi
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Utilitaire de création d'un {@link java.sql.Timestamp} dans un format défini.
  *
- * @author Mehdi Hamidi
+ * @author Gilles Bénichou
  */
 public final class FormatteurDate {
     private static final String FORMAT_DATE = "yyyy-MM-dd";
@@ -37,7 +37,7 @@ public final class FormatteurDate {
      * @return Le {@link java.sql.Timestamp} issu de la conversion
      * @throws ParseException Si la chaîne de caractères n'est pas formatée correctement
      */
-    public static Timestamp timestampValue(final String date) throws ParseException {
+    public static Timestamp timestampValue(String date) throws ParseException {
         final Date dateFormatee = FormatteurDate.SIMPLE_DATE_FORMAT.parse(date);
         final Timestamp timestamp = new Timestamp(dateFormatee.getTime());
         return timestamp;
@@ -50,7 +50,7 @@ public final class FormatteurDate {
      * @return La chaîne de caractères issue de la conversion
      * @throws ParseException Si le {@link java.sql.Timestamp} n'est pas formaté correctement
      */
-    public static String stringValue(final Timestamp timestamp) {
+    public static String stringValue(Timestamp timestamp) {
         final Date date = new Date(timestamp.getTime());
         final String dateFormatee = FormatteurDate.SIMPLE_DATE_FORMAT.format(date);
         return dateFormatee;

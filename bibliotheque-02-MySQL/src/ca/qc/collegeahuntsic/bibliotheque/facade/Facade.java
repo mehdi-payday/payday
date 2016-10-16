@@ -1,6 +1,6 @@
 // Fichier Facade.java
-// Auteur : Jeremi Cyr
-// Date de création : 2016-09-15
+// Auteur : Gilles Bénichou
+// Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.facade;
 
@@ -9,9 +9,8 @@ import java.io.Serializable;
 /**
  * Classe de base pour toutes les façades.
  *
- * @author Alexandre Barone
+ * @author Gilles Bénichou
  */
-
 public class Facade implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -19,5 +18,6 @@ public class Facade implements Serializable {
      * Constructeur par défaut.
      */
     public Facade() {
+        super();
     }
 }

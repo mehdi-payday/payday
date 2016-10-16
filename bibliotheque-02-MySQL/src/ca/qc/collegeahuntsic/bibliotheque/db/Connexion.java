@@ -1,5 +1,5 @@
 // Fichier Connexion.java
-// Auteur : Mehdi Hamidi
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.db;
@@ -20,7 +20,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
  * Post-condition :
  *     La connexion est créée en mode autocommit false.
  *
- * @author Mehdi Hamidi
+ * @author Gilles Bénichou
  */
 public class Connexion implements AutoCloseable {
     private static final String TYPE_SERVEUR_LOCAL = "local";
@@ -61,10 +61,10 @@ public class Connexion implements AutoCloseable {
      * @throws ConnexionException Si le driver n'existe pas, S'il y a une erreur avec la base de données ou si <code>typeServeur</code> n'est
      *         pas valide
      */
-    public Connexion(final String typeServeur,
-        final String schema,
-        final String nomUtilisateur,
-        final String motPasse) throws ConnexionException {
+    public Connexion(String typeServeur,
+        String schema,
+        String nomUtilisateur,
+        String motPasse) throws ConnexionException {
         String urlBD = null;
 
         try {
@@ -125,24 +125,18 @@ public class Connexion implements AutoCloseable {
      *
      * @param connection La valeur à utiliser pour la variable d'instance <code>this.connection</code>
      */
-    private void setConnection(final Connection connection) {
+    private void setConnection(Connection connection) {
         this.connection = connection;
     }
-
     // EndRegion Getters and Setters
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void close() throws ConnexionException {
+    public void close() throws Exception {
         rollback();
-        try {
-            getConnection().close();
-        } catch(Exception closeException) {
-            throw new ConnexionException(closeException);
-        }
-
+        getConnection().close();
         System.out.println("\nConnexion fermée"
             + " "
             + getConnection());

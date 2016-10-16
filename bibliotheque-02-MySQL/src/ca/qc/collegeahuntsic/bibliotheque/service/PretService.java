@@ -1,22 +1,21 @@
 // Fichier PretService.java
-// Auteur : Mehdi Hamidi
-// Date de création : 2016-10-03
+// Auteur : Gilles Bénichou
+// Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.service;
 
-import java.io.Serializable;
-
 /**
- * Service de la table pret.
- * @author Mehdi Hamidi
+ * Service de la table <code>pret</code>.
+ *
+ * @author Gilles Bénichou
  */
-public class PretService implements Serializable {
+public class PretService extends Service {
     private static final long serialVersionUID = 1L;
 
     /**
-     *Crée le service de la table pret.
+     * Crée le service de la table <code>pret</code>.
      */
     public PretService() {
-
+        super();
     }
 }

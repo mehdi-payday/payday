@@ -1,15 +1,14 @@
 // Fichier ServiceException.java
-// Auteur : Mehdi Hamidi
-// Date de creation : 2016-09-15
+// Auteur : Gilles Bénichou
+// Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.exception;
 
 /**
- * Cette exception est utilisée en cas de problème avec un objet Service.
+ * Cette exception est utilisée en cas de problème avec un objet {@link ca.qc.collegeahuntsic.bibliotheque.service.Service}.
  *
- * @author Adam Cherti
+ * @author Gilles Bénichou
  */
-
 public class ServiceException extends Exception {
     private static final long serialVersionUID = 1L;
 

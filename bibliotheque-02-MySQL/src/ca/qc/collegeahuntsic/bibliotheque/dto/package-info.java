@@ -1,11 +1,11 @@
 // Fichier package-info.java
-// Auteur : Vincent Laferrière
-// Date de création : 2016-09-12
+// Auteur : Gilles Bénichou
+// Date de création : 2016-05-18
 
 /**
- * DTO specific package.
+ * Provides the DTO classes used with the bibliothèque.
  *
- * @author Vincent Laferrière
+ * @author Gilles Bénichou
  */
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;

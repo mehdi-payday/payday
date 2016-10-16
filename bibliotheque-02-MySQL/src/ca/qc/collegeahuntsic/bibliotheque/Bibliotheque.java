@@ -1,5 +1,5 @@
 // Fichier Bibliotheque.java
-// Auteur : Mehdi Hamidi
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque;
@@ -40,7 +40,7 @@ import ca.qc.collegeahuntsic.bibliotheque.util.FormatteurDate;
  * Post-condition :<br />
  *   Le programme effectue les maj associées à chaque transaction
  *
- * @author Mehdi Hamidi
+ * @author Gilles Bénichou
  */
 public final class Bibliotheque {
     private static BibliothequeCreateur gestionnaireBibliotheque;
@@ -56,9 +56,9 @@ public final class Bibliotheque {
      * Crée une connexion sur la base de données, traite toutes les transactions et détruit la connexion.
      *
      * @param arguments Les arguments du main
-     * @throws BibliothequeException Si une erreur avec le gestionnaire de biblio survient
+     * @throws Exception Si une erreur survient
      */
-    public static void main(final String[] arguments) throws BibliothequeException {
+    public static void main(String[] arguments) throws Exception {
         // Validation du nombre de paramètres
         if(arguments.length < 5) {
             System.out.println("Usage: java Bibliotheque <serveur> <bd> <user> <password> <fichier-transactions>");
@@ -66,48 +66,37 @@ public final class Bibliotheque {
             return;
         }
 
-        // Ouverture du fichier de transactions
-
-        final String serveur = arguments[0];
-        final String bd = arguments[1];
-        final String user = arguments[2];
-        final String password = arguments[3];
-        final String filename = "/"
-            + arguments[4];
-
-        final InputStream sourceTransaction = Bibliotheque.class.getResourceAsStream(filename);
-        try(
-            BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))) {
-
-            Bibliotheque.gestionnaireBibliotheque = new BibliothequeCreateur(serveur,
-                bd,
-                user,
-                password);
-
-            Bibliotheque.traiterTransactions(reader);
-        } catch(IOException e) {
-            System.out.println("Cannot read the file "
+        try {
+            // Ouverture du fichier de transactions
+            final InputStream sourceTransaction = Bibliotheque.class.getResourceAsStream("/"
                 + arguments[4]);
-            e.printStackTrace();
-        }
+            try(
+                BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))) {
 
+                Bibliotheque.gestionnaireBibliotheque = new BibliothequeCreateur(arguments[0],
+                    arguments[1],
+                    arguments[2],
+                    arguments[3]);
+                Bibliotheque.traiterTransactions(reader);
+            }
+        } catch(Exception exception) {
+            Bibliotheque.gestionnaireBibliotheque.rollback();
+            exception.printStackTrace(System.out);
+        } finally {
+            Bibliotheque.gestionnaireBibliotheque.close();
+        }
     }
 
     /**
      * Traite le fichier de transactions.
      *
      * @param reader Le flux d'entrée à lire
-     * @throws BibliothequeException Si une erreur survient
+     * @throws Exception Si une erreur survient
      */
-    private static void traiterTransactions(final BufferedReader reader) throws BibliothequeException {
+    private static void traiterTransactions(BufferedReader reader) throws Exception {
         Bibliotheque.afficherAide();
         System.out.println("\n\n\n");
-        String transaction;
-        try {
-            transaction = Bibliotheque.lireTransaction(reader);
-        } catch(IOException ioException) {
-            throw new BibliothequeException(ioException);
-        }
+        String transaction = Bibliotheque.lireTransaction(reader);
         while(!Bibliotheque.finTransaction(transaction)) {
             // Découpage de la transaction en mots
             final StringTokenizer tokenizer = new StringTokenizer(transaction,
@@ -115,11 +104,7 @@ public final class Bibliotheque {
             if(tokenizer.hasMoreTokens()) {
                 Bibliotheque.executerTransaction(tokenizer);
             }
-            try {
-                transaction = Bibliotheque.lireTransaction(reader);
-            } catch(IOException ioException) {
-                throw new BibliothequeException(ioException);
-            }
+            transaction = Bibliotheque.lireTransaction(reader);
         }
     }
 
@@ -130,7 +115,7 @@ public final class Bibliotheque {
      * @return La transaction lue
      * @throws IOException Si une erreur de lecture survient
      */
-    private static String lireTransaction(final BufferedReader reader) throws IOException {
+    private static String lireTransaction(BufferedReader reader) throws IOException {
         final String transaction = reader.readLine();
         if(transaction != null) {
             System.out.println("> "
@@ -145,7 +130,7 @@ public final class Bibliotheque {
      * @param tokenizer L'entrée à décoder
      * @throws BibliothequeException Si une erreur survient
      */
-    private static void executerTransaction(final StringTokenizer tokenizer) throws BibliothequeException {
+    private static void executerTransaction(StringTokenizer tokenizer) throws BibliothequeException {
         try {
             final String command = tokenizer.nextToken();
 
@@ -202,7 +187,7 @@ public final class Bibliotheque {
                 Bibliotheque.gestionnaireBibliotheque.getMembreService().desinscrire(membreDTO);
                 Bibliotheque.gestionnaireBibliotheque.commit();
             } else if("reserver".equals(command)) {
-                // Juste pour éviter deux dates de réservation strictement identiques
+                // Juste pour éviter deux timestamps de réservation strictement identiques
                 Thread.sleep(1);
                 final ReservationDTO reservationDTO = new ReservationDTO();
                 reservationDTO.setIdReservation(Bibliotheque.readInt(tokenizer));
@@ -244,15 +229,15 @@ public final class Bibliotheque {
         } catch(InterruptedException interruptedException) {
             System.out.println("** "
                 + interruptedException.toString());
-            //Bibliotheque.gestionnaireBibliotheque.rollback();
+            Bibliotheque.gestionnaireBibliotheque.rollback();
         } catch(ServiceException serviceException) {
             System.out.println("** "
                 + serviceException.toString());
-            //Bibliotheque.gestionnaireBibliotheque.rollback();
+            Bibliotheque.gestionnaireBibliotheque.rollback();
         } catch(BibliothequeException bibliothequeException) {
             System.out.println("** "
                 + bibliothequeException.toString());
-            //Bibliotheque.gestionnaireBibliotheque.rollback();
+            Bibliotheque.gestionnaireBibliotheque.rollback();
         }
     }
 
@@ -263,11 +248,9 @@ public final class Bibliotheque {
         System.out.println();
         System.out.println("Chaque transaction comporte un nom et une liste d'arguments");
         System.out.println("séparés par des espaces. La liste peut être vide.");
-        System.out.println(" Les dates sont en format yyyy-mm-dd.");
-        System.out.println("");
+        System.out.println(" Les dates sont en format yyyy-mm-dd.\n");
         System.out.println("Les transactions sont :");
         System.out.println("  aide");
-        System.out.println("  exit");
         System.out.println("  acquerir <idLivre> <titre> <auteur> <dateAcquisition>");
         System.out.println("  preter <idMembre> <idLivre>");
         System.out.println("  renouveler <idLivre>");
@@ -289,7 +272,7 @@ public final class Bibliotheque {
      * @param transaction La transaction à traiter
      * @return <code>true</code> Si la fin du fichier est atteinte, <code>false</code> sinon
      */
-    private static boolean finTransaction(final String transaction) {
+    private static boolean finTransaction(String transaction) {
         boolean finDeFichier = transaction == null;
         if(!finDeFichier) {
             final StringTokenizer tokenizer = new StringTokenizer(transaction,
@@ -311,7 +294,7 @@ public final class Bibliotheque {
      * @return La chaîne de caractères lue
      * @throws BibliothequeException Si l'élément lu est manquant
      */
-    private static String readString(final StringTokenizer tokenizer) throws BibliothequeException {
+    private static String readString(StringTokenizer tokenizer) throws BibliothequeException {
         if(tokenizer.hasMoreElements()) {
             return tokenizer.nextToken();
         }
@@ -325,7 +308,7 @@ public final class Bibliotheque {
      * @return Le integer lu
      * @throws BibliothequeException Si l'élément lu est manquant ou n'est pas un integer
      */
-    private static int readInt(final StringTokenizer tokenizer) throws BibliothequeException {
+    private static int readInt(StringTokenizer tokenizer) throws BibliothequeException {
         if(tokenizer.hasMoreElements()) {
             final String token = tokenizer.nextToken();
             try {
@@ -346,7 +329,7 @@ public final class Bibliotheque {
      * @return Le long lu
      * @throws BibliothequeException Si l'élément lu est manquant ou n'est pas un long
      */
-    private static long readLong(final StringTokenizer tokenizer) throws BibliothequeException {
+    private static long readLong(StringTokenizer tokenizer) throws BibliothequeException {
         if(tokenizer.hasMoreElements()) {
             final String token = tokenizer.nextToken();
             try {
@@ -367,7 +350,7 @@ public final class Bibliotheque {
      * @return La date lue
      * @throws BibliothequeException Si l'élément lu est manquant ou n'est pas une date correctement formatée
      */
-    private static Timestamp readDate(final StringTokenizer tokenizer) throws BibliothequeException {
+    private static Timestamp readDate(StringTokenizer tokenizer) throws BibliothequeException {
         if(tokenizer.hasMoreElements()) {
             final String token = tokenizer.nextToken();
             try {

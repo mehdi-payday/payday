@@ -1,5 +1,5 @@
 // Fichier BibliothequeCreateur.java
-// Auteur : Mehdi Hamidi
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
@@ -18,7 +18,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.ReservationService;
 /**
  * Utilitaire de création des outils de la bibliothèque.
  *
- * @author Mehdi Hamidi
+ * @author Gilles Bénichou
  */
 public class BibliothequeCreateur {
     private Connexion connexion;
@@ -41,32 +41,28 @@ public class BibliothequeCreateur {
      * @throws BibliothequeException S'il y a une erreur avec la base de données
      */
     @SuppressWarnings("resource")
-    public BibliothequeCreateur(final String typeServeur,
-        final String schema,
-        final String nomUtilisateur,
-        final String motPasse) throws BibliothequeException {
+    public BibliothequeCreateur(String typeServeur,
+        String schema,
+        String nomUtilisateur,
+        String motPasse) throws BibliothequeException {
         try {
-
-            final Connexion newConnexion = new Connexion(typeServeur,
+            setConnexion(new Connexion(typeServeur,
                 schema,
                 nomUtilisateur,
-                motPasse);
-            setConnexion(newConnexion);
-
+                motPasse));
             final LivreDAO livreDAO = new LivreDAO(getConnexion());
             final MembreDAO membreDAO = new MembreDAO(getConnexion());
             final ReservationDAO reservationDAO = new ReservationDAO(getConnexion());
-
             setLivreService(new LivreService(livreDAO,
                 membreDAO,
                 reservationDAO));
-            setMembreService(new MembreService(livreDAO,
-                membreDAO,
+            setMembreService(new MembreService(membreDAO,
+                livreDAO,
                 reservationDAO));
             setPretService(new PretService());
             setReservationService(new ReservationService(reservationDAO,
-                membreDAO,
-                livreDAO));
+                livreDAO,
+                membreDAO));
         } catch(ConnexionException connexionException) {
             throw new BibliothequeException(connexionException);
         }
@@ -87,7 +83,7 @@ public class BibliothequeCreateur {
      *
      * @param connexion La valeur à utiliser pour la variable d'instance <code>this.connexion</code>
      */
-    private void setConnexion(final Connexion connexion) {
+    private void setConnexion(Connexion connexion) {
         this.connexion = connexion;
     }
 
@@ -105,7 +101,7 @@ public class BibliothequeCreateur {
      *
      * @param livreService La valeur à utiliser pour la variable d'instance <code>this.livreService</code>
      */
-    private void setLivreService(final LivreService livreService) {
+    private void setLivreService(LivreService livreService) {
         this.livreService = livreService;
     }
 
@@ -123,7 +119,7 @@ public class BibliothequeCreateur {
      *
      * @param membreService La valeur à utiliser pour la variable d'instance <code>this.membreService</code>
      */
-    private void setMembreService(final MembreService membreService) {
+    private void setMembreService(MembreService membreService) {
         this.membreService = membreService;
     }
 
@@ -141,7 +137,7 @@ public class BibliothequeCreateur {
      *
      * @param pretService La valeur à utiliser pour la variable d'instance <code>this.pretService</code>
      */
-    private void setPretService(final PretService pretService) {
+    private void setPretService(PretService pretService) {
         this.pretService = pretService;
     }
 
@@ -159,10 +155,9 @@ public class BibliothequeCreateur {
      *
      * @param reservationService La valeur à utiliser pour la variable d'instance <code>this.reservationService</code>
      */
-    private void setReservationService(final ReservationService reservationService) {
+    private void setReservationService(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
-
     // EndRegion Getters and Setters
 
     /**
