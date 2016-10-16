@@ -1,5 +1,5 @@
 // Fichier Bibliotheque.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque;
@@ -40,7 +40,7 @@ import ca.qc.collegeahuntsic.bibliotheque.util.FormatteurDate;
  * Post-condition :<br />
  *   Le programme effectue les maj associées à chaque transaction
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public final class Bibliotheque {
     private static BibliothequeCreateur gestionnaireBibliotheque;

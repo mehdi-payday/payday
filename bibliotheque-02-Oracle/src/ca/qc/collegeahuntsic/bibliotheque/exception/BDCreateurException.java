@@ -1,5 +1,5 @@
 // Fichier BDCreateurException.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.exception;
@@ -7,7 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.exception;
 /**
  * Cette exception est utilisée en cas de problème avec l'objet {@link ca.qc.collegeahuntsic.bibliotheque.util.BDCreateur}.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class BDCreateurException extends Exception {
     private static final long serialVersionUID = 1L;

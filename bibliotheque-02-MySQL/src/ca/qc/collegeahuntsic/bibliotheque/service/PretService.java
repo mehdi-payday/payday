@@ -1,5 +1,5 @@
 // Fichier PretService.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.service;
@@ -7,7 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.service;
 /**
  * Service de la table <code>pret</code>.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class PretService extends Service {
     private static final long serialVersionUID = 1L;

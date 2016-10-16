@@ -1,5 +1,5 @@
 // Fichier ReservationDTO.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;
@@ -9,7 +9,7 @@ import java.sql.Timestamp;
 /**
  * DTO de la table <code>reservation</code>.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class ReservationDTO extends DTO {
     private static final long serialVersionUID = 1L;

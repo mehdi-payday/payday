@@ -1,5 +1,5 @@
 // Fichier BDCreateur.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
@@ -13,7 +13,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
 /**
  * Utilitaire de création de la base de données.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public final class BDCreateur {
     /**

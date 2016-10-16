@@ -1,5 +1,5 @@
 // Fichier LivreDAO.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
@@ -17,7 +17,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 /**
  * DAO pour effectuer des CRUDs avec la table <code>livre</code>.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class LivreDAO extends DAO {
     private static final long serialVersionUID = 1L;

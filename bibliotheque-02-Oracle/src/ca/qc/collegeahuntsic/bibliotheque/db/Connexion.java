@@ -1,5 +1,5 @@
 // Fichier Connexion.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.db;
@@ -20,7 +20,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.ConnexionException;
  * Post-condition :
  *     La connexion est créée en mode autocommit false.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class Connexion implements AutoCloseable {
     private static final String TYPE_SERVEUR_LOCAL = "local";

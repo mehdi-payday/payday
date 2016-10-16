@@ -1,5 +1,5 @@
 // Fichier FormatteurDate.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Utilitaire de création d'un {@link java.sql.Timestamp} dans un format défini.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public final class FormatteurDate {
     private static final String FORMAT_DATE = "yyyy-MM-dd";
