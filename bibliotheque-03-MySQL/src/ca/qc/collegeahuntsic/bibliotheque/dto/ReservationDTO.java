@@ -1,24 +1,26 @@
 // Fichier ReservationDTO.java
-// Auteur : Team PayDay
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;
 
 import java.sql.Timestamp;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * DTO de la table <code>reservation</code>.
  *
- * @author Team PayDay
+ * @author Gilles Bénichou
  */
 public class ReservationDTO extends DTO {
     private static final long serialVersionUID = 1L;
 
     private int idReservation;
 
-    private int idLivre;
+    private MembreDTO membreDTO;
 
-    private int idMembre;
+    private LivreDTO livreDTO;
 
     private Timestamp dateReservation;
 
@@ -49,39 +51,39 @@ public class ReservationDTO extends DTO {
     }
 
     /**
-     * Getter de la variable d'instance <code>this.idLivre</code>.
+     * Getter de la variable d'instance <code>this.membreDTO</code>.
      *
-     * @return La variable d'instance <code>this.idLivre</code>
+     * @return La variable d'instance <code>this.membreDTO</code>
      */
-    public int getIdLivre() {
-        return this.idLivre;
+    public MembreDTO getMembreDTO() {
+        return this.membreDTO;
     }
 
     /**
-     * Setter de la variable d'instance <code>this.idLivre</code>.
+     * Setter de la variable d'instance <code>this.membreDTO</code>.
      *
-     * @param idLivre La valeur à utiliser pour la variable d'instance <code>this.idLivre</code>
+     * @param membreDTO La valeur à utiliser pour la variable d'instance <code>this.membreDTO</code>
      */
-    public void setIdLivre(int idLivre) {
-        this.idLivre = idLivre;
+    public void setMembreDTO(MembreDTO membreDTO) {
+        this.membreDTO = membreDTO;
     }
 
     /**
-     * Getter de la variable d'instance <code>this.idMembre</code>.
+     * Getter de la variable d'instance <code>this.livreDTO</code>.
      *
-     * @return La variable d'instance <code>this.idMembre</code>
+     * @return La variable d'instance <code>this.livreDTO</code>
      */
-    public int getIdMembre() {
-        return this.idMembre;
+    public LivreDTO getLivreDTO() {
+        return this.livreDTO;
     }
 
     /**
-     * Setter de la variable d'instance <code>this.idMembre</code>.
+     * Setter de la variable d'instance <code>this.livreDTO</code>.
      *
-     * @param idMembre La valeur à utiliser pour la variable d'instance <code>this.idMembre</code>
+     * @param livreDTO La valeur à utiliser pour la variable d'instance <code>this.livreDTO</code>
      */
-    public void setIdMembre(int idMembre) {
-        this.idMembre = idMembre;
+    public void setLivreDTO(LivreDTO livreDTO) {
+        this.livreDTO = livreDTO;
     }
 
     /**
@@ -102,4 +104,37 @@ public class ReservationDTO extends DTO {
         this.dateReservation = dateReservation;
     }
     // EndRegion Getters and Setters
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean equals = this == obj;
+        if(!equals) {
+            equals = obj != null
+                && obj instanceof ReservationDTO;
+            if(equals) {
+                final ReservationDTO reservationDTO = (ReservationDTO) obj;
+                final EqualsBuilder equalsBuilder = new EqualsBuilder();
+                equalsBuilder.appendSuper(super.equals(reservationDTO));
+                equalsBuilder.append(getIdReservation(),
+                    reservationDTO.getIdReservation());
+                equals = equalsBuilder.isEquals();
+            }
+        }
+        return equals;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(25,
+            15);
+        hashCodeBuilder.appendSuper(super.hashCode());
+        hashCodeBuilder.append(getIdReservation());
+        return hashCodeBuilder.toHashCode();
+    }
 }

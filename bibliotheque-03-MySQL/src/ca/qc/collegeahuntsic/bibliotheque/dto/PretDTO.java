@@ -1,24 +1,26 @@
 // Fichier PretDTO.java
-// Auteur : Alexandre Barone
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;
 
 import java.sql.Timestamp;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * DTO de la table <code>pret</code>.
  *
- * @author Alexandre Barone
+ * @author Gilles Bénichou
  */
 public class PretDTO extends DTO {
     private static final long serialVersionUID = 1L;
 
     private int idPret;
 
-    private int idMembre;
+    private MembreDTO membreDTO;
 
-    private int idLivre;
+    private LivreDTO livreDTO;
 
     private Timestamp datePret;
 
@@ -32,6 +34,14 @@ public class PretDTO extends DTO {
     }
 
     // Region Getters and Setters
+    /**
+     * Getter de la variable d'instance <code>this.idPret</code>.
+     *
+     * @return La variable d'instance <code>this.idPret</code>
+     */
+    public int getIdPret() {
+        return this.idPret;
+    }
 
     /**
      * Setter de la variable d'instance <code>this.idPret</code>.
@@ -43,66 +53,39 @@ public class PretDTO extends DTO {
     }
 
     /**
-     * Getter de la variable d'instance <code>this.idPret</code>.
+     * Getter de la variable d'instance <code>this.membreDTO</code>.
      *
-     * @return La variable d'instance <code>this.idPret</code>
+     * @return La variable d'instance <code>this.membreDTO</code>
      */
-    public int getIdPret() {
-        return this.idPret;
+    public MembreDTO getMembreDTO() {
+        return this.membreDTO;
     }
 
     /**
-     * Getter de la variable d'instance <code>this.idMembre</code>.
+     * Setter de la variable d'instance <code>this.membreDTO</code>.
      *
-     * @return La variable d'instance <code>this.idMembre</code>
+     * @param membreDTO La valeur à utiliser pour la variable d'instance <code>this.membreDTO</code>
      */
-    public int getIdMembre() {
-        return this.idMembre;
+    public void setMembreDTO(MembreDTO membreDTO) {
+        this.membreDTO = membreDTO;
     }
 
     /**
-     * Setter de la variable d'instance <code>this.idMembre</code>.
+     * Getter de la variable d'instance <code>this.livreDTO</code>.
      *
-     * @param idMembre La valeur à utiliser pour la variable d'instance <code>this.idMembre</code>
+     * @return La variable d'instance <code>this.livreDTO</code>
      */
-    public void setIdMembre(int idMembre) {
-        this.idMembre = idMembre;
+    public LivreDTO getLivreDTO() {
+        return this.livreDTO;
     }
 
     /**
-     * Getter de la variable d'instance <code>this.idLivre</code>.
+     * Setter de la variable d'instance <code>this.livreDTO</code>.
      *
-     * @return La variable d'instance <code>this.idLivre</code>
+     * @param livreDTO La valeur à utiliser pour la variable d'instance <code>this.livreDTO</code>
      */
-    public int getIdLivre() {
-        return this.idLivre;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.idLivre</code>.
-     *
-     * @param idLivre La valeur à utiliser pour la variable d'instance <code>this.idLivre</code>
-     */
-    public void setIdLivre(int idLivre) {
-        this.idLivre = idLivre;
-    }
-
-    /**
-     * Getter de la variable d'instance <code>this.dateRetour</code>.
-     *
-     * @return La variable d'instance <code>this.dateRetour</code>
-     */
-    public Timestamp getDateRetour() {
-        return this.dateRetour;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.dateRetour</code>.
-     *
-     * @param dateRetour La valeur à utiliser pour la variable d'instance <code>this.dateRetour</code>
-     */
-    public void setDateRetour(Timestamp dateRetour) {
-        this.dateRetour = dateRetour;
+    public void setLivreDTO(LivreDTO livreDTO) {
+        this.livreDTO = livreDTO;
     }
 
     /**
@@ -122,5 +105,56 @@ public class PretDTO extends DTO {
     public void setDatePret(Timestamp datePret) {
         this.datePret = datePret;
     }
+
+    /**
+     * Getter de la variable d'instance <code>this.dateRetour</code>.
+     *
+     * @return La variable d'instance <code>this.dateRetour</code>
+     */
+    public Timestamp getDateRetour() {
+        return this.dateRetour;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.dateRetour</code>.
+     *
+     * @param dateRetour La valeur à utiliser pour la variable d'instance <code>this.dateRetour</code>
+     */
+    public void setDateRetour(Timestamp dateRetour) {
+        this.dateRetour = dateRetour;
+    }
     // EndRegion Getters and Setters
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean equals = this == obj;
+        if(!equals) {
+            equals = obj != null
+                && obj instanceof PretDTO;
+            if(equals) {
+                final PretDTO pretDTO = (PretDTO) obj;
+                final EqualsBuilder equalsBuilder = new EqualsBuilder();
+                equalsBuilder.appendSuper(super.equals(pretDTO));
+                equalsBuilder.append(getIdPret(),
+                    pretDTO.getIdPret());
+                equals = equalsBuilder.isEquals();
+            }
+        }
+        return equals;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(23,
+            13);
+        hashCodeBuilder.appendSuper(super.hashCode());
+        hashCodeBuilder.append(getIdPret());
+        return hashCodeBuilder.toHashCode();
+    }
 }

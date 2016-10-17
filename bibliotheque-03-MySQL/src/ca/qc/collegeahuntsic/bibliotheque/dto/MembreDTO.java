@@ -1,13 +1,16 @@
 // Fichier MembreDTO.java
-// Auteur : Team PayDay
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dto;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  * DTO de la table <code>membre</code>.
  *
- * @author Team PayDay
+ * @author Gilles Bénichou
  */
 public class MembreDTO extends DTO {
     private static final long serialVersionUID = 1L;
@@ -99,6 +102,38 @@ public class MembreDTO extends DTO {
     public void setLimitePret(int limitePret) {
         this.limitePret = limitePret;
     }
-
     // EndRegion Getters and Setters
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean equals = this == obj;
+        if(!equals) {
+            equals = obj != null
+                && obj instanceof MembreDTO;
+            if(equals) {
+                final MembreDTO membreDTO = (MembreDTO) obj;
+                final EqualsBuilder equalsBuilder = new EqualsBuilder();
+                equalsBuilder.appendSuper(super.equals(membreDTO));
+                equalsBuilder.append(getIdMembre(),
+                    membreDTO.getIdMembre());
+                equals = equalsBuilder.isEquals();
+            }
+        }
+        return equals;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final HashCodeBuilder hashCodeBuilder = new HashCodeBuilder(461,
+            451);
+        hashCodeBuilder.appendSuper(super.hashCode());
+        hashCodeBuilder.append(getIdMembre());
+        return hashCodeBuilder.toHashCode();
+    }
 }
