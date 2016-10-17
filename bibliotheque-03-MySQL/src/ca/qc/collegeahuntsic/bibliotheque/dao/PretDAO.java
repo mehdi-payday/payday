@@ -1,5 +1,5 @@
 // Fichier PretDAO.java
-// Auteur : Alexandre Barone
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
@@ -7,6 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,7 +20,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 /**
  * DAO pour effectuer des CRUDs avec la table <code>pret</code>.
  *
- * @author Alexandre Barone
+ * @author Gilles Bénichou
  */
 public class PretDAO extends DAO {
     private static final long serialVersionUID = 1L;
@@ -31,12 +32,13 @@ public class PretDAO extends DAO {
         + "                                    VALUES           (?, "
         + "                                                      ?, "
         + "                                                      ?, "
-        + "                                                      ?)";
+        + "                                                      NULL)";
 
-    private static final String READ_REQUEST = "SELECT idMembre, "
+    private static final String READ_REQUEST = "SELECT idPret, "
+        + "                                            idMembre, "
         + "                                            idLivre, "
         + "                                            datePret, "
-        + "                                            dateRetour) "
+        + "                                            dateRetour "
         + "                                     FROM   pret "
         + "                                     WHERE  idPret = ?";
 
@@ -54,16 +56,44 @@ public class PretDAO extends DAO {
         + "                                               idMembre, "
         + "                                               idLivre, "
         + "                                               datePret, "
-        + "                                               dateRetour) "
+        + "                                               dateRetour "
         + "                                        FROM   pret";
 
-    private static final String FIND_BY_MEMBRE = "SELECT idPret, "
-        + "                                              idMembre, "
-        + "                                              idLivre, "
-        + "                                              datePret, "
-        + "                                              dateRetour) "
-        + "                                       FROM   pret "
-        + "                                       WHERE  idMembre = ?";
+    private static final String FIND_BY_MEMBRE = "SELECT   idPret, "
+        + "                                                idMembre, "
+        + "                                                idLivre, "
+        + "                                                datePret, "
+        + "                                                dateRetour "
+        + "                                       FROM     pret "
+        + "                                       WHERE    idMembre = ? "
+        + "                                       AND      dateRetour IS NULL "
+        + "                                       ORDER BY datePret ASC";
+
+    private static final String FIND_BY_LIVRE = "SELECT   idPret, "
+        + "                                               idMembre, "
+        + "                                               idLivre, "
+        + "                                               datePret, "
+        + "                                               dateRetour "
+        + "                                      FROM     pret "
+        + "                                      WHERE    idLivre = ? "
+        + "                                      AND      dateRetour IS NULL "
+        + "                                      ORDER BY datePret ASC";
+
+    private static final String FIND_BY_DATE_PRET = "SELECT idPret, "
+        + "                                                 idMembre, "
+        + "                                                 idLivre, "
+        + "                                                 datePret, "
+        + "                                                 dateRetour "
+        + "                                          FROM   pret "
+        + "                                          WHERE  datePret = ?";
+
+    private static final String FIND_BY_DATE_RETOUR = "SELECT idPret, "
+        + "                                                   idMembre, "
+        + "                                                   idLivre, "
+        + "                                                   datePret, "
+        + "                                                   dateRetour "
+        + "                                            FROM   pret "
+        + "                                            WHERE  dateRetour = ?";
 
     /**
      * Crée un DAO à partir d'une connexion à la base de données.
@@ -75,9 +105,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Ajoute un nouveau pret.
+     * Ajoute un nouveau prêt.
      *
-     * @param pretDTO Le pret à ajouter
+     * @param pretDTO Le prêt à ajouter
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void add(PretDTO pretDTO) throws DAOException {
@@ -89,8 +119,6 @@ public class PretDAO extends DAO {
                 pretDTO.getLivreDTO().getIdLivre());
             addPreparedStatement.setTimestamp(3,
                 pretDTO.getDatePret());
-            addPreparedStatement.setTimestamp(4,
-                pretDTO.getDateRetour());
             addPreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
             throw new DAOException(sqlException);
@@ -98,10 +126,10 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Lit un pret. Si aucun pret n'est trouvé, <code>null</code> est retourné.
+     * Lit un prêt. Si aucun prêt n'est trouvé, <code>null</code> est retourné.
      *
-     * @param idPret L'ID du pret à lire
-     * @return Le pret lu ; <code>null</code> sinon
+     * @param idPret L'ID du prêt à lire
+     * @return Le prêt lu ; <code>null</code> sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public PretDTO read(int idPret) throws DAOException {
@@ -120,6 +148,7 @@ public class PretDAO extends DAO {
                     pretDTO.setMembreDTO(membreDTO);
                     final LivreDTO livreDTO = new LivreDTO();
                     livreDTO.setIdLivre(resultSet.getInt(3));
+                    pretDTO.setLivreDTO(livreDTO);
                     pretDTO.setDatePret(resultSet.getTimestamp(4));
                     pretDTO.setDateRetour(resultSet.getTimestamp(5));
                 }
@@ -131,9 +160,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Met à jour un pret.
+     * Met à jour un prêt.
      *
-     * @param pretDTO Le pret à mettre à jour
+     * @param pretDTO Le prêt à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void update(PretDTO pretDTO) throws DAOException {
@@ -147,6 +176,8 @@ public class PretDAO extends DAO {
                 pretDTO.getDatePret());
             updatePreparedStatement.setTimestamp(4,
                 pretDTO.getDateRetour());
+            updatePreparedStatement.setInt(5,
+                pretDTO.getIdPret());
             updatePreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
             throw new DAOException(sqlException);
@@ -154,9 +185,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Supprime un pret.
+     * Supprime un prêt.
      *
-     * @param pretDTO Le pret à supprimer
+     * @param pretDTO Le prêt à supprimer
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public void delete(PretDTO pretDTO) throws DAOException {
@@ -171,9 +202,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Trouve tous les prets.
+     * Trouve tous les prêts.
      *
-     * @return La liste des prets ; une liste vide sinon
+     * @return La liste des prêts ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<PretDTO> getAll() throws DAOException {
@@ -207,10 +238,10 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Trouve les prets à partir d'un membre.
+     * Trouve les prêts non terminés d'un membre.
      *
-     * @param idMembre L'ID du membre à utiliser
-     * @return La liste des prets correspondants ; une liste vide sinon
+     * @param idMembre L'ID du membre à trouver
+     * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     public List<PretDTO> findByMembre(int idMembre) throws DAOException {
@@ -232,6 +263,124 @@ public class PretDAO extends DAO {
                         pretDTO.setMembreDTO(membreDTO);
                         final LivreDTO livreDTO = new LivreDTO();
                         livreDTO.setIdLivre(resultSet.getInt(3));
+                        pretDTO.setLivreDTO(livreDTO);
+                        pretDTO.setDatePret(resultSet.getTimestamp(4));
+                        pretDTO.setDateRetour(resultSet.getTimestamp(5));
+                        prets.add(pretDTO);
+                    } while(resultSet.next());
+                }
+            }
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
+        }
+        return prets;
+    }
+
+    /**
+     * Trouve les livres en cours d'emprunt.
+     *
+     * @param idLivre L'ID du livre à trouver
+     * @return La liste des prêts correspondants ; une liste vide sinon
+     * @throws DAOException S'il y a une erreur avec la base de données
+     */
+    public List<PretDTO> findByLivre(int idLivre) throws DAOException {
+        List<PretDTO> prets = Collections.emptyList();
+        try(
+            PreparedStatement findByLivrePreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_LIVRE)) {
+            findByLivrePreparedStatement.setInt(1,
+                idLivre);
+            try(
+                ResultSet resultSet = findByLivrePreparedStatement.executeQuery()) {
+                PretDTO pretDTO = null;
+                if(resultSet.next()) {
+                    prets = new ArrayList<>();
+                    do {
+                        pretDTO = new PretDTO();
+                        pretDTO.setIdPret(resultSet.getInt(1));
+                        final MembreDTO membreDTO = new MembreDTO();
+                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        pretDTO.setMembreDTO(membreDTO);
+                        final LivreDTO livreDTO = new LivreDTO();
+                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        pretDTO.setLivreDTO(livreDTO);
+                        pretDTO.setDatePret(resultSet.getTimestamp(4));
+                        pretDTO.setDateRetour(resultSet.getTimestamp(5));
+                        prets.add(pretDTO);
+                    } while(resultSet.next());
+                }
+            }
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
+        }
+        return prets;
+    }
+
+    /**
+     * Trouve les prêts à partir d'une date de prêt.
+     *
+     * @param datePret La date de prêt à trouver
+     * @return La liste des prêts correspondants ; une liste vide sinon
+     * @throws DAOException S'il y a une erreur avec la base de données
+     */
+    public List<PretDTO> findByDatePret(Timestamp datePret) throws DAOException {
+        List<PretDTO> prets = Collections.emptyList();
+        try(
+            PreparedStatement findByDatePretPreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_DATE_PRET)) {
+            findByDatePretPreparedStatement.setTimestamp(1,
+                datePret);
+            try(
+                ResultSet resultSet = findByDatePretPreparedStatement.executeQuery()) {
+                PretDTO pretDTO = null;
+                if(resultSet.next()) {
+                    prets = new ArrayList<>();
+                    do {
+                        pretDTO = new PretDTO();
+                        pretDTO.setIdPret(resultSet.getInt(1));
+                        final MembreDTO membreDTO = new MembreDTO();
+                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        pretDTO.setMembreDTO(membreDTO);
+                        final LivreDTO livreDTO = new LivreDTO();
+                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        pretDTO.setLivreDTO(livreDTO);
+                        pretDTO.setDatePret(resultSet.getTimestamp(4));
+                        pretDTO.setDateRetour(resultSet.getTimestamp(5));
+                        prets.add(pretDTO);
+                    } while(resultSet.next());
+                }
+            }
+        } catch(SQLException sqlException) {
+            throw new DAOException(sqlException);
+        }
+        return prets;
+    }
+
+    /**
+     * Trouve les prêts à partir d'une date de retour.
+     *
+     * @param dateRetour La date de retour à trouver
+     * @return La liste des prêts correspondants ; une liste vide sinon
+     * @throws DAOException S'il y a une erreur avec la base de données
+     */
+    public List<PretDTO> findByDateRetour(Timestamp dateRetour) throws DAOException {
+        List<PretDTO> prets = Collections.emptyList();
+        try(
+            PreparedStatement findByDateRetourPreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_DATE_RETOUR)) {
+            findByDateRetourPreparedStatement.setTimestamp(1,
+                dateRetour);
+            try(
+                ResultSet resultSet = findByDateRetourPreparedStatement.executeQuery()) {
+                PretDTO pretDTO = null;
+                if(resultSet.next()) {
+                    prets = new ArrayList<>();
+                    do {
+                        pretDTO = new PretDTO();
+                        pretDTO.setIdPret(resultSet.getInt(1));
+                        final MembreDTO membreDTO = new MembreDTO();
+                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        pretDTO.setMembreDTO(membreDTO);
+                        final LivreDTO livreDTO = new LivreDTO();
+                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        pretDTO.setLivreDTO(livreDTO);
                         pretDTO.setDatePret(resultSet.getTimestamp(4));
                         pretDTO.setDateRetour(resultSet.getTimestamp(5));
                         prets.add(pretDTO);
