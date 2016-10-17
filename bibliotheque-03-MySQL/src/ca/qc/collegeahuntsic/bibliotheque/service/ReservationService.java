@@ -11,6 +11,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dao.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
@@ -258,14 +259,16 @@ public class ReservationService extends Service {
                     + livreDTO.getIdLivre()
                     + " n'existe pas");
             }
-            final MembreDTO emprunteur = getMembreDAO().read(unLivreDTO.getIdMembre());
-            if(emprunteur == null) {
+            final List<PretDTO> pret = getPretDAO().findByLivre(unLivreDTO.getIdLivre());
+            if(pret.isEmpty()) {
                 throw new ServiceException("Le livre "
                     + unLivreDTO.getTitre()
                     + " (ID de livre : "
                     + unLivreDTO.getIdLivre()
                     + ") n'est pas encore prêté");
             }
+            final MembreDTO emprunteur = getMembreDAO().read(pret.get(0).getMembreDTO().getIdMembre());
+
             if(unMembreDTO.getIdMembre() == emprunteur.getIdMembre()) {
                 throw new ServiceException("Le livre "
                     + unLivreDTO.getTitre()
@@ -278,16 +281,9 @@ public class ReservationService extends Service {
                     + ")");
             }
 
-            // Cas éliminé en utilisant la date de réservation comme étant la date système de la base de données
-
-            /* Verifier si date reservation >= datePret */
-            // if(Date.valueOf(dateReservation).before(tupleLivre.getDatePret())) {
-            //     throw new BibliothequeException("Date de réservation inférieure à la date de prêt");
-            // }
-
             final List<ReservationDTO> reservations = getReservationDAO().findByMembre(unMembreDTO.getIdMembre());
             for(ReservationDTO uneAutreReservationDTO : reservations) {
-                if(uneAutreReservationDTO.getIdLivre() == unLivreDTO.getIdLivre()) {
+                if(uneAutreReservationDTO.getLivreDTO().getIdLivre() == unLivreDTO.getIdLivre()) {
                     throw new ServiceException("Le livre "
                         + unLivreDTO.getTitre()
                         + " (ID de livre : "
@@ -340,8 +336,8 @@ public class ReservationService extends Service {
             final List<ReservationDTO> reservations = getReservationDAO().findByLivre(unLivreDTO.getIdLivre());
             if(!reservations.isEmpty()) {
                 uneReservationDTO = reservations.get(0);
-                if(uneReservationDTO.getIdMembre() != unMembreDTO.getIdMembre()) {
-                    final MembreDTO booker = getMembreDAO().read(uneReservationDTO.getIdMembre());
+                if(uneReservationDTO.getMembreDTO().getIdMembre() != unMembreDTO.getIdMembre()) {
+                    final MembreDTO booker = getMembreDAO().read(uneReservationDTO.getMembreDTO().getIdMembre());
                     throw new ServiceException("Le livre "
                         + unLivreDTO.getTitre()
                         + " (ID de livre : "
@@ -353,40 +349,21 @@ public class ReservationService extends Service {
                         + ")");
                 }
             }
-            final MembreDTO emprunteur = getMembreDAO().read(livreDTO.getIdMembre());
-            if(emprunteur != null) {
+            final List<PretDTO> pret = getPretDAO().findByLivre(unLivreDTO.getIdLivre());
+            if(pret.isEmpty()) {
                 throw new ServiceException("Le livre "
                     + unLivreDTO.getTitre()
                     + " (ID de livre : "
                     + unLivreDTO.getIdLivre()
-                    + ") a été prêté à "
-                    + emprunteur.getNom()
-                    + " (ID de membre : "
-                    + emprunteur.getIdMembre()
-                    + ")");
+                    + ") n'est pas encore prêté");
             }
-            /*if(unMembreDTO.getNbPret() == unMembreDTO.getLimitePret()) {
-                throw new ServiceException("Le membre "
-                    + unMembreDTO.getNom()
-                    + " (ID de membre : "
-                    + unMembreDTO.getIdMembre()
-                    + ") a atteint sa limite de prêt ("
-                    + unMembreDTO.getLimitePret()
-                    + " emprunt(s) maximum)");
-            }*/
-
-            // Cas éliminé en utilisant la date de prêt et de réservation comme étant la date système de la base de données
-
-            /* Verifier si datePret >= tupleReservation.dateReservation */
-            // if(Date.valueOf(datePret).before(tupleReservation.getDateReservation())) {
-            //     throw new BibliothequeException("Date de prêt inférieure à la date de réservation");
-            // }
 
             annuler(uneReservationDTO);
-            // On voit le manque de la table prêt simulée en ce moment par les deux tables
-            unLivreDTO.setIdMembre(unMembreDTO.getIdMembre());
-            getLivreDAO().emprunter(unLivreDTO);
-            getMembreDAO().emprunter(unMembreDTO);
+
+            final PretDTO newPretDTO = new PretDTO();
+            newPretDTO.setMembreDTO(unMembreDTO);
+            newPretDTO.setLivreDTO(unLivreDTO);
+            getPretDAO().add(newPretDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
