@@ -191,12 +191,18 @@ public final class Bibliotheque {
                 Thread.sleep(1);
                 final ReservationDTO reservationDTO = new ReservationDTO();
                 reservationDTO.setIdReservation(Bibliotheque.readInt(tokenizer));
-                reservationDTO.setIdMembre(Bibliotheque.readInt(tokenizer));
-                reservationDTO.setIdLivre(Bibliotheque.readInt(tokenizer));
+                if(reservationDTO.getMembreDTO() == null) {
+                    reservationDTO.setMembreDTO(new MembreDTO());
+                }
+                if(reservationDTO.getLivreDTO() == null) {
+                    reservationDTO.setLivreDTO(new LivreDTO());
+                }
+                reservationDTO.getMembreDTO().setIdMembre(Bibliotheque.readInt(tokenizer));
+                reservationDTO.getLivreDTO().setIdLivre(Bibliotheque.readInt(tokenizer));
                 final MembreDTO membreDTO = new MembreDTO();
-                membreDTO.setIdMembre(reservationDTO.getIdMembre());
+                membreDTO.setIdMembre(reservationDTO.getMembreDTO().getIdMembre());
                 final LivreDTO livreDTO = new LivreDTO();
-                livreDTO.setIdLivre(reservationDTO.getIdLivre());
+                livreDTO.setIdLivre(reservationDTO.getLivreDTO().getIdLivre());
                 Bibliotheque.gestionnaireBibliotheque.getReservationService().reserver(reservationDTO,
                     membreDTO,
                     livreDTO);
