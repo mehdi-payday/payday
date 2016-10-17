@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
+import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 
@@ -82,9 +84,9 @@ public class PretDAO extends DAO {
         try(
             PreparedStatement addPreparedStatement = getConnection().prepareStatement(PretDAO.ADD_REQUEST)) {
             addPreparedStatement.setInt(1,
-                pretDTO.getIdMembre());
+                pretDTO.getMembreDTO().getIdMembre());
             addPreparedStatement.setInt(2,
-                pretDTO.getIdLivre());
+                pretDTO.getLivreDTO().getIdLivre());
             addPreparedStatement.setTimestamp(3,
                 pretDTO.getDatePret());
             addPreparedStatement.setTimestamp(4,
@@ -113,8 +115,11 @@ public class PretDAO extends DAO {
                 if(resultSet.next()) {
                     pretDTO = new PretDTO();
                     pretDTO.setIdPret(resultSet.getInt(1));
-                    pretDTO.setIdMembre(resultSet.getInt(2));
-                    pretDTO.setIdLivre(resultSet.getInt(3));
+                    final MembreDTO membreDTO = new MembreDTO();
+                    membreDTO.setIdMembre(resultSet.getInt(2));
+                    pretDTO.setMembreDTO(membreDTO);
+                    final LivreDTO livreDTO = new LivreDTO();
+                    livreDTO.setIdLivre(resultSet.getInt(3));
                     pretDTO.setDatePret(resultSet.getTimestamp(4));
                     pretDTO.setDateRetour(resultSet.getTimestamp(5));
                 }
@@ -135,9 +140,9 @@ public class PretDAO extends DAO {
         try(
             PreparedStatement updatePreparedStatement = getConnection().prepareStatement(PretDAO.UPDATE_REQUEST)) {
             updatePreparedStatement.setInt(1,
-                pretDTO.getIdMembre());
+                pretDTO.getMembreDTO().getIdMembre());
             updatePreparedStatement.setInt(2,
-                pretDTO.getIdLivre());
+                pretDTO.getLivreDTO().getIdLivre());
             updatePreparedStatement.setTimestamp(3,
                 pretDTO.getDatePret());
             updatePreparedStatement.setTimestamp(4,
@@ -183,8 +188,12 @@ public class PretDAO extends DAO {
                     do {
                         pretDTO = new PretDTO();
                         pretDTO.setIdPret(resultSet.getInt(1));
-                        pretDTO.setIdMembre(resultSet.getInt(2));
-                        pretDTO.setIdLivre(resultSet.getInt(3));
+                        final MembreDTO membreDTO = new MembreDTO();
+                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        pretDTO.setMembreDTO(membreDTO);
+                        final LivreDTO livreDTO = new LivreDTO();
+                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        pretDTO.setLivreDTO(livreDTO);
                         pretDTO.setDatePret(resultSet.getTimestamp(4));
                         pretDTO.setDateRetour(resultSet.getTimestamp(5));
                         prets.add(pretDTO);
@@ -218,8 +227,11 @@ public class PretDAO extends DAO {
                     do {
                         pretDTO = new PretDTO();
                         pretDTO.setIdPret(resultSet.getInt(1));
-                        pretDTO.setIdMembre(resultSet.getInt(2));
-                        pretDTO.setIdLivre(resultSet.getInt(3));
+                        final MembreDTO membreDTO = new MembreDTO();
+                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        pretDTO.setMembreDTO(membreDTO);
+                        final LivreDTO livreDTO = new LivreDTO();
+                        livreDTO.setIdLivre(resultSet.getInt(3));
                         pretDTO.setDatePret(resultSet.getTimestamp(4));
                         pretDTO.setDateRetour(resultSet.getTimestamp(5));
                         prets.add(pretDTO);
