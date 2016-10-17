@@ -211,13 +211,14 @@ public class LivreService extends Service {
     public void vendre(LivreDTO livreDTO) throws ServiceException {
         try {
             final LivreDTO unLivreDTO = read(livreDTO.getIdLivre());
-            final List<PretDTO> pretDTOs = getPretDAO().findByLivre(unLivreDTO.getIdLivre());
 
             if(unLivreDTO == null) {
                 throw new ServiceException("Le livre "
                     + livreDTO.getIdLivre()
                     + " n'existe pas");
             }
+            final List<PretDTO> pretDTOs = getPretDAO().findByLivre(unLivreDTO.getIdLivre());
+
             if(!pretDTOs.isEmpty()) {
                 throw new ServiceException("Le livre "
                     + unLivreDTO.getTitre()
