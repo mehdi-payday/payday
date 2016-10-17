@@ -142,7 +142,7 @@ public final class Bibliotheque {
                 livreDTO.setTitre(Bibliotheque.readString(tokenizer));
                 livreDTO.setAuteur(Bibliotheque.readString(tokenizer));
                 livreDTO.setDateAcquisition(Bibliotheque.readDate(tokenizer));
-                Bibliotheque.gestionnaireBibliotheque.getLivreService().acquerir(livreDTO);
+                Bibliotheque.gestionnaireBibliotheque.getPretService().acquerir(livreDTO);
                 Bibliotheque.gestionnaireBibliotheque.commit();
             } else if("vendre".equals(command)) {
                 final LivreDTO livreDTO = new LivreDTO();

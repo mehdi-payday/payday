@@ -226,21 +226,6 @@ public class LivreService extends Service {
     }
 
     /**
-     * Acquiert un livre.
-     *
-     * @param livreDTO Le livre à ajouter
-     * @throws ServiceException Si le livre existe déjà ou s'il y a une erreur avec la base de données
-     */
-    public void acquerir(LivreDTO livreDTO) throws ServiceException {
-        if(read(livreDTO.getIdLivre()) != null) {
-            throw new ServiceException("Le livre "
-                + livreDTO.getIdLivre()
-                + " existe déjà");
-        }
-        add(livreDTO);
-    }
-
-    /**
      * Emprunte un livre.
      *
      * @param livreDTO Le livre à emprunter
