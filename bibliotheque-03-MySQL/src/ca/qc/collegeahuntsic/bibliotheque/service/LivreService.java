@@ -10,7 +10,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 
@@ -93,15 +93,6 @@ public class LivreService extends Service {
      */
     private void setReservationDAO(ReservationDAO reservationDAO) {
         this.reservationDAO = reservationDAO;
-    }
-
-    /**
-     * Getter de la variable d'instance <code>this.membreDAO</code>.
-     *
-     * @return La variable d'instance <code>this.membreDAO</code>
-     */
-    private MembreDAO getMembreDAO() {
-        return this.membreDAO;
     }
 
     /**
@@ -265,21 +256,22 @@ public class LivreService extends Service {
     public void vendre(LivreDTO livreDTO) throws ServiceException {
         try {
             final LivreDTO unLivreDTO = read(livreDTO.getIdLivre());
+            final List<PretDTO> pretDTOs = getPretDAO().findByLivre(unLivreDTO.getIdLivre());
+
             if(unLivreDTO == null) {
                 throw new ServiceException("Le livre "
                     + livreDTO.getIdLivre()
                     + " n'existe pas");
             }
-            final MembreDTO membreDTO = getMembreDAO().read(unLivreDTO.getIdMembre());
-            if(!getLivreDAO().findByMembre(membreDTO.getIdMembre()).isEmpty()) {
+            if(!pretDTOs.isEmpty()) {
                 throw new ServiceException("Le livre "
                     + unLivreDTO.getTitre()
                     + " (ID de livre : "
                     + unLivreDTO.getIdLivre()
                     + ") a été prêté à "
-                    + membreDTO.getNom()
+                    //+ pretDTOs.get(0).getMembreDTO().getNom()
                     + " (ID de membre : "
-                    + membreDTO.getIdMembre()
+                    + pretDTOs.get(0).getMembreDTO().getIdMembre()
                     + ")");
             }
             if(!getReservationDAO().findByLivre(unLivreDTO.getIdLivre()).isEmpty()) {
