@@ -27,7 +27,7 @@ public class MembreService extends Service {
     private LivreDAO livreDAO;
 
     private ReservationDAO reservationDAO;
-    
+
     private PretDAO pretDAO;
 
     /**
@@ -36,6 +36,7 @@ public class MembreService extends Service {
      * @param membreDAO Le DAO de la table <code>membre</code>
      * @param livreDAO Le DAO de la table <code>livre</code>
      * @param reservationDAO Le DAO de la table <code>reservation</code>
+     * @param pretDAO Le DAO de la table <code>pret</code>
      */
     public MembreService(MembreDAO membreDAO,
         LivreDAO livreDAO,
@@ -102,16 +103,6 @@ public class MembreService extends Service {
     private void setReservationDAO(ReservationDAO reservationDAO) {
         this.reservationDAO = reservationDAO;
     }
-    
-
-    /**
-     * Getter de la variable d'instance <code>this.pretDAO</code>.
-     *
-     * @return La variable d'instance <code>this.pretDAO</code>
-     */
-    private PretDAO getPretDAO() {
-        return this.pretDAO;
-    }
 
     /**
      * Setter de la variable d'instance <code>this.pretDAO</code>.
@@ -120,6 +111,15 @@ public class MembreService extends Service {
      */
     private void setPretDAO(PretDAO pretDAO) {
         this.pretDAO = pretDAO;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @return La variable d'instance <code>this.pretDAO</code>
+     */
+    public PretDAO getPretDAO() {
+        return this.pretDAO;
     }
 
     // EndRegion Getters and Setters

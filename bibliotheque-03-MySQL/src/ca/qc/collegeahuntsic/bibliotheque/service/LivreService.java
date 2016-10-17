@@ -69,16 +69,6 @@ public class LivreService extends Service {
     }
 
     /**
-     * Getter de la variable d'instance <code>this.membreDAO</code>.
-     *
-     * @return La variable d'instance <code>this.membreDAO</code>
-     */
-    private MembreDAO getMembreDAO() {
-        return this.membreDAO;
-    }
-   
-
-    /**
      * Setter de la variable d'instance <code>this.membreDAO</code>.
      *
      * @param membreDAO La valeur à utiliser pour la variable d'instance <code>this.membreDAO</code>
@@ -113,7 +103,7 @@ public class LivreService extends Service {
     private MembreDAO getMembreDAO() {
         return this.membreDAO;
     }
-    
+
     /**
      * Setter de la variable d'instance <code>this.pretDAO</code>.
      *
@@ -121,6 +111,15 @@ public class LivreService extends Service {
      */
     private void setPretDAO(PretDAO pretDAO) {
         this.pretDAO = pretDAO;
+    }
+
+    /**
+     * Getter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @return La variable d'instance <code>this.pretDAO</code>
+     */
+    public PretDAO getPretDAO() {
+        return this.pretDAO;
     }
 
     // EndRegion Getters and Setters

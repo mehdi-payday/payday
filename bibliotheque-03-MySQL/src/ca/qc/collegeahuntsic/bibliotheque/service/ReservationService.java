@@ -37,6 +37,7 @@ public class ReservationService extends Service {
      * @param reservationDAO Le DAO de la table <code>reservation</code>
      * @param membreDAO Le DAO de la table <code>membre</code>
      * @param livreDAO Le DAO de la table <code>livre</code>
+     * @param pretDAO Le DAO de la table <code>pret</code>
      */
     public ReservationService(ReservationDAO reservationDAO,
         LivreDAO livreDAO,
@@ -105,15 +106,6 @@ public class ReservationService extends Service {
     }
 
     /**
-     * Getter de la variable d'instance <code>this.pretDAO</code>.
-     *
-     * @return La variable d'instance <code>this.pretDAO</code>
-     */
-    private PretDAO getPretDAO() {
-        return this.pretDAO;
-    }
-
-    /**
      * Setter de la variable d'instance <code>this.pretDAO</code>.
      *
      * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
@@ -121,10 +113,17 @@ public class ReservationService extends Service {
     private void setPretDAO(PretDAO pretDAO) {
         this.pretDAO = pretDAO;
     }
-    
-    // EndRegion Getters and Setters
 
-    
+    /**
+     * Getter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @return La variable d'instance <code>this.pretDAO</code>
+     */
+    public PretDAO getPretDAO() {
+        return this.pretDAO;
+    }
+
+    // EndRegion Getters and Setters
 
     /**
      * Ajoute une nouvelle réservation.
