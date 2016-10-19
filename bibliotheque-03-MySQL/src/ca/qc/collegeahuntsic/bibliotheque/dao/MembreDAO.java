@@ -22,22 +22,17 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 public class MembreDAO extends DAO {
     private static final long serialVersionUID = 1L;
 
-    private static final String ADD_REQUEST = "INSERT INTO membre (idMembre, "
-        + "                                                        nom, "
+    private static final String ADD_REQUEST = "INSERT INTO membre (nom, "
         + "                                                        telephone, "
-        + "                                                        limitePret, "
-        + "                                                        nbPret) "
+        + "                                                        limitePret) "
         + "                                    VALUES             (?, "
         + "                                                        ?, "
-        + "                                                        ?, "
-        + "                                                        ?, "
-        + "                                                        0)";
+        + "                                                        ?)";
 
     private static final String READ_REQUEST = "SELECT idMembre, "
         + "                                            nom, "
         + "                                            telephone, "
-        + "                                            limitePret, "
-        + "                                            nbPret "
+        + "                                            limitePret "
         + "                                     FROM   membre "
         + "                                     WHERE  idMembre = ?";
 
@@ -63,7 +58,7 @@ public class MembreDAO extends DAO {
      *
      * @param connexion La connexion à utiliser
      */
-    public MembreDAO(Connexion connexion) {
+    public MembreDAO(final Connexion connexion) {
         super(connexion);
     }
 
@@ -73,23 +68,22 @@ public class MembreDAO extends DAO {
      * @param membreDTO Le membre à ajouter
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void add(MembreDTO membreDTO) throws DAOException {
+    public void add(final MembreDTO membreDTO) throws DAOException {
         try(
-            PreparedStatement addPreparedStatement = getConnection().prepareStatement(MembreDAO.ADD_REQUEST)) {
-            addPreparedStatement.setInt(1,
-                membreDTO.getIdMembre());
-            addPreparedStatement.setString(2,
+            PreparedStatement addPreparedStatement = getConnection()
+                .prepareStatement(MembreDAO.ADD_REQUEST)) {
+            addPreparedStatement.setString(1,
                 membreDTO.getNom());
-            addPreparedStatement.setLong(3,
+            addPreparedStatement.setLong(2,
                 membreDTO.getTelephone());
-            addPreparedStatement.setInt(4,
+            addPreparedStatement.setInt(3,
                 membreDTO.getLimitePret());
             addPreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
             throw new DAOException(sqlException);
         }
     }
-
+ 
     /**
      * Lit un membre. Si aucun membre n'est trouvé, <code>null</code> est retourné.
      *
@@ -97,7 +91,7 @@ public class MembreDAO extends DAO {
      * @return Le membre lu ; <code>null</code> sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public MembreDTO read(int idMembre) throws DAOException {
+    public MembreDTO read(final int idMembre) throws DAOException {
         MembreDTO membreDTO = null;
         try(
             PreparedStatement readPreparedStatement = getConnection().prepareStatement(MembreDAO.READ_REQUEST)) {
@@ -126,7 +120,7 @@ public class MembreDAO extends DAO {
      * @param membreDTO Le membre à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void update(MembreDTO membreDTO) throws DAOException {
+    public void update(final MembreDTO membreDTO) throws DAOException {
         try(
             PreparedStatement updatePreparedStatement = getConnection().prepareStatement(MembreDAO.UPDATE_REQUEST)) {
             updatePreparedStatement.setString(1,
@@ -151,7 +145,7 @@ public class MembreDAO extends DAO {
      * @param membreDTO Le membre à supprimer
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void delete(MembreDTO membreDTO) throws DAOException {
+    public void delete(final MembreDTO membreDTO) throws DAOException {
         try(
             PreparedStatement deletePreparedStatement = getConnection().prepareStatement(MembreDAO.DELETE_REQUEST)) {
             deletePreparedStatement.setInt(1,
@@ -200,7 +194,7 @@ public class MembreDAO extends DAO {
      * @param membreDTO Le membre à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void emprunter(MembreDTO membreDTO) throws DAOException {
+    public void emprunter(final MembreDTO membreDTO) throws DAOException {
         /*membreDTO.setNbPret(membreDTO.getNbPret()
             + 1);*/
         update(membreDTO);
@@ -212,7 +206,7 @@ public class MembreDAO extends DAO {
      * @param membreDTO Le membre à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void retourner(MembreDTO membreDTO) throws DAOException {
+    public void retourner(final MembreDTO membreDTO) throws DAOException {
         /*membreDTO.setNbPret(membreDTO.getNbPret()
             - 1);*/
         update(membreDTO);

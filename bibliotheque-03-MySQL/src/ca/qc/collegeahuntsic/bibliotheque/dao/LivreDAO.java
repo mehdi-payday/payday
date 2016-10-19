@@ -22,14 +22,12 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 public class LivreDAO extends DAO {
     private static final long serialVersionUID = 1L;
 
-    private static final String ADD_REQUEST = "INSERT INTO livre (idLivre, "
-        + "                                                       titre, "
+    private static final String ADD_REQUEST = "INSERT INTO livre (titre, "
         + "                                                       auteur, "
         + "                                                       dateAcquisition, "
         + "                                                       idMembre, "
         + "                                                       datePret) "
         + "                                    VALUES            (?, "
-        + "                                                       ?, "
         + "                                                       ?, "
         + "                                                       ?, "
         + "                                                       NULL, "
@@ -98,9 +96,9 @@ public class LivreDAO extends DAO {
      *
      * @param connexion La connexion à utiliser
      */
-    public LivreDAO(Connexion connexion) {
+    public LivreDAO(final Connexion connexion) {
         super(connexion);
-    }
+    } 
 
     /**
      * Ajoute un nouveau livre.
@@ -108,16 +106,14 @@ public class LivreDAO extends DAO {
      * @param livreDTO Le livre à ajouter
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void add(LivreDTO livreDTO) throws DAOException {
+    public void add(final LivreDTO livreDTO) throws DAOException {
         try(
             PreparedStatement addPreparedStatement = getConnection().prepareStatement(LivreDAO.ADD_REQUEST)) {
-            addPreparedStatement.setInt(1,
-                livreDTO.getIdLivre());
-            addPreparedStatement.setString(2,
+            addPreparedStatement.setString(1,
                 livreDTO.getTitre());
-            addPreparedStatement.setString(3,
+            addPreparedStatement.setString(2,
                 livreDTO.getAuteur());
-            addPreparedStatement.setTimestamp(4,
+            addPreparedStatement.setTimestamp(3,
                 livreDTO.getDateAcquisition());
             addPreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
@@ -132,7 +128,7 @@ public class LivreDAO extends DAO {
      * @return Le livre lu ; <code>null</code> sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public LivreDTO read(int idLivre) throws DAOException {
+    public LivreDTO read(final int idLivre) throws DAOException {
         LivreDTO livreDTO = null;
         try(
             PreparedStatement readPreparedStatement = getConnection().prepareStatement(LivreDAO.READ_REQUEST)) {
@@ -162,7 +158,7 @@ public class LivreDAO extends DAO {
      * @param livreDTO Le livre à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void update(LivreDTO livreDTO) throws DAOException {
+    public void update(final LivreDTO livreDTO) throws DAOException {
         try(
             PreparedStatement updatePreparedStatement = getConnection().prepareStatement(LivreDAO.UPDATE_REQUEST)) {
             updatePreparedStatement.setString(1,
@@ -186,7 +182,7 @@ public class LivreDAO extends DAO {
      * @param livreDTO Le livre à supprimer
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void delete(LivreDTO livreDTO) throws DAOException {
+    public void delete(final LivreDTO livreDTO) throws DAOException {
         try(
             PreparedStatement deletePreparedStatement = getConnection().prepareStatement(LivreDAO.DELETE_REQUEST)) {
             deletePreparedStatement.setInt(1,
@@ -235,7 +231,7 @@ public class LivreDAO extends DAO {
      * @return La liste des livres correspondants ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public List<LivreDTO> findByTitre(String titre) throws DAOException {
+    public List<LivreDTO> findByTitre(final String titre) throws DAOException {
         List<LivreDTO> livres = Collections.emptyList();
         try(
             PreparedStatement findByTitrePreparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_TITRE)) {
@@ -271,7 +267,7 @@ public class LivreDAO extends DAO {
      * @return La liste des livres correspondants ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public List<LivreDTO> findByMembre(int idMembre) throws DAOException {
+    public List<LivreDTO> findByMembre(final int idMembre) throws DAOException {
         List<LivreDTO> livres = Collections.emptyList();
         try(
             PreparedStatement findByMembrePreparedStatement = getConnection().prepareStatement(LivreDAO.FIND_BY_MEMBRE)) {
@@ -304,7 +300,7 @@ public class LivreDAO extends DAO {
      * @param livreDTO Le livre à emprunter
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void emprunter(LivreDTO livreDTO) throws DAOException {
+    public void emprunter(final LivreDTO livreDTO) throws DAOException {
         try(
             PreparedStatement empruntPreparedStatement = getConnection().prepareStatement(LivreDAO.EMPRUNT_REQUEST)) {
             empruntPreparedStatement.setString(1,
@@ -327,7 +323,7 @@ public class LivreDAO extends DAO {
      * @param livreDTO Le livre à retourner
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void retourner(LivreDTO livreDTO) throws DAOException {
+    public void retourner(final LivreDTO livreDTO) throws DAOException {
         try(
             PreparedStatement retourPreparedStatement = getConnection().prepareStatement(LivreDAO.RETOUR_REQUEST)) {
             retourPreparedStatement.setString(1,

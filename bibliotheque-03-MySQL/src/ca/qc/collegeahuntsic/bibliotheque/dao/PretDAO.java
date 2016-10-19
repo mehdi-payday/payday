@@ -31,7 +31,7 @@ public class PretDAO extends DAO {
         + "                                                      dateRetour) "
         + "                                    VALUES           (?, "
         + "                                                      ?, "
-        + "                                                      ?, "
+        + "                                                      CURRENT_TIMESTAMP, "
         + "                                                      NULL)";
 
     private static final String READ_REQUEST = "SELECT idPret, "
@@ -100,7 +100,7 @@ public class PretDAO extends DAO {
      *
      * @param connexion La connexion à utiliser
      */
-    public PretDAO(Connexion connexion) {
+    public PretDAO(final Connexion connexion) {
         super(connexion);
     }
 
@@ -110,15 +110,13 @@ public class PretDAO extends DAO {
      * @param pretDTO Le prêt à ajouter
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void add(PretDTO pretDTO) throws DAOException {
+    public void add(final PretDTO pretDTO) throws DAOException {
         try(
             PreparedStatement addPreparedStatement = getConnection().prepareStatement(PretDAO.ADD_REQUEST)) {
             addPreparedStatement.setInt(1,
                 pretDTO.getMembreDTO().getIdMembre());
             addPreparedStatement.setInt(2,
                 pretDTO.getLivreDTO().getIdLivre());
-            addPreparedStatement.setTimestamp(3,
-                pretDTO.getDatePret());
             addPreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
             throw new DAOException(sqlException);
@@ -132,7 +130,7 @@ public class PretDAO extends DAO {
      * @return Le prêt lu ; <code>null</code> sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public PretDTO read(int idPret) throws DAOException {
+    public PretDTO read(final int idPret) throws DAOException {
         PretDTO pretDTO = null;
         try(
             PreparedStatement readPreparedStatement = getConnection().prepareStatement(PretDAO.READ_REQUEST)) {
@@ -165,7 +163,7 @@ public class PretDAO extends DAO {
      * @param pretDTO Le prêt à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void update(PretDTO pretDTO) throws DAOException {
+    public void update(final PretDTO pretDTO) throws DAOException {
         try(
             PreparedStatement updatePreparedStatement = getConnection().prepareStatement(PretDAO.UPDATE_REQUEST)) {
             updatePreparedStatement.setInt(1,
@@ -190,7 +188,7 @@ public class PretDAO extends DAO {
      * @param pretDTO Le prêt à supprimer
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public void delete(PretDTO pretDTO) throws DAOException {
+    public void delete(final PretDTO pretDTO) throws DAOException {
         try(
             PreparedStatement deletePreparedStatement = getConnection().prepareStatement(PretDAO.DELETE_REQUEST)) {
             deletePreparedStatement.setInt(1,
@@ -244,7 +242,7 @@ public class PretDAO extends DAO {
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public List<PretDTO> findByMembre(int idMembre) throws DAOException {
+    public List<PretDTO> findByMembre(final int idMembre) throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
             PreparedStatement findByMembrePreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_MEMBRE)) {
@@ -283,7 +281,7 @@ public class PretDAO extends DAO {
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public List<PretDTO> findByLivre(int idLivre) throws DAOException {
+    public List<PretDTO> findByLivre(final int idLivre) throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
             PreparedStatement findByLivrePreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_LIVRE)) {
@@ -322,7 +320,7 @@ public class PretDAO extends DAO {
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public List<PretDTO> findByDatePret(Timestamp datePret) throws DAOException {
+    public List<PretDTO> findByDatePret(final Timestamp datePret) throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
             PreparedStatement findByDatePretPreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_DATE_PRET)) {
@@ -361,7 +359,7 @@ public class PretDAO extends DAO {
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
      */
-    public List<PretDTO> findByDateRetour(Timestamp dateRetour) throws DAOException {
+    public List<PretDTO> findByDateRetour(final Timestamp dateRetour) throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
             PreparedStatement findByDateRetourPreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_DATE_RETOUR)) {

@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS reservation CASCADE;
+DROP TABLE IF EXISTS pret		 CASCADE;
 DROP TABLE IF EXISTS livre       CASCADE;
 DROP TABLE IF EXISTS membre      CASCADE;
-DROP TABLE IF EXISTS pret		 CASCADE;
 
 CREATE TABLE membre (idMembre   INTEGER(3) AUTO_INCREMENT  CHECK (idMembre > 0),
                      nom        VARCHAR(10)  NOT NULL,
@@ -11,13 +11,13 @@ CREATE TABLE membre (idMembre   INTEGER(3) AUTO_INCREMENT  CHECK (idMembre > 0),
 					 CONSTRAINT limiteNbPret CHECK (nbPret <= limitePret));
 
 CREATE TABLE livre (idLivre         INTEGER(3)  AUTO_INCREMENT  CHECK (idLivre > 0),
-                    titre           VARCHAR(10)   NOT NULL,
-					auteur          VARCHAR(10)   NOT NULL,
+                    titre           VARCHAR(50)   NOT NULL,
+					auteur          VARCHAR(50)   NOT NULL,
 					dateAcquisition TIMESTAMP(3)  NOT NULL,
 					idMembre        INTEGER(3),
 					datePret        TIMESTAMP(3)  NULL,
 					CONSTRAINT      cleLivre      PRIMARY KEY (idLivre),
-					CONSTRAINT      refPretMembre FOREIGN KEY (idMembre) REFERENCES membre (idMembre));
+					CONSTRAINT      refMembre 	  FOREIGN KEY (idMembre) REFERENCES membre (idMembre));
 
 CREATE TABLE pret(	idPret INTEGER(3) AUTO_INCREMENT CHECK(idPret > 0),
 					idMembre INTEGER(3) not null CHECK(idMembre > 0),
