@@ -1,5 +1,5 @@
 // Fichier Constants.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque;
@@ -7,7 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque;
 /**
  * Constants pour l'application Bibliothèque.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public interface Constants {
     /**
