@@ -201,9 +201,7 @@ public final class Bibliotheque {
                 membreDTO.setIdMembre(reservationDTO.getMembreDTO().getIdMembre());
                 final LivreDTO livreDTO = new LivreDTO();
                 livreDTO.setIdLivre(reservationDTO.getLivreDTO().getIdLivre());
-                Bibliotheque.gestionnaireBibliotheque.getReservationService().reserver(reservationDTO,
-                    membreDTO,
-                    livreDTO);
+                Bibliotheque.gestionnaireBibliotheque.getReservationService().reserver(reservationDTO);
                 Bibliotheque.gestionnaireBibliotheque.commit();
             } else if("utiliser".equals(command)) {
                 final ReservationDTO reservationDTO = new ReservationDTO();
