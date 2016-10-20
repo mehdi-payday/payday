@@ -316,11 +316,13 @@ public class ReservationService extends Service {
             if(!findByLivre(unLivreDTO.getIdLivre()).get(0).equals(uneReservationDTO)) {
                 throw new ServiceException("Le livre "
                     + unLivreDTO.getTitre()
-                    + "(ID de livre "
+                    + "(ID de livre : "
                     + unLivreDTO.getIdLivre()
-                    + ") est réservé pour"
+                    + ") est réservé pour "
                     + unMembreDTO.getNom()
-                    + unMembreDTO.getIdMembre());
+                    + " (ID de membre : "
+                    + unMembreDTO.getIdMembre()
+                    + ")");
             }
             if(!getPretDAO().findByLivre(unLivreDTO.getIdLivre()).isEmpty()) {
                 throw new ServiceException("ID de livre : "
@@ -328,9 +330,13 @@ public class ReservationService extends Service {
                     + " est deja prêté");
             }
             if(getPretDAO().findByMembre(unMembreDTO.getIdMembre()).size() == unMembreDTO.getLimitePret()) {
-                throw new ServiceException("Le membre"
-                    + +unMembreDTO.getIdMembre()
-                    + " a atteint sa limite de pret");
+                throw new ServiceException("Le membre "
+                    + unMembreDTO.getNom()
+                    + " (ID de membre : "
+                    + unMembreDTO.getIdMembre()
+                    + ") a atteint sa limite de prêt ("
+                    + unMembreDTO.getLimitePret()
+                    + " emprunt(s) maximum)");
             }
 
             annuler(uneReservationDTO);
