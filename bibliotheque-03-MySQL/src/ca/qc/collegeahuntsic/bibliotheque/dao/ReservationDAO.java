@@ -120,6 +120,7 @@ public class ReservationDAO extends DAO {
                     reservationDTO.setLivreDTO(livreDTO);
                     final MembreDTO membreDTO = new MembreDTO();
                     membreDTO.setIdMembre(resultSet.getInt(3));
+                    reservationDTO.setMembreDTO(membreDTO);
                     reservationDTO.setDateReservation(resultSet.getTimestamp(4));
                 }
             }
