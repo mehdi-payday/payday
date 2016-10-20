@@ -210,9 +210,7 @@ public final class Bibliotheque {
                 membreDTO.setIdMembre(Bibliotheque.readInt(tokenizer));
                 final LivreDTO livreDTO = new LivreDTO();
                 livreDTO.setIdLivre(Bibliotheque.readInt(tokenizer));
-                Bibliotheque.gestionnaireBibliotheque.getReservationService().utiliser(reservationDTO,
-                    membreDTO,
-                    livreDTO);
+                Bibliotheque.gestionnaireBibliotheque.getReservationService().utiliser(reservationDTO);
                 Bibliotheque.gestionnaireBibliotheque.commit();
             } else if("annuler".equals(command)) {
                 final ReservationDTO reservationDTO = new ReservationDTO();
