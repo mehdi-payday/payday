@@ -188,7 +188,7 @@ public final class Bibliotheque {
                 // Juste pour éviter deux timestamps de réservation strictement identiques
                 Thread.sleep(1);
                 final ReservationDTO reservationDTO = new ReservationDTO();
-                reservationDTO.setIdReservation(Bibliotheque.readInt(tokenizer));
+
                 if(reservationDTO.getMembreDTO() == null) {
                     reservationDTO.setMembreDTO(new MembreDTO());
                 }

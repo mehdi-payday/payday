@@ -28,7 +28,7 @@ CREATE TABLE pret(	idPret INTEGER(3) AUTO_INCREMENT CHECK(idPret > 0),
 					CONSTRAINT refPretMembre FOREIGN KEY (idMembre) REFERENCES membre(idMembre),
 					CONSTRAINT refPretLivre FOREIGN KEY (idLivre) REFERENCES livre (idLivre));
 					
-CREATE TABLE reservation (idReservation   INTEGER(3),
+CREATE TABLE reservation (idReservation   INTEGER(3) AUTO_INCREMENT CHECK(idReservation > 0),
                           idMembre        INTEGER(3),
 						  idLivre         INTEGER(3),
 						  dateReservation TIMESTAMP(3),

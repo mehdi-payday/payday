@@ -40,10 +40,10 @@ public class ReservationService extends Service {
      * @param livreDAO Le DAO de la table <code>livre</code>
      * @param pretDAO Le DAO de la table <code>pret</code>
      */
-    public ReservationService(ReservationDAO reservationDAO,
-        LivreDAO livreDAO,
-        MembreDAO membreDAO,
-        PretDAO pretDAO) {
+    public ReservationService(final ReservationDAO reservationDAO,
+        final LivreDAO livreDAO,
+        final MembreDAO membreDAO,
+        final PretDAO pretDAO) {
         super();
         setReservationDAO(reservationDAO);
         setMembreDAO(membreDAO);
@@ -66,7 +66,7 @@ public class ReservationService extends Service {
      *
      * @param reservationDAO La valeur à utiliser pour la variable d'instance <code>this.reservationDAO</code>
      */
-    private void setReservationDAO(ReservationDAO reservationDAO) {
+    private void setReservationDAO(final ReservationDAO reservationDAO) {
         this.reservationDAO = reservationDAO;
     }
 
@@ -84,7 +84,7 @@ public class ReservationService extends Service {
      *
      * @param livreDAO La valeur à utiliser pour la variable d'instance <code>this.livreDAO</code>
      */
-    private void setLivreDAO(LivreDAO livreDAO) {
+    private void setLivreDAO(final LivreDAO livreDAO) {
         this.livreDAO = livreDAO;
     }
 
@@ -102,7 +102,7 @@ public class ReservationService extends Service {
      *
      * @param membreDAO La valeur à utiliser pour la variable d'instance <code>this.membreDAO</code>
      */
-    private void setMembreDAO(MembreDAO membreDAO) {
+    private void setMembreDAO(final MembreDAO membreDAO) {
         this.membreDAO = membreDAO;
     }
 
@@ -111,7 +111,7 @@ public class ReservationService extends Service {
      *
      * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
      */
-    private void setPretDAO(PretDAO pretDAO) {
+    private void setPretDAO(final PretDAO pretDAO) {
         this.pretDAO = pretDAO;
     }
 
@@ -132,7 +132,7 @@ public class ReservationService extends Service {
      * @param reservationDTO La réservation à ajouter
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public void add(ReservationDTO reservationDTO) throws ServiceException {
+    public void add(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             getReservationDAO().add(reservationDTO);
         } catch(DAOException daoException) {
@@ -147,7 +147,7 @@ public class ReservationService extends Service {
      * @return La réservation lue ; <code>null</code> sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public ReservationDTO read(int idReservation) throws ServiceException {
+    public ReservationDTO read(final int idReservation) throws ServiceException {
         try {
             return getReservationDAO().read(idReservation);
         } catch(DAOException daoException) {
@@ -161,7 +161,7 @@ public class ReservationService extends Service {
      * @param reservationDTO La réservation à mettre à jour
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public void update(ReservationDTO reservationDTO) throws ServiceException {
+    public void update(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             getReservationDAO().update(reservationDTO);
         } catch(DAOException daoException) {
@@ -175,7 +175,7 @@ public class ReservationService extends Service {
      * @param reservationDTO La réservation à supprimer
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public void delete(ReservationDTO reservationDTO) throws ServiceException {
+    public void delete(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             getReservationDAO().delete(reservationDTO);
         } catch(DAOException daoException) {
@@ -204,7 +204,7 @@ public class ReservationService extends Service {
      * @return La liste des réservations correspondantes, triée par date de réservation croissante ; une liste vide sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public List<ReservationDTO> findByLivre(int idLivre) throws ServiceException {
+    public List<ReservationDTO> findByLivre(final int idLivre) throws ServiceException {
         try {
             return getReservationDAO().findByLivre(idLivre);
         } catch(DAOException daoException) {
@@ -219,7 +219,7 @@ public class ReservationService extends Service {
      * @return La liste des réservations correspondantes ; une liste vide sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    public List<ReservationDTO> findByMembre(int idMembre) throws ServiceException {
+    public List<ReservationDTO> findByMembre(final int idMembre) throws ServiceException {
         try {
             return getReservationDAO().findByMembre(idMembre);
         } catch(DAOException daoException) {
@@ -231,13 +231,11 @@ public class ReservationService extends Service {
      * Réserve un livre.
      *
      * @param reservationDTO La réservation à créer
-     * @param membreDTO Le membre qui réserve
-     * @param livreDTO Le livre à réserver
      * @throws ServiceException Si la réservation existe déjà, si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore
      *         été prêté, si le livre est déjà prêté au membre, si le membre a déjà réservé ce livre ou s'il y a une erreur avec la base de
      *         données
      */
-    public void reserver(ReservationDTO reservationDTO) throws ServiceException {
+    public void reserver(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             final ReservationDTO uneReservationDTO = read(reservationDTO.getIdReservation());
             if(uneReservationDTO != null) {
@@ -248,13 +246,13 @@ public class ReservationService extends Service {
             final MembreDTO unMembreDTO = getMembreDAO().read(reservationDTO.getMembreDTO().getIdMembre());
             if(unMembreDTO == null) {
                 throw new ServiceException("Le membre "
-                    + membreDTO.getIdMembre()
+                    + reservationDTO.getMembreDTO().getIdMembre()
                     + " n'existe pas");
             }
             final LivreDTO unLivreDTO = getLivreDAO().read(reservationDTO.getLivreDTO().getIdLivre());
             if(unLivreDTO == null) {
                 throw new ServiceException("Le livre "
-                    + livreDTO.getIdLivre()
+                    + reservationDTO.getLivreDTO().getIdLivre()
                     + " n'existe pas");
             }
             final List<PretDTO> pret = getPretDAO().findByLivre(unLivreDTO.getIdLivre());
@@ -309,9 +307,9 @@ public class ReservationService extends Service {
      *         la première de la liste, si le livre est déjà prété, si le membre a atteint sa limite de prêt ou s'il y a une erreur avec la base
      *         de données
      */
-    public void utiliser(ReservationDTO reservationDTO,
-        MembreDTO membreDTO,
-        LivreDTO livreDTO) throws ServiceException {
+    public void utiliser(final ReservationDTO reservationDTO,
+        final MembreDTO membreDTO,
+        final LivreDTO livreDTO) throws ServiceException {
         try {
             ReservationDTO uneReservationDTO = read(reservationDTO.getIdReservation());
             if(uneReservationDTO == null) {
@@ -373,7 +371,7 @@ public class ReservationService extends Service {
      * @param reservationDTO Le reservation à annuler
      * @throws ServiceException Si la réservation n'existe pas ou s'il y a une erreur avec la base de données
      */
-    public void annuler(ReservationDTO reservationDTO) throws ServiceException {
+    public void annuler(final ReservationDTO reservationDTO) throws ServiceException {
         final ReservationDTO uneReservationDTO = read(reservationDTO.getIdReservation());
         if(uneReservationDTO == null) {
             throw new ServiceException("La réservation "
