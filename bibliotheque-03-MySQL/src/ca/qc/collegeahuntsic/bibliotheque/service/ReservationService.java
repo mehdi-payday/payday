@@ -311,8 +311,8 @@ public class ReservationService extends Service {
                     + reservationDTO.getIdReservation()
                     + " n'existe pas");
             }
-            final LivreDTO unLivreDTO = getLivreDAO().read(reservationDTO.getLivreDTO().getIdLivre());
-            if(!findByLivre(unLivreDTO.getIdLivre()).get(0).equals(reservationDTO)) {
+            final LivreDTO unLivreDTO = getLivreDAO().read(uneReservationDTO.getLivreDTO().getIdLivre());
+            if(!findByLivre(unLivreDTO.getIdLivre()).get(0).equals(uneReservationDTO)) {
                 throw new ServiceException("ID de livre : "
                     + unLivreDTO.getIdLivre()
                     + " est réservé à quelqun d'autre");
@@ -322,7 +322,7 @@ public class ReservationService extends Service {
                     + unLivreDTO.getIdLivre()
                     + " est deja prêté");
             }
-            final MembreDTO unMembreDTO = getMembreDAO().read(reservationDTO.getMembreDTO().getIdMembre());
+            final MembreDTO unMembreDTO = getMembreDAO().read(uneReservationDTO.getMembreDTO().getIdMembre());
             if(getPretDAO().findByMembre(unMembreDTO.getIdMembre()).size() == unMembreDTO.getLimitePret()) {
                 throw new ServiceException("ID de membre : "
                     + unMembreDTO.getIdMembre()
