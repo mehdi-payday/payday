@@ -158,7 +158,7 @@ public final class Bibliotheque {
                 final PretDTO pretDTO = new PretDTO();
                 pretDTO.setMembreDTO(membreDTO);
                 pretDTO.setLivreDTO(livreDTO);
-                Bibliotheque.gestionnaireBibliotheque.getPretService().add(pretDTO);
+                Bibliotheque.gestionnaireBibliotheque.getPretService().commencer(pretDTO);
                 Bibliotheque.gestionnaireBibliotheque.commit();
             } else if("renouveler".equals(command)) {
                 final PretDTO pretDTO = new PretDTO();

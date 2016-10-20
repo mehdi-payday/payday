@@ -55,16 +55,16 @@ public class ReservationDAO extends DAO {
         + "                                        FROM   reservation";
 
     private static final String FIND_BY_LIVRE_REQUEST = "SELECT   idReservation, "
-        + "                                                       idLivre, "
         + "                                                       idMembre, "
+        + "                                                       idLivre, "
         + "                                                       dateReservation "
         + "                                              FROM     reservation "
         + "                                              WHERE    idLivre = ? "
         + "                                              ORDER BY dateReservation ASC";
 
     private static final String FIND_BY_MEMBRE_REQUEST = "SELECT idReservation, "
-        + "                                                      idLivre, "
         + "                                                      idMembre, "
+        + "                                                      idLivre, "
         + "                                                      dateReservation "
         + "                                               FROM   reservation "
         + "                                               WHERE  idMembre = ?";
@@ -226,11 +226,12 @@ public class ReservationDAO extends DAO {
                     do {
                         reservationDTO = new ReservationDTO();
                         reservationDTO.setIdReservation(resultSet.getInt(1));
-                        final LivreDTO livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(2));
-                        reservationDTO.setLivreDTO(livreDTO);
                         final MembreDTO membreDTO = new MembreDTO();
-                        membreDTO.setIdMembre(resultSet.getInt(3));
+                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        reservationDTO.setMembreDTO(membreDTO);
+                        final LivreDTO livreDTO = new LivreDTO();
+                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        reservationDTO.setLivreDTO(livreDTO);
                         reservationDTO.setDateReservation(resultSet.getTimestamp(4));
                         reservations.add(reservationDTO);
                     } while(resultSet.next());
@@ -263,11 +264,12 @@ public class ReservationDAO extends DAO {
                     do {
                         reservationDTO = new ReservationDTO();
                         reservationDTO.setIdReservation(resultSet.getInt(1));
-                        final LivreDTO livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(2));
-                        reservationDTO.setLivreDTO(livreDTO);
                         final MembreDTO membreDTO = new MembreDTO();
-                        membreDTO.setIdMembre(resultSet.getInt(3));
+                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        reservationDTO.setMembreDTO(membreDTO);
+                        final LivreDTO livreDTO = new LivreDTO();
+                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        reservationDTO.setLivreDTO(livreDTO);
                         reservationDTO.setDateReservation(resultSet.getTimestamp(4));
                         reservations.add(reservationDTO);
                     } while(resultSet.next());

@@ -303,7 +303,7 @@ public class ReservationService extends Service {
      * @throws ServiceException  Si la réservation n'existe pas, si la réservation n'est pas la première de la liste,
      *      si le livre est déjà prêté, si le membre a atteint sa limite de prêt ou s'il y a une erreur avec la base de données
      */
-    public void utiliser(ReservationDTO reservationDTO) throws ServiceException {
+    public void utiliser(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             final ReservationDTO uneReservationDTO = read(reservationDTO.getIdReservation());
             if(uneReservationDTO == null) {
@@ -312,20 +312,24 @@ public class ReservationService extends Service {
                     + " n'existe pas");
             }
             final LivreDTO unLivreDTO = getLivreDAO().read(uneReservationDTO.getLivreDTO().getIdLivre());
+            final MembreDTO unMembreDTO = getMembreDAO().read(uneReservationDTO.getMembreDTO().getIdMembre());
             if(!findByLivre(unLivreDTO.getIdLivre()).get(0).equals(uneReservationDTO)) {
-                throw new ServiceException("ID de livre : "
+                throw new ServiceException("Le livre "
+                    + unLivreDTO.getTitre()
+                    + "(ID de livre "
                     + unLivreDTO.getIdLivre()
-                    + " est réservé à quelqun d'autre");
+                    + ") est réservé pour"
+                    + unMembreDTO.getNom()
+                    + unMembreDTO.getIdMembre());
             }
             if(!getPretDAO().findByLivre(unLivreDTO.getIdLivre()).isEmpty()) {
                 throw new ServiceException("ID de livre : "
                     + unLivreDTO.getIdLivre()
                     + " est deja prêté");
             }
-            final MembreDTO unMembreDTO = getMembreDAO().read(uneReservationDTO.getMembreDTO().getIdMembre());
             if(getPretDAO().findByMembre(unMembreDTO.getIdMembre()).size() == unMembreDTO.getLimitePret()) {
-                throw new ServiceException("ID de membre : "
-                    + unMembreDTO.getIdMembre()
+                throw new ServiceException("Le membre"
+                    + +unMembreDTO.getIdMembre()
                     + " a atteint sa limite de pret");
             }
 
