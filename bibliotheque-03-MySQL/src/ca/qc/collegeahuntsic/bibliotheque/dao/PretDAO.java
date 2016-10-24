@@ -31,7 +31,7 @@ public class PretDAO extends DAO {
         + "                                                      dateRetour) "
         + "                                    VALUES           (?, "
         + "                                                      ?, "
-        + "                                                      CURRENT_TIMESTAMP, "
+        + "                                                      ?, "
         + "                                                      NULL)";
 
     private static final String READ_REQUEST = "SELECT idPret, "
@@ -117,6 +117,8 @@ public class PretDAO extends DAO {
                 pretDTO.getMembreDTO().getIdMembre());
             addPreparedStatement.setInt(2,
                 pretDTO.getLivreDTO().getIdLivre());
+            addPreparedStatement.setTimestamp(3,
+                pretDTO.getDatePret());
             addPreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
             throw new DAOException(sqlException);
