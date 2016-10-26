@@ -14,9 +14,17 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author Team PayDay
  */
 public class ReservationDTO extends DTO {
+    public static final String ID_RESERVATION_COLUMN_NAME = "idReservation";
+
+    public static final String ID_LIVRE_COLUMN_NAME = "idLivre";
+
+    public static final String ID_MEMBRE_COLUMN_NAME = "idMembre";
+
+    public static final String DATE_RESERVATION_COLUMN_NAME = "dateReservation";
+
     private static final long serialVersionUID = 1L;
 
-    private int idReservation;
+    private String idReservation;
 
     private MembreDTO membreDTO;
 
@@ -37,7 +45,7 @@ public class ReservationDTO extends DTO {
      *
      * @return La variable d'instance <code>this.idReservation</code>
      */
-    public int getIdReservation() {
+    public String getIdReservation() {
         return this.idReservation;
     }
 
@@ -46,7 +54,7 @@ public class ReservationDTO extends DTO {
      *
      * @param idReservation La valeur à utiliser pour la variable d'instance <code>this.idReservation</code>
      */
-    public void setIdReservation(int idReservation) {
+    public void setIdReservation(final String idReservation) {
         this.idReservation = idReservation;
     }
 
@@ -64,7 +72,7 @@ public class ReservationDTO extends DTO {
      *
      * @param membreDTO La valeur à utiliser pour la variable d'instance <code>this.membreDTO</code>
      */
-    public void setMembreDTO(MembreDTO membreDTO) {
+    public void setMembreDTO(final MembreDTO membreDTO) {
         this.membreDTO = membreDTO;
     }
 
@@ -82,7 +90,7 @@ public class ReservationDTO extends DTO {
      *
      * @param livreDTO La valeur à utiliser pour la variable d'instance <code>this.livreDTO</code>
      */
-    public void setLivreDTO(LivreDTO livreDTO) {
+    public void setLivreDTO(final LivreDTO livreDTO) {
         this.livreDTO = livreDTO;
     }
 
@@ -100,7 +108,7 @@ public class ReservationDTO extends DTO {
      *
      * @param dateReservation La valeur à utiliser pour la variable d'instance <code>this.dateReservation</code>
      */
-    public void setDateReservation(Timestamp dateReservation) {
+    public void setDateReservation(final Timestamp dateReservation) {
         this.dateReservation = dateReservation;
     }
     // EndRegion Getters and Setters
@@ -109,7 +117,7 @@ public class ReservationDTO extends DTO {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         boolean equals = this == obj;
         if(!equals) {
             equals = obj != null

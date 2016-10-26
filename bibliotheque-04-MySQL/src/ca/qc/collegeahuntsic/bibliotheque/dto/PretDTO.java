@@ -14,9 +14,19 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * @author Team PayDay
  */
 public class PretDTO extends DTO {
+    public static final String DATE_PRET_COLUMN_NAME = "datePret";
+
+    public static final String DATE_RETOUR_COLUMN_NAME = "dateRetour";
+
+    public static final String ID_LIVRE_COLUMN_NAME = "idLivre";
+
+    public static final String ID_MEMBRE_COLUMN_NAME = "idMembre";
+
+    public static final String ID_PRET_COLUMN_NAME = "idPret";
+
     private static final long serialVersionUID = 1L;
 
-    private int idPret;
+    private String idPret;
 
     private MembreDTO membreDTO;
 
@@ -39,7 +49,7 @@ public class PretDTO extends DTO {
      *
      * @return La variable d'instance <code>this.idPret</code>
      */
-    public int getIdPret() {
+    public String getIdPret() {
         return this.idPret;
     }
 
@@ -48,7 +58,7 @@ public class PretDTO extends DTO {
      *
      * @param idPret La valeur à utiliser pour la variable d'instance <code>this.idPret</code>
      */
-    public void setIdPret(int idPret) {
+    public void setIdPret(final String idPret) {
         this.idPret = idPret;
     }
 
@@ -66,7 +76,7 @@ public class PretDTO extends DTO {
      *
      * @param membreDTO La valeur à utiliser pour la variable d'instance <code>this.membreDTO</code>
      */
-    public void setMembreDTO(MembreDTO membreDTO) {
+    public void setMembreDTO(final MembreDTO membreDTO) {
         this.membreDTO = membreDTO;
     }
 
@@ -84,7 +94,7 @@ public class PretDTO extends DTO {
      *
      * @param livreDTO La valeur à utiliser pour la variable d'instance <code>this.livreDTO</code>
      */
-    public void setLivreDTO(LivreDTO livreDTO) {
+    public void setLivreDTO(final LivreDTO livreDTO) {
         this.livreDTO = livreDTO;
     }
 
@@ -102,7 +112,7 @@ public class PretDTO extends DTO {
      *
      * @param datePret La valeur à utiliser pour la variable d'instance <code>this.datePret</code>
      */
-    public void setDatePret(Timestamp datePret) {
+    public void setDatePret(final Timestamp datePret) {
         this.datePret = datePret;
     }
 
@@ -120,7 +130,7 @@ public class PretDTO extends DTO {
      *
      * @param dateRetour La valeur à utiliser pour la variable d'instance <code>this.dateRetour</code>
      */
-    public void setDateRetour(Timestamp dateRetour) {
+    public void setDateRetour(final Timestamp dateRetour) {
         this.dateRetour = dateRetour;
     }
     // EndRegion Getters and Setters
@@ -129,7 +139,7 @@ public class PretDTO extends DTO {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         boolean equals = this == obj;
         if(!equals) {
             equals = obj != null

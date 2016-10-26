@@ -59,7 +59,7 @@ public class DTO implements Serializable {
      * @return <code>true</code> if this object is the same as the obj argument; <code>false</code> otherwise
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         boolean equals = this == obj;
         if(!equals) {
             equals = obj != null

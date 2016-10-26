@@ -1,5 +1,5 @@
 // Fichier IMembreDAO.java
-// Auteur : team payday
+// Auteur : Team PayDay
 // Date de création : 2016-10-24
 
 package ca.qc.collegeahuntsic.bibliotheque.dao.interfaces;
@@ -7,7 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.dao.interfaces;
 /**
  * TODO Auto-generated class javadoc.
  *
- * @author Gilles Benichou
+ * @author Team PayDay
  */
 public interface IMembreDAO {
     //TODO

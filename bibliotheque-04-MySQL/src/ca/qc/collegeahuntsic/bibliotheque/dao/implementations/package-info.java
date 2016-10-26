@@ -1,10 +1,11 @@
 // Fichier package-info.java
-// Auteur : team payday
-// Date de création : 2016-10-24
+// Auteur : Team PayDay
+// Date de création : 2016-05-18
+
 /**
- * TODO Auto-generated class javadoc.
+ * Provides the DAO implementations used with the bibliothèque.
  *
- * @author Gilles Benichou
+ * @author Team PayDay
  */
 
 package ca.qc.collegeahuntsic.bibliotheque.dao.implementations;

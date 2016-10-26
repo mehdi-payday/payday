@@ -98,7 +98,7 @@ public class LivreDAO extends DAO {
      */
     public LivreDAO(final Connexion connexion) {
         super(connexion);
-    } 
+    }
 
     /**
      * Ajoute un nouveau livre.
@@ -138,7 +138,7 @@ public class LivreDAO extends DAO {
                 ResultSet resultSet = readPreparedStatement.executeQuery()) {
                 if(resultSet.next()) {
                     livreDTO = new LivreDTO();
-                    livreDTO.setIdLivre(resultSet.getInt(1));
+                    livreDTO.setIdLivre(resultSet.getString(1));
                     livreDTO.setTitre(resultSet.getString(2));
                     livreDTO.setAuteur(resultSet.getString(3));
                     livreDTO.setDateAcquisition(resultSet.getTimestamp(4));
@@ -168,7 +168,7 @@ public class LivreDAO extends DAO {
             updatePreparedStatement.setTimestamp(3,
                 livreDTO.getDateAcquisition());
 
-            updatePreparedStatement.setInt(4,
+            updatePreparedStatement.setString(4,
                 livreDTO.getIdLivre());
             updatePreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
@@ -185,7 +185,7 @@ public class LivreDAO extends DAO {
     public void delete(final LivreDTO livreDTO) throws DAOException {
         try(
             PreparedStatement deletePreparedStatement = getConnection().prepareStatement(LivreDAO.DELETE_REQUEST)) {
-            deletePreparedStatement.setInt(1,
+            deletePreparedStatement.setString(1,
                 livreDTO.getIdLivre());
             deletePreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
@@ -210,7 +210,7 @@ public class LivreDAO extends DAO {
                     livres = new ArrayList<>();
                     do {
                         livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(1));
+                        livreDTO.setIdLivre(resultSet.getString(1));
                         livreDTO.setTitre(resultSet.getString(2));
                         livreDTO.setAuteur(resultSet.getString(3));
                         livreDTO.setDateAcquisition(resultSet.getTimestamp(4));
@@ -246,7 +246,7 @@ public class LivreDAO extends DAO {
                     livres = new ArrayList<>();
                     do {
                         livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(1));
+                        livreDTO.setIdLivre(resultSet.getString(1));
                         livreDTO.setTitre(resultSet.getString(2));
                         livreDTO.setAuteur(resultSet.getString(3));
                         livreDTO.setDateAcquisition(resultSet.getTimestamp(4));
@@ -280,7 +280,7 @@ public class LivreDAO extends DAO {
                     livres = new ArrayList<>();
                     do {
                         livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(1));
+                        livreDTO.setIdLivre(resultSet.getString(1));
                         livreDTO.setTitre(resultSet.getString(2));
                         livreDTO.setAuteur(resultSet.getString(3));
                         livreDTO.setDateAcquisition(resultSet.getTimestamp(4));
@@ -309,7 +309,7 @@ public class LivreDAO extends DAO {
                 livreDTO.getAuteur());
             empruntPreparedStatement.setTimestamp(3,
                 livreDTO.getDateAcquisition());
-            empruntPreparedStatement.setInt(5,
+            empruntPreparedStatement.setString(5,
                 livreDTO.getIdLivre());
             empruntPreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
@@ -332,7 +332,7 @@ public class LivreDAO extends DAO {
                 livreDTO.getAuteur());
             retourPreparedStatement.setTimestamp(3,
                 livreDTO.getDateAcquisition());
-            retourPreparedStatement.setInt(4,
+            retourPreparedStatement.setString(4,
                 livreDTO.getIdLivre());
             retourPreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {

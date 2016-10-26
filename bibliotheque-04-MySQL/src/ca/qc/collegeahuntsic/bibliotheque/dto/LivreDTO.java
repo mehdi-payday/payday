@@ -13,10 +13,18 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  * @author Team PayDay
  */
-public class LivreDTO extends DTO {
+public final class LivreDTO extends DTO {
+    public static final String ID_LIVRE_COLUMN_NAME = "idLivre";
+
+    public static final String TITRE_COLUMN_NAME = "titre";
+
+    public static final String AUTEUR_COLUMN_NAME = "auteur";
+
+    public static final String DATE_ACQUISITION_COLUMN_NAME = "dateAcquisition";
+
     private static final long serialVersionUID = 1L;
 
-    private int idLivre;
+    private String idLivre;
 
     private String titre;
 
@@ -37,7 +45,7 @@ public class LivreDTO extends DTO {
      *
      * @return La variable d'instance <code>this.idLivre</code>
      */
-    public int getIdLivre() {
+    public String getIdLivre() {
         return this.idLivre;
     }
 
@@ -46,7 +54,7 @@ public class LivreDTO extends DTO {
      *
      * @param idLivre La valeur à utiliser pour la variable d'instance <code>this.idLivre</code>
      */
-    public void setIdLivre(int idLivre) {
+    public void setIdLivre(final String idLivre) {
         this.idLivre = idLivre;
     }
 
@@ -64,7 +72,7 @@ public class LivreDTO extends DTO {
      *
      * @param titre La valeur à utiliser pour la variable d'instance <code>this.titre</code>
      */
-    public void setTitre(String titre) {
+    public void setTitre(final String titre) {
         this.titre = titre;
     }
 
@@ -82,7 +90,7 @@ public class LivreDTO extends DTO {
      *
      * @param auteur La valeur à utiliser pour la variable d'instance <code>this.auteur</code>
      */
-    public void setAuteur(String auteur) {
+    public void setAuteur(final String auteur) {
         this.auteur = auteur;
     }
 
@@ -100,7 +108,7 @@ public class LivreDTO extends DTO {
      *
      * @param dateAcquisition La valeur à utiliser pour la variable d'instance <code>this.dateAcquisition</code>
      */
-    public void setDateAcquisition(Timestamp dateAcquisition) {
+    public void setDateAcquisition(final Timestamp dateAcquisition) {
         this.dateAcquisition = dateAcquisition;
     }
     // EndRegion Getters and Setters
@@ -109,7 +117,7 @@ public class LivreDTO extends DTO {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         boolean equals = this == obj;
         if(!equals) {
             equals = obj != null
