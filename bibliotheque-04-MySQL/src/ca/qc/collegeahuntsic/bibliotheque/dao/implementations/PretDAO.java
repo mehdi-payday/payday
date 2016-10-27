@@ -4,6 +4,7 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.dao.implementations;
 
+import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,10 +15,15 @@ import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.DAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IPretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
+import ca.qc.collegeahuntsic.bibliotheque.dto.DTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOClassException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOException;
 
 /**
  * DAO pour effectuer des CRUDs avec la table <code>pret</code>.
@@ -110,12 +116,32 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public void add(final PretDTO pretDTO) throws DAOException {
+    public void add(Connexion connexion,
+        DTO dto) throws InvalidHibernateSessionException,
+        InvalidDTOException,
+        InvalidDTOClassException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
+        if(dto == null) {
+            throw new InvalidDTOException("Le DTO ne peut être null");
+        }
+
+        if(!dto.getClass().equals(dto.getClass())) {
+            throw new InvalidDTOClassException("Le DTO doit être un "
+                + dto.getClass().getName());
+        }
+
         try(
-            PreparedStatement addPreparedStatement = getConnection().prepareStatement(PretDAO.ADD_REQUEST)) {
-            addPreparedStatement.setInt(1,
+            PreparedStatement addPreparedStatement = connexion.getConnection().prepareStatement(PretDAO.ADD_REQUEST)) {
+            final PretDTO pretDTO = (PretDTO) dto;
+
+            addPreparedStatement.setString(1,
                 pretDTO.getMembreDTO().getIdMembre());
-            addPreparedStatement.setInt(2,
+            addPreparedStatement.setString(2,
                 pretDTO.getLivreDTO().getIdLivre());
             addPreparedStatement.setTimestamp(3,
                 pretDTO.getDatePret());
@@ -129,22 +155,46 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public PretDTO read(final int idPret) throws DAOException {
+    public DTO get(Connexion connexion,
+        Serializable primaryKey) throws InvalidHibernateSessionException,
+        InvalidPrimaryKeyException,
+        DAOException {
+
+        if(primaryKey == null) {
+            throw new InvalidPrimaryKeyException("La clef primaire ne peut être null");
+        }
+
+        return read(connexion,
+            (String) primaryKey);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public PretDTO read(Connexion connexion,
+        final String idPret) throws InvalidHibernateSessionException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
         PretDTO pretDTO = null;
         try(
-            PreparedStatement readPreparedStatement = getConnection().prepareStatement(PretDAO.READ_REQUEST)) {
-            readPreparedStatement.setInt(1,
+            PreparedStatement readPreparedStatement = connexion.getConnection().prepareStatement(PretDAO.READ_REQUEST)) {
+            readPreparedStatement.setString(1,
                 idPret);
             try(
                 ResultSet resultSet = readPreparedStatement.executeQuery()) {
                 if(resultSet.next()) {
                     pretDTO = new PretDTO();
-                    pretDTO.setIdPret(resultSet.getInt(1));
+                    pretDTO.setIdPret(resultSet.getString(1));
                     final MembreDTO membreDTO = new MembreDTO();
-                    membreDTO.setIdMembre(resultSet.getInt(2));
+                    membreDTO.setIdMembre(resultSet.getString(2));
                     pretDTO.setMembreDTO(membreDTO);
                     final LivreDTO livreDTO = new LivreDTO();
-                    livreDTO.setIdLivre(resultSet.getInt(3));
+                    livreDTO.setIdLivre(resultSet.getString(3));
                     pretDTO.setLivreDTO(livreDTO);
                     pretDTO.setDatePret(resultSet.getTimestamp(4));
                     pretDTO.setDateRetour(resultSet.getTimestamp(5));
@@ -160,18 +210,38 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public void update(final PretDTO pretDTO) throws DAOException {
+    public void update(Connexion connexion,
+        final DTO dto) throws InvalidHibernateSessionException,
+        InvalidDTOException,
+        InvalidDTOClassException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
+        if(dto == null) {
+            throw new InvalidDTOException("Le DTO ne peut être null");
+        }
+
+        if(!dto.getClass().equals(dto.getClass())) {
+            throw new InvalidDTOClassException("Le DTO doit être un "
+                + dto.getClass().getName());
+        }
+
         try(
-            PreparedStatement updatePreparedStatement = getConnection().prepareStatement(PretDAO.UPDATE_REQUEST)) {
-            updatePreparedStatement.setInt(1,
+            PreparedStatement updatePreparedStatement = connexion.getConnection().prepareStatement(PretDAO.UPDATE_REQUEST)) {
+            final PretDTO pretDTO = (PretDTO) dto;
+
+            updatePreparedStatement.setString(1,
                 pretDTO.getMembreDTO().getIdMembre());
-            updatePreparedStatement.setInt(2,
+            updatePreparedStatement.setString(2,
                 pretDTO.getLivreDTO().getIdLivre());
             updatePreparedStatement.setTimestamp(3,
                 pretDTO.getDatePret());
             updatePreparedStatement.setTimestamp(4,
                 pretDTO.getDateRetour());
-            updatePreparedStatement.setInt(5,
+            updatePreparedStatement.setString(5,
                 pretDTO.getIdPret());
             updatePreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
@@ -183,10 +253,30 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public void delete(final PretDTO pretDTO) throws DAOException {
+    public void delete(Connexion connexion,
+        final DTO dto) throws InvalidHibernateSessionException,
+        InvalidDTOException,
+        InvalidDTOClassException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
+        if(dto == null) {
+            throw new InvalidDTOException("Le DTO ne peut être null");
+        }
+
+        if(!dto.getClass().equals(dto.getClass())) {
+            throw new InvalidDTOClassException("Le DTO doit être un "
+                + dto.getClass().getName());
+        }
+
         try(
-            PreparedStatement deletePreparedStatement = getConnection().prepareStatement(PretDAO.DELETE_REQUEST)) {
-            deletePreparedStatement.setInt(1,
+            PreparedStatement deletePreparedStatement = connexion.getConnection().prepareStatement(PretDAO.DELETE_REQUEST)) {
+            final PretDTO pretDTO = (PretDTO) dto;
+
+            deletePreparedStatement.setString(1,
                 pretDTO.getIdPret());
             deletePreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
@@ -198,10 +288,17 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public List<PretDTO> getAll() throws DAOException {
+    public List<PretDTO> getAll(Connexion connexion,
+        String sortByPropertyName) throws InvalidHibernateSessionException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
         List<PretDTO> prets = Collections.emptyList();
         try(
-            PreparedStatement getAllPreparedStatement = getConnection().prepareStatement(PretDAO.GET_ALL_REQUEST)) {
+            PreparedStatement getAllPreparedStatement = connexion.getConnection().prepareStatement(PretDAO.GET_ALL_REQUEST)) {
             try(
                 ResultSet resultSet = getAllPreparedStatement.executeQuery()) {
                 PretDTO pretDTO = null;
@@ -209,12 +306,12 @@ public class PretDAO extends DAO implements IPretDAO {
                     prets = new ArrayList<>();
                     do {
                         pretDTO = new PretDTO();
-                        pretDTO.setIdPret(resultSet.getInt(1));
+                        pretDTO.setIdPret(resultSet.getString(1));
                         final MembreDTO membreDTO = new MembreDTO();
-                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        membreDTO.setIdMembre(resultSet.getString(2));
                         pretDTO.setMembreDTO(membreDTO);
                         final LivreDTO livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        livreDTO.setIdLivre(resultSet.getString(3));
                         pretDTO.setLivreDTO(livreDTO);
                         pretDTO.setDatePret(resultSet.getTimestamp(4));
                         pretDTO.setDateRetour(resultSet.getTimestamp(5));
@@ -232,11 +329,18 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public List<PretDTO> findByMembre(final int idMembre) throws DAOException {
+    public List<PretDTO> findByMembre(Connexion connexion,
+        final String idMembre) throws InvalidHibernateSessionException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
         List<PretDTO> prets = Collections.emptyList();
         try(
-            PreparedStatement findByMembrePreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_MEMBRE)) {
-            findByMembrePreparedStatement.setInt(1,
+            PreparedStatement findByMembrePreparedStatement = connexion.getConnection().prepareStatement(PretDAO.FIND_BY_MEMBRE)) {
+            findByMembrePreparedStatement.setString(1,
                 idMembre);
             try(
                 ResultSet resultSet = findByMembrePreparedStatement.executeQuery()) {
@@ -245,12 +349,12 @@ public class PretDAO extends DAO implements IPretDAO {
                     prets = new ArrayList<>();
                     do {
                         pretDTO = new PretDTO();
-                        pretDTO.setIdPret(resultSet.getInt(1));
+                        pretDTO.setIdPret(resultSet.getString(1));
                         final MembreDTO membreDTO = new MembreDTO();
-                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        membreDTO.setIdMembre(resultSet.getString(2));
                         pretDTO.setMembreDTO(membreDTO);
                         final LivreDTO livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        livreDTO.setIdLivre(resultSet.getString(3));
                         pretDTO.setLivreDTO(livreDTO);
                         pretDTO.setDatePret(resultSet.getTimestamp(4));
                         pretDTO.setDateRetour(resultSet.getTimestamp(5));
@@ -268,11 +372,18 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public List<PretDTO> findByLivre(final int idLivre) throws DAOException {
+    public List<PretDTO> findByLivre(Connexion connexion,
+        final String idLivre) throws InvalidHibernateSessionException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
         List<PretDTO> prets = Collections.emptyList();
         try(
-            PreparedStatement findByLivrePreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_LIVRE)) {
-            findByLivrePreparedStatement.setInt(1,
+            PreparedStatement findByLivrePreparedStatement = connexion.getConnection().prepareStatement(PretDAO.FIND_BY_LIVRE)) {
+            findByLivrePreparedStatement.setString(1,
                 idLivre);
             try(
                 ResultSet resultSet = findByLivrePreparedStatement.executeQuery()) {
@@ -281,12 +392,12 @@ public class PretDAO extends DAO implements IPretDAO {
                     prets = new ArrayList<>();
                     do {
                         pretDTO = new PretDTO();
-                        pretDTO.setIdPret(resultSet.getInt(1));
+                        pretDTO.setIdPret(resultSet.getString(1));
                         final MembreDTO membreDTO = new MembreDTO();
-                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        membreDTO.setIdMembre(resultSet.getString(2));
                         pretDTO.setMembreDTO(membreDTO);
                         final LivreDTO livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        livreDTO.setIdLivre(resultSet.getString(3));
                         pretDTO.setLivreDTO(livreDTO);
                         pretDTO.setDatePret(resultSet.getTimestamp(4));
                         pretDTO.setDateRetour(resultSet.getTimestamp(5));
@@ -304,10 +415,17 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public List<PretDTO> findByDatePret(final Timestamp datePret) throws DAOException {
+    public List<PretDTO> findByDatePret(Connexion connexion,
+        final Timestamp datePret) throws InvalidHibernateSessionException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
         List<PretDTO> prets = Collections.emptyList();
         try(
-            PreparedStatement findByDatePretPreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_DATE_PRET)) {
+            PreparedStatement findByDatePretPreparedStatement = connexion.getConnection().prepareStatement(PretDAO.FIND_BY_DATE_PRET)) {
             findByDatePretPreparedStatement.setTimestamp(1,
                 datePret);
             try(
@@ -317,12 +435,12 @@ public class PretDAO extends DAO implements IPretDAO {
                     prets = new ArrayList<>();
                     do {
                         pretDTO = new PretDTO();
-                        pretDTO.setIdPret(resultSet.getInt(1));
+                        pretDTO.setIdPret(resultSet.getString(1));
                         final MembreDTO membreDTO = new MembreDTO();
-                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        membreDTO.setIdMembre(resultSet.getString(2));
                         pretDTO.setMembreDTO(membreDTO);
                         final LivreDTO livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        livreDTO.setIdLivre(resultSet.getString(3));
                         pretDTO.setLivreDTO(livreDTO);
                         pretDTO.setDatePret(resultSet.getTimestamp(4));
                         pretDTO.setDateRetour(resultSet.getTimestamp(5));
@@ -340,10 +458,17 @@ public class PretDAO extends DAO implements IPretDAO {
      * {@inheritDoc}
      */
     @Override
-    public List<PretDTO> findByDateRetour(final Timestamp dateRetour) throws DAOException {
+    public List<PretDTO> findByDateRetour(Connexion connexion,
+        final Timestamp dateRetour) throws InvalidHibernateSessionException,
+        DAOException {
+
+        if(connexion == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+
         List<PretDTO> prets = Collections.emptyList();
         try(
-            PreparedStatement findByDateRetourPreparedStatement = getConnection().prepareStatement(PretDAO.FIND_BY_DATE_RETOUR)) {
+            PreparedStatement findByDateRetourPreparedStatement = connexion.getConnection().prepareStatement(PretDAO.FIND_BY_DATE_RETOUR)) {
             findByDateRetourPreparedStatement.setTimestamp(1,
                 dateRetour);
             try(
@@ -353,12 +478,12 @@ public class PretDAO extends DAO implements IPretDAO {
                     prets = new ArrayList<>();
                     do {
                         pretDTO = new PretDTO();
-                        pretDTO.setIdPret(resultSet.getInt(1));
+                        pretDTO.setIdPret(resultSet.getString(1));
                         final MembreDTO membreDTO = new MembreDTO();
-                        membreDTO.setIdMembre(resultSet.getInt(2));
+                        membreDTO.setIdMembre(resultSet.getString(2));
                         pretDTO.setMembreDTO(membreDTO);
                         final LivreDTO livreDTO = new LivreDTO();
-                        livreDTO.setIdLivre(resultSet.getInt(3));
+                        livreDTO.setIdLivre(resultSet.getString(3));
                         pretDTO.setLivreDTO(livreDTO);
                         pretDTO.setDatePret(resultSet.getTimestamp(4));
                         pretDTO.setDateRetour(resultSet.getTimestamp(5));

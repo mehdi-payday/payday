@@ -30,7 +30,7 @@ public interface IPretService extends IService {
      * @return Le prêt lu ; <code>null</code> sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    PretDTO read(int idPret) throws ServiceException;
+    PretDTO read(String idPret) throws ServiceException;
 
     /**
      * Met à jour un prêt.
@@ -63,7 +63,7 @@ public interface IPretService extends IService {
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    List<PretDTO> findByMembre(int idMembre) throws ServiceException;
+    List<PretDTO> findByMembre(String idMembre) throws ServiceException;
 
     /**
      * Trouve les livres en cours d'emprunt.
@@ -72,7 +72,7 @@ public interface IPretService extends IService {
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
-    List<PretDTO> findByLivre(int idLivre) throws ServiceException;
+    List<PretDTO> findByLivre(String idLivre) throws ServiceException;
 
     /**
      * Trouve les prêts à partir d'une date de prêt.

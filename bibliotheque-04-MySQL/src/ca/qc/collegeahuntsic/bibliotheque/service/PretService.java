@@ -143,7 +143,7 @@ public class PretService extends Service implements IPretService {
      * {@inheritDoc}
      */
     @Override
-    public PretDTO read(int idPret) throws ServiceException {
+    public PretDTO read(String idPret) throws ServiceException {
         try {
             return getPretDAO().read(idPret);
         } catch(DAOException daoException) {
@@ -191,7 +191,7 @@ public class PretService extends Service implements IPretService {
      * {@inheritDoc}
      */
     @Override
-    public List<PretDTO> findByMembre(int idMembre) throws ServiceException {
+    public List<PretDTO> findByMembre(String idMembre) throws ServiceException {
         try {
             return getPretDAO().findByMembre(idMembre);
         } catch(DAOException daoException) {
@@ -203,7 +203,7 @@ public class PretService extends Service implements IPretService {
      * {@inheritDoc}
      */
     @Override
-    public List<PretDTO> findByLivre(int idLivre) throws ServiceException {
+    public List<PretDTO> findByLivre(String idLivre) throws ServiceException {
         try {
             return getPretDAO().findByLivre(idLivre);
         } catch(DAOException daoException) {
@@ -268,7 +268,8 @@ public class PretService extends Service implements IPretService {
                     + ")");
             }
             prets = findByMembre(unMembreDTO.getIdMembre());
-            if(prets.size() == unMembreDTO.getLimitePret()) {
+            if(unMembreDTO.getLimitePret().equals(prets.size()
+                + "")) {
                 throw new ServiceException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
