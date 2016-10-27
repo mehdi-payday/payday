@@ -89,8 +89,7 @@ public interface IReservationFacade extends IFacade {
         FacadeException;
 
     /**
-     *
-     * Place une réservation
+     * Place une réservation.
      *
      * @param connexion La connexion à utiliser
      * @param reservationDTO La réservation à utiliser
