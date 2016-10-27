@@ -278,7 +278,7 @@ public class MembreService extends Service implements IMembreService {
             }
             if(!getReservationDAO().findByMembre(connexion,
                 unMembreDTO.getIdMembre(),
-                "nom").isEmpty()) {
+                MembreDTO.NOM_COLUMN_NAME).isEmpty()) {
                 throw new ServiceException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
