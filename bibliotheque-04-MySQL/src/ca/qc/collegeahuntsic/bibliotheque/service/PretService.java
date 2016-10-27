@@ -8,21 +8,22 @@ import java.sql.Timestamp;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
+import ca.qc.collegeahuntsic.bibliotheque.service.interfaces.IPretService;
 
 /**
  * Service de la table <code>pret</code>.
  *
  * @author Team PayDay
  */
-public class PretService extends Service {
+public class PretService extends Service implements IPretService {
     private static final long serialVersionUID = 1L;
 
     private PretDAO pretDAO;
@@ -127,11 +128,9 @@ public class PretService extends Service {
     // EndRegion Getters and Setters
 
     /**
-     * Ajoute un nouveau prêt.
-     *
-     * @param pretDTO Le prêt à ajouter
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void add(PretDTO pretDTO) throws ServiceException {
         try {
             getPretDAO().add(pretDTO);
@@ -141,12 +140,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Lit un prêt. Si aucun prêt n'est trouvé, <code>null</code> est retourné.
-     *
-     * @param idPret L'ID du prêt à lire
-     * @return Le prêt lu ; <code>null</code> sinon
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public PretDTO read(int idPret) throws ServiceException {
         try {
             return getPretDAO().read(idPret);
@@ -156,11 +152,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Met à jour un prêt.
-     *
-     * @param pretDTO Le prêt à mettre à jour
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void update(PretDTO pretDTO) throws ServiceException {
         try {
             getPretDAO().update(pretDTO);
@@ -170,11 +164,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Supprime un prêt.
-     *
-     * @param pretDTO Le prêt à supprimer
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void delete(PretDTO pretDTO) throws ServiceException {
         try {
             getPretDAO().delete(pretDTO);
@@ -184,11 +176,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Trouve tous les prêts.
-     *
-     * @return La liste des prêts ; une liste vide sinon
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> getAll() throws ServiceException {
         try {
             return getPretDAO().getAll();
@@ -198,12 +188,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Trouve les prêts non terminés d'un membre.
-     *
-     * @param idMembre L'ID du membre à trouver
-     * @return La liste des prêts correspondants ; une liste vide sinon
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> findByMembre(int idMembre) throws ServiceException {
         try {
             return getPretDAO().findByMembre(idMembre);
@@ -213,12 +200,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Trouve les livres en cours d'emprunt.
-     *
-     * @param idLivre L'ID du livre à trouver
-     * @return La liste des prêts correspondants ; une liste vide sinon
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> findByLivre(int idLivre) throws ServiceException {
         try {
             return getPretDAO().findByLivre(idLivre);
@@ -228,12 +212,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Trouve les prêts à partir d'une date de prêt.
-     *
-     * @param datePret La date de prêt à trouver
-     * @return La liste des prêts correspondants ; une liste vide sinon
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> findByDatePret(Timestamp datePret) throws ServiceException {
         try {
             return getPretDAO().findByDatePret(datePret);
@@ -243,12 +224,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Trouve les prêts à partir d'une date de retour.
-     *
-     * @param dateRetour La date de retour à trouver
-     * @return La liste des prêts correspondants ; une liste vide sinon
-     * @throws ServiceException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> findByDateRetour(Timestamp dateRetour) throws ServiceException {
         try {
             return getPretDAO().findByDateRetour(dateRetour);
@@ -258,12 +236,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Commence un prêt.
-     *
-     * @param pretDTO Le prêt à commencer
-     * @throws ServiceException Si le membre n'existe pas, si le livre n'existe pas, si le livre a été prêté, si le livre a été réservé, si le
-     *         membre a atteint sa limite de prêt ou s'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void commencer(PretDTO pretDTO) throws ServiceException {
         try {
             final MembreDTO unMembreDTO = getMembreDAO().read(pretDTO.getMembreDTO().getIdMembre());
@@ -324,12 +299,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Renouvelle le prêt d'un livre.
-     *
-     * @param pretDTO Le prêt à renouveler
-     * @throws ServiceException Si le prêt n'existe pas, si le livre n'a pas encore été prêté, si le livre a été prêté à quelqu'un d'autre, si
-     *         le livre a été réservé ou s'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void renouveler(PretDTO pretDTO) throws ServiceException {
         try {
             final PretDTO unPretDTO = read(pretDTO.getIdPret());
@@ -386,12 +358,9 @@ public class PretService extends Service {
     }
 
     /**
-     * Retourne un livre.
-     *
-     * @param pretDTO Le prêt à terminer
-     * @throws ServiceException Si le prêt n'existe pas, si le livre n'a pas encore été prêté, si le livre a été prêté à quelqu'un d'autre ou
-     *         s'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void retourner(PretDTO pretDTO) throws ServiceException {
         try {
             final PretDTO unPretDTO = read(pretDTO.getIdPret());

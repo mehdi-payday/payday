@@ -2,7 +2,7 @@
 // Auteur : Team PayDay
 // Date de création : 2016-05-18
 
-package ca.qc.collegeahuntsic.bibliotheque.dao;
+package ca.qc.collegeahuntsic.bibliotheque.dao.implementations;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import ca.qc.collegeahuntsic.bibliotheque.dao.DAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IPretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
@@ -22,7 +24,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
  *
  * @author Team PayDay
  */
-public class PretDAO extends DAO {
+public class PretDAO extends DAO implements IPretDAO {
     private static final long serialVersionUID = 1L;
 
     private static final String ADD_REQUEST = "INSERT INTO pret (idMembre, "
@@ -105,11 +107,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Ajoute un nouveau prêt.
-     *
-     * @param pretDTO Le prêt à ajouter
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void add(final PretDTO pretDTO) throws DAOException {
         try(
             PreparedStatement addPreparedStatement = getConnection().prepareStatement(PretDAO.ADD_REQUEST)) {
@@ -126,12 +126,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Lit un prêt. Si aucun prêt n'est trouvé, <code>null</code> est retourné.
-     *
-     * @param idPret L'ID du prêt à lire
-     * @return Le prêt lu ; <code>null</code> sinon
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public PretDTO read(final int idPret) throws DAOException {
         PretDTO pretDTO = null;
         try(
@@ -160,11 +157,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Met à jour un prêt.
-     *
-     * @param pretDTO Le prêt à mettre à jour
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void update(final PretDTO pretDTO) throws DAOException {
         try(
             PreparedStatement updatePreparedStatement = getConnection().prepareStatement(PretDAO.UPDATE_REQUEST)) {
@@ -185,11 +180,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Supprime un prêt.
-     *
-     * @param pretDTO Le prêt à supprimer
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public void delete(final PretDTO pretDTO) throws DAOException {
         try(
             PreparedStatement deletePreparedStatement = getConnection().prepareStatement(PretDAO.DELETE_REQUEST)) {
@@ -202,11 +195,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Trouve tous les prêts.
-     *
-     * @return La liste des prêts ; une liste vide sinon
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> getAll() throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
@@ -238,12 +229,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Trouve les prêts non terminés d'un membre.
-     *
-     * @param idMembre L'ID du membre à trouver
-     * @return La liste des prêts correspondants ; une liste vide sinon
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> findByMembre(final int idMembre) throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
@@ -277,12 +265,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Trouve les livres en cours d'emprunt.
-     *
-     * @param idLivre L'ID du livre à trouver
-     * @return La liste des prêts correspondants ; une liste vide sinon
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> findByLivre(final int idLivre) throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
@@ -316,12 +301,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Trouve les prêts à partir d'une date de prêt.
-     *
-     * @param datePret La date de prêt à trouver
-     * @return La liste des prêts correspondants ; une liste vide sinon
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> findByDatePret(final Timestamp datePret) throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
@@ -355,12 +337,9 @@ public class PretDAO extends DAO {
     }
 
     /**
-     * Trouve les prêts à partir d'une date de retour.
-     *
-     * @param dateRetour La date de retour à trouver
-     * @return La liste des prêts correspondants ; une liste vide sinon
-     * @throws DAOException S'il y a une erreur avec la base de données
+     * {@inheritDoc}
      */
+    @Override
     public List<PretDTO> findByDateRetour(final Timestamp dateRetour) throws DAOException {
         List<PretDTO> prets = Collections.emptyList();
         try(
