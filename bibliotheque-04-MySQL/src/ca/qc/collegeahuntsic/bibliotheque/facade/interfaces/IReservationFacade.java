@@ -64,16 +64,16 @@ public interface IReservationFacade extends IFacade {
      * @param connexion La connexion à utiliser
      * @param reservationDTO La réservation à utiliser
      * @throws InvalidHibernateSessionException - Si la connexion est null
-     * @throws InvalidDTOException - Si la réservation est null
-     * @throws InvalidPrimaryKeyException - Si la clef primaire de la réservation est null, si la clef primaire du membre est null ou si la clef primaire du livre est null
-     * @throws MissingDTOException - Si la réservation n'existe pas, si le membre n'existe pas ou si le livre n'existe pas
-     * @throws InvalidCriterionException - Si l'ID du livre est null
-     * @throws InvalidSortByPropertyException - Si la propriété à utiliser pour classer est null
-     * @throws ExistingReservationException - Si la réservation n'est pas la première de la liste
-     * @throws ExistingLoanException - Si le livre est déjà prêté au membre
-     * @throws InvalidLoanLimitException - Si le membre a atteint sa limite de prêt
-     * @throws InvalidDTOClassException - Si la classe du membre n'est pas celle que prend en charge le DAO ou si la classe du n'est pas celle que prend en charge le DAO
-     * @throws FacadeException - S'il y a une erreur avec la base de données
+     * @throws InvalidDTOException Si la réservation est null
+     * @throws InvalidPrimaryKeyException Si la clef primaire de la réservation est null, si la clef primaire du membre est null ou si la clef primaire du livre est null
+     * @throws MissingDTOException Si la réservation n'existe pas, si le membre n'existe pas ou si le livre n'existe pas
+     * @throws InvalidCriterionException Si l'ID du livre est null
+     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
+     * @throws ExistingReservationException Si la réservation n'est pas la première de la liste
+     * @throws ExistingLoanException Si le livre est déjà prêté au membre
+     * @throws InvalidLoanLimitException Si le membre a atteint sa limite de prêt
+     * @throws InvalidDTOClassException Si la classe du membre n'est pas celle que prend en charge le DAO ou si la classe du n'est pas celle que prend en charge le DAO
+     * @throws FacadeException S'il y a une erreur avec la base de données
      */
     void utiliser(Connexion connexion,
         ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
@@ -93,12 +93,12 @@ public interface IReservationFacade extends IFacade {
      *
      * @param connexion La connexion à utiliser
      * @param reservationDTO La réservation à utiliser
-     * @throws InvalidHibernateSessionException - Si la connexion est null
-     * @throws InvalidDTOException - Si la réservation est null
-     * @throws InvalidPrimaryKeyException - Si la clef primaire de la réservation est null
-     * @throws MissingDTOException - Si la réservation n'existe pas, si le membre n'existe pas ou si le livre n'existe pas
-     * @throws InvalidDTOClassException - Si la classe de la réservation n'est pas celle que prend en charge le DAO
-     * @throws FacadeException - Si la connexion est null, si la réservation est null, si la réservation n'existe pas ou s'il y a une erreur avec la base de données
+     * @throws InvalidHibernateSessionException Si la connexion est null
+     * @throws InvalidDTOException Si la réservation est null
+     * @throws InvalidPrimaryKeyException Si la clef primaire de la réservation est null
+     * @throws MissingDTOException Si la réservation n'existe pas, si le membre n'existe pas ou si le livre n'existe pas
+     * @throws InvalidDTOClassException Si la classe de la réservation n'est pas celle que prend en charge le DAO
+     * @throws FacadeException Si la connexion est null, si la réservation est null, si la réservation n'existe pas ou s'il y a une erreur avec la base de données
      */
     void annuler(Connexion connexion,
         ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
