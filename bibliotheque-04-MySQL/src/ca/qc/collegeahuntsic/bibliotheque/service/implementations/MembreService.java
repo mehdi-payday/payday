@@ -237,20 +237,9 @@ public class MembreService extends Service implements IMembreService {
         MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidDTOClassException,
-        ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException {
-        try {
-            if(get(connexion,
-                membreDTO.getIdMembre()) != null) {
-                throw new InvalidPrimaryKeyException("Le membre "
-                    + membreDTO.getIdMembre()
-                    + " existe déjà");
-            }
-        } catch(InvalidPrimaryKeyException e) {
-            e.printStackTrace();
-        }
+        ServiceException {
         add(connexion,
             membreDTO);
-
     }
 
     /**

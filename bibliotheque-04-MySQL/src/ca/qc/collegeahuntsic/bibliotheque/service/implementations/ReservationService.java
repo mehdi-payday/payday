@@ -269,7 +269,7 @@ public class ReservationService extends Service implements IReservationService {
         InvalidSortByPropertyException,
         ServiceException {
         try {
-            return getReservationDAO().findByMembre(connexion,
+            return getReservationDAO().findByLivre(connexion,
                 idLivre,
                 sortByPropertyName);
         } catch(DAOException daoException) {
@@ -294,13 +294,6 @@ public class ReservationService extends Service implements IReservationService {
         InvalidDTOClassException,
         ServiceException {
         try {
-            final ReservationDTO uneReservationDTO = get(connexion,
-                reservationDTO.getIdReservation());
-            if(uneReservationDTO != null) {
-                throw new ServiceException("La réservation "
-                    + reservationDTO.getIdReservation()
-                    + " existe déjà");
-            }
             final MembreDTO unMembreDTO = (MembreDTO) getMembreDAO().get(connexion,
                 reservationDTO.getMembreDTO().getIdMembre());
             if(unMembreDTO == null) {
@@ -391,18 +384,24 @@ public class ReservationService extends Service implements IReservationService {
                 uneReservationDTO.getLivreDTO().getIdLivre());
             final MembreDTO unMembreDTO = (MembreDTO) getMembreDAO().get(connexion,
                 uneReservationDTO.getMembreDTO().getIdMembre());
-            if(!findByLivre(connexion,
+            final List<ReservationDTO> reservationsTrouvees = findByLivre(connexion,
                 unLivreDTO.getIdLivre(),
-                "sortBy").get(0).equals(uneReservationDTO)) {
-                throw new ServiceException("Le livre "
-                    + unLivreDTO.getTitre()
-                    + "(ID de livre : "
-                    + unLivreDTO.getIdLivre()
-                    + ") est réservé pour "
-                    + unMembreDTO.getNom()
-                    + " (ID de membre : "
-                    + unMembreDTO.getIdMembre()
-                    + ")");
+                ReservationDTO.DATE_RESERVATION_COLUMN_NAME);
+            if(!reservationsTrouvees.isEmpty()) {
+                final ReservationDTO premiereReservationDTO = reservationsTrouvees.get(0);
+                if(!premiereReservationDTO.equals(uneReservationDTO)) {
+                    final MembreDTO booker = (MembreDTO) getMembreDAO().get(connexion,
+                        premiereReservationDTO.getMembreDTO().getIdMembre());
+                    throw new ServiceException("Le livre "
+                        + unLivreDTO.getTitre()
+                        + "(ID de livre : "
+                        + unLivreDTO.getIdLivre()
+                        + ") est réservé pour "
+                        + booker.getNom()
+                        + " (ID de membre : "
+                        + booker.getIdMembre()
+                        + ")");
+                }
             }
             if(!getPretDAO().findByLivre(connexion,
                 unLivreDTO.getIdLivre(),
