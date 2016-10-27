@@ -7,7 +7,6 @@ package ca.qc.collegeahuntsic.bibliotheque.service.interfaces;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
@@ -19,6 +18,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingLoanExceptio
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingReservationException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.InvalidLoanLimitException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.MissingLoanException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException;
 
 /**
  * Interface de service pour manipuler les réservations dans la base de données.

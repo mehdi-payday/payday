@@ -31,7 +31,7 @@ public interface IReservationDAO extends IDAO {
      * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a erreur avec la base de données
      */
-    public List<ReservationDTO> findByMembre(Connexion connexion,
+    List<ReservationDTO> findByMembre(Connexion connexion,
         String idMembre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
@@ -44,12 +44,12 @@ public interface IReservationDAO extends IDAO {
      * @param idLivre L'ID du livre à trouver
      * @param sortByPropertyName Le nom de la propriété à utiliser
      * @return La liste des réservations correspondantes; une liste vide sinon
-     * @throws InvalidHivernateSessionException Si la connexion est null
-     * @throws InvalidCriteriaException Si l'ID du livre est null
-     * @throws InvalidSortByPrpertyException Si la propriété à utiliser pour classer est null
+     * @throws InvalidHibernateSessionException Si la connexion est null
+     * @throws InvalidCriterionException Si l'ID du livre est null
+     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a erreur avec la base de données
      */
-    public List<ReservationDTO> findByLivre(Connexion connexion,
+    List<ReservationDTO> findByLivre(Connexion connexion,
         String idLivre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,

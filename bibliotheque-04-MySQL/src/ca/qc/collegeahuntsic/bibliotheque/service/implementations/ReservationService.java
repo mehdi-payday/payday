@@ -15,8 +15,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
@@ -29,6 +28,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingReservationE
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.InvalidDAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.InvalidLoanLimitException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.MissingLoanException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.service.interfaces.IReservationService;
 
 /**
@@ -225,6 +225,7 @@ public class ReservationService extends Service implements IReservationService {
     /**
     * {@inheritDoc}
     */
+    @SuppressWarnings("unchecked")
     @Override
     public List<ReservationDTO> getAll(final Connexion connexion,
         final String sortByPropertyName) throws InvalidHibernateSessionException,
@@ -249,7 +250,7 @@ public class ReservationService extends Service implements IReservationService {
         InvalidSortByPropertyException,
         ServiceException {
         try {
-            return (List<ReservationDTO>) getReservationDAO().findByMembre(connexion,
+            return getReservationDAO().findByMembre(connexion,
                 idMembre,
                 sortByPropertyName);
         } catch(DAOException daoException) {
@@ -268,7 +269,7 @@ public class ReservationService extends Service implements IReservationService {
         InvalidSortByPropertyException,
         ServiceException {
         try {
-            return (List<ReservationDTO>) getReservationDAO().findByMembre(connexion,
+            return getReservationDAO().findByMembre(connexion,
                 idLivre,
                 sortByPropertyName);
         } catch(DAOException daoException) {
@@ -290,8 +291,7 @@ public class ReservationService extends Service implements IReservationService {
         MissingLoanException,
         ExistingLoanException,
         ExistingReservationException,
-        InvalidDTOClassException,
-        ServiceException {
+        InvalidDTOClassException {
         try {
             final ReservationDTO uneReservationDTO = get(connexion,
                 reservationDTO.getIdReservation());
@@ -300,14 +300,14 @@ public class ReservationService extends Service implements IReservationService {
                     + reservationDTO.getIdReservation()
                     + " existe déjà");
             }
-            final MembreDTO unMembreDTO = getMembreDAO().get(connexion,
+            final MembreDTO unMembreDTO = (MembreDTO) getMembreDAO().get(connexion,
                 reservationDTO.getMembreDTO().getIdMembre());
             if(unMembreDTO == null) {
                 throw new ServiceException("Le membre "
                     + reservationDTO.getMembreDTO().getIdMembre()
                     + " n'existe pas");
             }
-            final LivreDTO unLivreDTO = getLivreDAO().read(connexion,
+            final LivreDTO unLivreDTO = (LivreDTO) getLivreDAO().get(connexion,
                 reservationDTO.getLivreDTO().getIdLivre());
             if(unLivreDTO == null) {
                 throw new ServiceException("Le livre "
@@ -323,7 +323,7 @@ public class ReservationService extends Service implements IReservationService {
                     + unLivreDTO.getIdLivre()
                     + ") n'est pas encore prêté");
             }
-            final MembreDTO emprunteur = getMembreDAO().read(connexion,
+            final MembreDTO emprunteur = (MembreDTO) getMembreDAO().get(connexion,
                 pret.get(0).getMembreDTO().getIdMembre());
             if(unMembreDTO.getIdMembre() == emprunteur.getIdMembre()) {
                 throw new ServiceException("Le livre "
@@ -374,8 +374,7 @@ public class ReservationService extends Service implements IReservationService {
         ExistingReservationException,
         ExistingLoanException,
         InvalidLoanLimitException,
-        InvalidDTOClassException,
-        ServiceException {
+        InvalidDTOClassException {
         try {
             final ReservationDTO uneReservationDTO = get(connexion,
                 reservationDTO.getIdReservation());
@@ -386,7 +385,7 @@ public class ReservationService extends Service implements IReservationService {
             }
             final LivreDTO unLivreDTO = (LivreDTO) getLivreDAO().get(connexion,
                 uneReservationDTO.getLivreDTO().getIdLivre());
-            final MembreDTO unMembreDTO = getMembreDAO().get(connexion,
+            final MembreDTO unMembreDTO = (MembreDTO) getMembreDAO().get(connexion,
                 uneReservationDTO.getMembreDTO().getIdMembre());
             if(!findByLivre(connexion,
                 "",

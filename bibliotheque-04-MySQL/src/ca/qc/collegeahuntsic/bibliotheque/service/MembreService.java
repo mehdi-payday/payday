@@ -11,6 +11,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.service.InvalidDAOException;
 
 /**
  * Service de la table <code>membre</code>.
@@ -32,11 +33,21 @@ public class MembreService extends Service {
      * @param membreDAO Le DAO de la table <code>membre</code>
      * @param reservationDAO Le DAO de la table <code>reservation</code>
      * @param pretDAO Le DAO de la table <code>pret</code>
+     * @throws InvalidDAOException Si le DAO de membre est null ou si le DAO de réservation est null
      */
     public MembreService(MembreDAO membreDAO,
         ReservationDAO reservationDAO,
-        PretDAO pretDAO) {
+        PretDAO pretDAO) throws InvalidDAOException {
         super();
+        if(membreDAO == null) {
+            throw new InvalidDAOException("Le DAO de membre ne peut être null");
+        }
+        if(pretDAO == null) {
+            throw new InvalidDAOException("Le DAO de prêt ne peut être null");
+        }
+        if(reservationDAO == null) {
+            throw new InvalidDAOException("Le DAO de réservation ne peut être null");
+        }
         setMembreDAO(membreDAO);
         setReservationDAO(reservationDAO);
         setPretDAO(pretDAO);
