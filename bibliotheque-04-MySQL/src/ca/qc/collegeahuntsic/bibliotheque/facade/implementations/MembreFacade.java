@@ -28,6 +28,7 @@ import ca.qc.collegeahuntsic.bibliotheque.service.interfaces.IMembreService;
  */
 public class MembreFacade extends Facade implements IMembreFacade {
     private IMembreService membreService;
+
     /**
      * Crée la façade de la table membre.
      *
@@ -35,6 +36,10 @@ public class MembreFacade extends Facade implements IMembreFacade {
      * @throws InvalidServiceException Si le service de membres est null
      */
     public MembreFacade(final IMembreService membreService) throws InvalidServiceException {
+        super();
+        if(membreService == null) {
+            throw new InvalidServiceException("Le service de membres ne peut être null");
+        }
         setMembreService(membreService);
     }
 
@@ -97,6 +102,6 @@ public class MembreFacade extends Facade implements IMembreFacade {
      */
     private void setMembreService(IMembreService membreService) {
         this.membreService = membreService;
-    }    
+    }
     // EndRegion Getters and Setters
 }
