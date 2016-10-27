@@ -4,27 +4,23 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.service;
 
-import java.sql.Timestamp;
-import java.util.List;
-import ca.qc.collegeahuntsic.bibliotheque.dao.LivreDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.MembreDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.PretDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.ReservationDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.ServiceException;
-
 /**
  * Service de la table <code>reservation</code>.
  *
  * @author Team PayDay
- */
-public class ReservationService extends Service {
+*/
+public final class ReservationService extends Service {
     private static final long serialVersionUID = 1L;
 
+    /**
+     *
+     * TODO Auto-generated constructor javadoc.
+     *
+     */
+    private ReservationService() {
+
+    }
+    /*
     private ReservationDAO reservationDAO;
 
     private LivreDAO livreDAO;
@@ -40,7 +36,7 @@ public class ReservationService extends Service {
      * @param membreDAO Le DAO de la table <code>membre</code>
      * @param livreDAO Le DAO de la table <code>livre</code>
      * @param pretDAO Le DAO de la table <code>pret</code>
-     */
+    
     public ReservationService(final ReservationDAO reservationDAO,
         final LivreDAO livreDAO,
         final MembreDAO membreDAO,
@@ -57,7 +53,7 @@ public class ReservationService extends Service {
      * Getter de la variable d'instance <code>this.reservationDAO</code>.
      *
      * @return La variable d'instance <code>this.reservationDAO</code>
-     */
+    
     private ReservationDAO getReservationDAO() {
         return this.reservationDAO;
     }
@@ -66,7 +62,7 @@ public class ReservationService extends Service {
      * Setter de la variable d'instance <code>this.reservationDAO</code>.
      *
      * @param reservationDAO La valeur à utiliser pour la variable d'instance <code>this.reservationDAO</code>
-     */
+    
     private void setReservationDAO(final ReservationDAO reservationDAO) {
         this.reservationDAO = reservationDAO;
     }
@@ -75,7 +71,7 @@ public class ReservationService extends Service {
      * Getter de la variable d'instance <code>this.livreDAO</code>.
      *
      * @return La variable d'instance <code>this.livreDAO</code>
-     */
+    
     private LivreDAO getLivreDAO() {
         return this.livreDAO;
     }
@@ -84,7 +80,7 @@ public class ReservationService extends Service {
      * Setter de la variable d'instance <code>this.livreDAO</code>.
      *
      * @param livreDAO La valeur à utiliser pour la variable d'instance <code>this.livreDAO</code>
-     */
+    
     private void setLivreDAO(final LivreDAO livreDAO) {
         this.livreDAO = livreDAO;
     }
@@ -93,7 +89,7 @@ public class ReservationService extends Service {
      * Getter de la variable d'instance <code>this.membreDAO</code>.
      *
      * @return La variable d'instance <code>this.membreDAO</code>
-     */
+    
     private MembreDAO getMembreDAO() {
         return this.membreDAO;
     }
@@ -102,7 +98,7 @@ public class ReservationService extends Service {
      * Setter de la variable d'instance <code>this.membreDAO</code>.
      *
      * @param membreDAO La valeur à utiliser pour la variable d'instance <code>this.membreDAO</code>
-     */
+    
     private void setMembreDAO(final MembreDAO membreDAO) {
         this.membreDAO = membreDAO;
     }
@@ -111,7 +107,7 @@ public class ReservationService extends Service {
      * Setter de la variable d'instance <code>this.pretDAO</code>.
      *
      * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
-     */
+    
     private void setPretDAO(final PretDAO pretDAO) {
         this.pretDAO = pretDAO;
     }
@@ -120,7 +116,7 @@ public class ReservationService extends Service {
      * Getter de la variable d'instance <code>this.pretDAO</code>.
      *
      * @return La variable d'instance <code>this.pretDAO</code>
-     */
+    
     public PretDAO getPretDAO() {
         return this.pretDAO;
     }
@@ -132,7 +128,7 @@ public class ReservationService extends Service {
      *
      * @param reservationDTO La réservation à ajouter
      * @throws ServiceException S'il y a une erreur avec la base de données
-     */
+    
     public void add(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             getReservationDAO().add(reservationDTO);
@@ -147,7 +143,7 @@ public class ReservationService extends Service {
      * @param idReservation L'ID de la réservation à lire
      * @return La réservation lue ; <code>null</code> sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
-     */
+    
     public ReservationDTO read(final int idReservation) throws ServiceException {
         try {
             return getReservationDAO().read(idReservation);
@@ -161,7 +157,7 @@ public class ReservationService extends Service {
      *
      * @param reservationDTO La réservation à mettre à jour
      * @throws ServiceException S'il y a une erreur avec la base de données
-     */
+    
     public void update(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             getReservationDAO().update(reservationDTO);
@@ -175,7 +171,7 @@ public class ReservationService extends Service {
      *
      * @param reservationDTO La réservation à supprimer
      * @throws ServiceException S'il y a une erreur avec la base de données
-     */
+    
     public void delete(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             getReservationDAO().delete(reservationDTO);
@@ -189,7 +185,7 @@ public class ReservationService extends Service {
      *
      * @return La liste des réservations ; une liste vide sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
-     */
+    
     public List<ReservationDTO> getAll() throws ServiceException {
         try {
             return getReservationDAO().getAll();
@@ -204,7 +200,7 @@ public class ReservationService extends Service {
      * @param idLivre L'ID du livre à utiliser
      * @return La liste des réservations correspondantes, triée par date de réservation croissante ; une liste vide sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
-     */
+    
     public List<ReservationDTO> findByLivre(final int idLivre) throws ServiceException {
         try {
             return getReservationDAO().findByLivre(idLivre);
@@ -219,7 +215,7 @@ public class ReservationService extends Service {
      * @param idMembre L'ID du membre à utiliser
      * @return La liste des réservations correspondantes ; une liste vide sinon
      * @throws ServiceException S'il y a une erreur avec la base de données
-     */
+    
     public List<ReservationDTO> findByMembre(final int idMembre) throws ServiceException {
         try {
             return getReservationDAO().findByMembre(idMembre);
@@ -235,7 +231,7 @@ public class ReservationService extends Service {
      * @throws ServiceException Si la réservation existe déjà, si le membre n'existe pas, si le livre n'existe pas, si le livre n'a pas encore
      *         été prêté, si le livre est déjà prêté au membre, si le membre a déjà réservé ce livre ou s'il y a une erreur avec la base de
      *         données
-     */
+    
     public void reserver(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             final ReservationDTO uneReservationDTO = read(reservationDTO.getIdReservation());
@@ -304,7 +300,7 @@ public class ReservationService extends Service {
      *
      * @throws ServiceException  Si la réservation n'existe pas, si la réservation n'est pas la première de la liste,
      *      si le livre est déjà prêté, si le membre a atteint sa limite de prêt ou s'il y a une erreur avec la base de données
-     */
+    
     public void utiliser(final ReservationDTO reservationDTO) throws ServiceException {
         try {
             final ReservationDTO uneReservationDTO = read(reservationDTO.getIdReservation());
@@ -357,7 +353,7 @@ public class ReservationService extends Service {
      *
      * @param reservationDTO Le reservation à annuler
      * @throws ServiceException Si la réservation n'existe pas ou s'il y a une erreur avec la base de données
-     */
+    
     public void annuler(final ReservationDTO reservationDTO) throws ServiceException {
         final ReservationDTO uneReservationDTO = read(reservationDTO.getIdReservation());
         if(uneReservationDTO == null) {
@@ -367,4 +363,5 @@ public class ReservationService extends Service {
         }
         delete(uneReservationDTO);
     }
+    */
 }

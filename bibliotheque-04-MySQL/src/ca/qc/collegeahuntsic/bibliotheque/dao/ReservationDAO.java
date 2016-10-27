@@ -4,26 +4,22 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
-import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
-
 /**
  * DAO pour effectuer des CRUDs avec la table <code>reservation</code>.
  *
  * @author Team PayDay
- */
-public class ReservationDAO extends DAO {
-    private static final long serialVersionUID = 1L;
 
+ */
+public final class ReservationDAO {
+    /**
+     *
+     * TODO Auto-generated constructor javadoc.
+     *
+     */
+    private ReservationDAO() {
+
+    }
+    /*
     private static final String ADD_REQUEST = "INSERT INTO reservation (idlivre, "
         + "                                                             idMembre, "
         + "                                                             dateReservation) "
@@ -73,7 +69,7 @@ public class ReservationDAO extends DAO {
      * Crée un DAO à partir d'une connexion à la base de données.
      *
      * @param connexion La connexion à utiliser
-     */
+    
     public ReservationDAO(final Connexion connexion) {
         super(connexion);
     }
@@ -83,7 +79,7 @@ public class ReservationDAO extends DAO {
      *
      * @param reservationDTO La réservation à ajouter
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public void add(final ReservationDTO reservationDTO) throws DAOException {
         try(
             PreparedStatement addPreparedStatement = getConnection().prepareStatement(ReservationDAO.ADD_REQUEST)) {
@@ -105,7 +101,7 @@ public class ReservationDAO extends DAO {
      * @param idReservation La réservation à lire
      * @return La réservation lue ; <code>null</code> sinon
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public ReservationDTO read(final int idReservation) throws DAOException {
         ReservationDTO reservationDTO = null;
         try(
@@ -137,7 +133,7 @@ public class ReservationDAO extends DAO {
      *
      * @param reservationDTO La réservation à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public void update(final ReservationDTO reservationDTO) throws DAOException {
         try(
             PreparedStatement updatePreparedStatement = getConnection().prepareStatement(ReservationDAO.UPDATE_REQUEST)) {
@@ -160,7 +156,7 @@ public class ReservationDAO extends DAO {
      *
      * @param reservationDTO La réservation à supprimer
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public void delete(final ReservationDTO reservationDTO) throws DAOException {
         try(
             PreparedStatement deletePreparedStatement = getConnection().prepareStatement(ReservationDAO.DELETE_REQUEST)) {
@@ -177,7 +173,7 @@ public class ReservationDAO extends DAO {
      *
      * @return La liste des réservations ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public List<ReservationDTO> getAll() throws DAOException {
         List<ReservationDTO> reservations = Collections.emptyList();
         try(
@@ -213,7 +209,7 @@ public class ReservationDAO extends DAO {
      * @param idLivre L'ID du livre à utiliser
      * @return La liste des réservations correspondantes, triée par date de réservation croissante ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public List<ReservationDTO> findByLivre(final int idLivre) throws DAOException {
         List<ReservationDTO> reservations = Collections.emptyList();
         try(
@@ -251,7 +247,7 @@ public class ReservationDAO extends DAO {
      * @param idMembre L'ID du membre à utiliser
      * @return La liste des réservations correspondantes ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public List<ReservationDTO> findByMembre(final int idMembre) throws DAOException {
         List<ReservationDTO> reservations = Collections.emptyList();
         try(
@@ -282,4 +278,5 @@ public class ReservationDAO extends DAO {
         }
         return reservations;
     }
+    */
 }

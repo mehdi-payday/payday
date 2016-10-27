@@ -4,24 +4,20 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
-import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.DAOException;
-
 /**
  * DAO pour effectuer des CRUDs avec la table <code>membre</code>.
  *
  * @author Team PayDay
  */
-public class MembreDAO extends DAO {
-    private static final long serialVersionUID = 1L;
-
+public final class MembreDAO {
+    /**
+     *
+     * TODO Auto-generated constructor javadoc.
+     *
+     */
+    private MembreDAO() {
+    }
+    /*
     private static final String ADD_REQUEST = "INSERT INTO membre (nom, "
         + "                                                        telephone, "
         + "                                                        limitePret) "
@@ -57,7 +53,7 @@ public class MembreDAO extends DAO {
      * Crée un DAO à partir d'une connexion à la base de données.
      *
      * @param connexion La connexion à utiliser
-     */
+    
     public MembreDAO(final Connexion connexion) {
         super(connexion);
     }
@@ -67,7 +63,7 @@ public class MembreDAO extends DAO {
      *
      * @param membreDTO Le membre à ajouter
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public void add(final MembreDTO membreDTO) throws DAOException {
         try(
             PreparedStatement addPreparedStatement = getConnection()
@@ -83,14 +79,14 @@ public class MembreDAO extends DAO {
             throw new DAOException(sqlException);
         }
     }
- 
+
     /**
      * Lit un membre. Si aucun membre n'est trouvé, <code>null</code> est retourné.
      *
      * @param idMembre Le membre à lire
      * @return Le membre lu ; <code>null</code> sinon
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public MembreDTO read(final int idMembre) throws DAOException {
         MembreDTO membreDTO = null;
         try(
@@ -119,7 +115,7 @@ public class MembreDAO extends DAO {
      *
      * @param membreDTO Le membre à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public void update(final MembreDTO membreDTO) throws DAOException {
         try(
             PreparedStatement updatePreparedStatement = getConnection().prepareStatement(MembreDAO.UPDATE_REQUEST)) {
@@ -130,8 +126,8 @@ public class MembreDAO extends DAO {
             updatePreparedStatement.setInt(3,
                 membreDTO.getLimitePret());
             /*updatePreparedStatement.setInt(4,
-                membreDTO.getNbPret());*/
-            updatePreparedStatement.setInt(/*5*/4,
+                membreDTO.getNbPret());
+            updatePreparedStatement.setInt(/*54,
                 membreDTO.getIdMembre());
             updatePreparedStatement.executeUpdate();
         } catch(SQLException sqlException) {
@@ -144,7 +140,7 @@ public class MembreDAO extends DAO {
      *
      * @param membreDTO Le membre à supprimer
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public void delete(final MembreDTO membreDTO) throws DAOException {
         try(
             PreparedStatement deletePreparedStatement = getConnection().prepareStatement(MembreDAO.DELETE_REQUEST)) {
@@ -161,7 +157,7 @@ public class MembreDAO extends DAO {
      *
      * @return La liste des membres ; une liste vide sinon
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public List<MembreDTO> getAll() throws DAOException {
         List<MembreDTO> membres = Collections.emptyList();
         try(
@@ -193,10 +189,10 @@ public class MembreDAO extends DAO {
      *
      * @param membreDTO Le membre à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public void emprunter(final MembreDTO membreDTO) throws DAOException {
         /*membreDTO.setNbPret(membreDTO.getNbPret()
-            + 1);*/
+            + 1);
         update(membreDTO);
     }
 
@@ -205,10 +201,11 @@ public class MembreDAO extends DAO {
      *
      * @param membreDTO Le membre à mettre à jour
      * @throws DAOException S'il y a une erreur avec la base de données
-     */
+    
     public void retourner(final MembreDTO membreDTO) throws DAOException {
         /*membreDTO.setNbPret(membreDTO.getNbPret()
-            - 1);*/
+            - 1);
         update(membreDTO);
     }
+    */
 }

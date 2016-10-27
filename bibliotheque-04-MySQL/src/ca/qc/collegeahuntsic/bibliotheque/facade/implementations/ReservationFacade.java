@@ -37,7 +37,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * @param reservationService Le service de la table <code>reservation</code>
      * @throws InvalidServiceException Si le service de réservations est <code>null</code>
      */
-    public ReservationFacade(IReservationService reservationService) throws InvalidServiceException {
+    public ReservationFacade(final IReservationService reservationService) throws InvalidServiceException {
         // TODO: Change the constructor visibility to package when switching to Spring
         super();
         if(reservationService == null) {
@@ -59,9 +59,9 @@ public class ReservationFacade extends Facade implements IReservationFacade {
     /**
      * Setter de la variable d'instance <code>this.reservationService</code>.
      *
-     * @param livreService La valeur à utiliser pour la variable d'instance <code>this.reservationService</code>
+     * @param reservationService La valeur à utiliser pour la variable d'instance <code>this.reservationService</code>
      */
-    private void setReservationService(IReservationService reservationService) {
+    private void setReservationService(final IReservationService reservationService) {
         this.reservationService = reservationService;
     }
     // EndRegion Getters and Setters
@@ -70,8 +70,8 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * {@inheritDoc}
      */
     @Override
-    public void placer(Connexion connexion,
-        ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
+    public void placer(final Connexion connexion,
+        final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidPrimaryKeyException,
         MissingDTOException,
@@ -94,8 +94,8 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * {@inheritDoc}
      */
     @Override
-    public void utiliser(Connexion connexion,
-        ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
+    public void utiliser(final Connexion connexion,
+        final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidPrimaryKeyException,
         MissingDTOException,
@@ -118,8 +118,8 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * {@inheritDoc}
      */
     @Override
-    public void annuler(Connexion connexion,
-        ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
+    public void annuler(final Connexion connexion,
+        final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidPrimaryKeyException,
         MissingDTOException,
