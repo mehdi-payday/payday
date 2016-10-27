@@ -9,7 +9,9 @@ import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
 
 /**
  * TODO Auto-generated class javadoc.
@@ -18,29 +20,22 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionE
  */
 public interface IPretDAO extends IDAO {
     /**
-     * Lit un prêt. Si aucun prêt n'est trouvé, <code>null</code> est retourné.
-     *
-     * @param connexion La connexion à utiliser
-     * @param idPret L'ID du prêt à lire
-     * @return Le prêt lu ; <code>null</code> sinon
-     * @throws InvalidHibernateSessionException Si la connexion est <code>null</code>
-     * @throws DAOException S'il y a une erreur avec la base de données
-     */
-    PretDTO read(Connexion connexion,
-        final String idPret) throws InvalidHibernateSessionException,
-        DAOException;
-
-    /**
      * Trouve les prêts non terminés d'un membre.
      *
      * @param connexion La connexion à utiliser
      * @param idMembre L'ID du membre à trouver
+     * @param sortByPropertyName  Le nom de la propriété à utiliser pour classer
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws InvalidHibernateSessionException Si la connexion est <code>null</code>
+     * @throws InvalidCriterionException Si l'ID du membre est null
+     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     List<PretDTO> findByMembre(Connexion connexion,
-        final String idMembre) throws InvalidHibernateSessionException,
+        final String idMembre,
+        String sortByPropertyName) throws InvalidHibernateSessionException,
+        InvalidCriterionException,
+        InvalidSortByPropertyException,
         DAOException;
 
     /**
@@ -48,12 +43,18 @@ public interface IPretDAO extends IDAO {
      *
      * @param connexion La connexion à utiliser
      * @param idLivre L'ID du livre à trouver
+     * @param sortByPropertyName  Le nom de la propriété à utiliser pour classer
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws InvalidHibernateSessionException Si la connexion est <code>null</code>
+     * @throws InvalidCriterionException Si l'ID du livre est null
+     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     List<PretDTO> findByLivre(Connexion connexion,
-        final String idLivre) throws InvalidHibernateSessionException,
+        final String idLivre,
+        String sortByPropertyName) throws InvalidHibernateSessionException,
+        InvalidCriterionException,
+        InvalidSortByPropertyException,
         DAOException;
 
     /**
@@ -61,12 +62,18 @@ public interface IPretDAO extends IDAO {
      *
      * @param connexion La connexion à utiliser
      * @param datePret La date de prêt à trouver
+     * @param sortByPropertyName  Le nom de la propriété à utiliser pour classer
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws InvalidHibernateSessionException Si la connexion est <code>null</code>
+     * @throws InvalidCriterionException Si la date de prêt est null
+     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     List<PretDTO> findByDatePret(Connexion connexion,
-        final Timestamp datePret) throws InvalidHibernateSessionException,
+        final Timestamp datePret,
+        String sortByPropertyName) throws InvalidHibernateSessionException,
+        InvalidCriterionException,
+        InvalidSortByPropertyException,
         DAOException;
 
     /**
@@ -74,11 +81,17 @@ public interface IPretDAO extends IDAO {
      *
      * @param connexion La connexion à utiliser
      * @param dateRetour La date de retour à trouver
+     * @param sortByPropertyName  Le nom de la propriété à utiliser pour classer
      * @return La liste des prêts correspondants ; une liste vide sinon
      * @throws InvalidHibernateSessionException Si la connexion est <code>null</code>
+     * @throws InvalidCriterionException Si la date de retour est null
+     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a une erreur avec la base de données
      */
     List<PretDTO> findByDateRetour(Connexion connexion,
-        final Timestamp dateRetour) throws InvalidHibernateSessionException,
+        final Timestamp dateRetour,
+        String sortByPropertyName) throws InvalidHibernateSessionException,
+        InvalidCriterionException,
+        InvalidSortByPropertyException,
         DAOException;
 }
