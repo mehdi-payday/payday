@@ -3,36 +3,30 @@ DROP TABLE pret		 CASCADE CONSTRAINT;
 DROP TABLE livre       CASCADE CONSTRAINT;
 DROP TABLE membre      CASCADE CONSTRAINT;
 DROP SEQUENCE membre_sequence;
-DROP livre_sequence;
-DROP pret_sequence;
-DROP reservation_sequence;
+DROP SEQUENCE livre_sequence;
+DROP SEQUENCE pret_sequence;
+DROP SEQUENCE reservation_sequence;
 
 CREATE SEQUENCE membre_sequence
-        START WITH 0
+        START WITH 1
         INCREMENT BY 1
         NOCACHE
         NOCYCLE;
 
 CREATE SEQUENCE livre_sequence
-START WITH 0
+START WITH 1
 INCREMENT BY 1
 NOCACHE
 NOCYCLE;
 
 CREATE SEQUENCE pret_sequence
-START WITH 0
+START WITH 1
 INCREMENT BY 1
 NOCACHE
 NOCYCLE;
 
 CREATE SEQUENCE reservation_sequence
-START WITH 0
-INCREMENT BY 1
-NOCACHE
-NOCYCLE;
-
-CREATE SEQUENCE membre_sequence
-START WITH 0
+START WITH 1
 INCREMENT BY 1
 NOCACHE
 NOCYCLE;
@@ -41,8 +35,7 @@ CREATE TABLE membre (idMembre   NUMBER,
                      nom        VARCHAR(10)  NOT NULL,
                      telephone  NUMBER,
 					 limitePret NUMBER(2)   CHECK (limitePret > 0 AND limitePret <= 10),
-					 CONSTRAINT cleMembre    PRIMARY KEY (idMembre),
-					 CONSTRAINT limiteNbPret CHECK (nbPret <= limitePret));
+					 CONSTRAINT cleMembre    PRIMARY KEY (idMembre);
 
 CREATE TABLE livre (idLivre         NUMBER,
                     titre           VARCHAR(50)   NOT NULL,
@@ -109,6 +102,6 @@ BEGIN
   INTO   :new.idReservation
   FROM   dual;
 END;
-			              
+/	              
 			              
 			              
