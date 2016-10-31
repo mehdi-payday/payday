@@ -73,7 +73,7 @@ BEGIN
   INTO   :new.idMembre
   FROM   dual;
 END;
-
+/
 CREATE OR REPLACE TRIGGER livre_trigger 
 BEFORE INSERT ON livre 
 FOR EACH ROW
@@ -83,7 +83,7 @@ BEGIN
   INTO   :new.idLivre
   FROM   dual;
 END;
-
+/
 CREATE OR REPLACE TRIGGER pret_trigger 
 BEFORE INSERT ON pret 
 FOR EACH ROW
@@ -93,7 +93,7 @@ BEGIN
   INTO   :new.idPret
   FROM   dual;
 END;
-
+/
 CREATE OR REPLACE TRIGGER reservation_trigger 
 BEFORE INSERT ON reservation 
 FOR EACH ROW
