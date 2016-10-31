@@ -337,7 +337,7 @@ public class PretService extends Service implements IPretService {
             final LivreDTO unLivreDTO = getLivreDAO().get(connexion,
                 pretDTO.getLivreDTO().getIdLivre());
             if(unLivreDTO == null) {
-                throw new MissingDTOException("Le livre "
+                throw new InvalidSortByPropertyException("Le livre "
                     + pretDTO.getLivreDTO().getIdLivre()
                     + " n'existe pas");
             }
@@ -363,7 +363,7 @@ public class PretService extends Service implements IPretService {
                 MembreDTO.ID_MEMBRE_COLUMN_NAME);
             if(unMembreDTO.getLimitePret().equals(prets.size()
                 + "")) {
-                throw new ServiceException("Le membre "
+                throw new InvalidLoanLimitException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
                     + unMembreDTO.getIdMembre()
@@ -378,7 +378,7 @@ public class PretService extends Service implements IPretService {
                 final ReservationDTO uneReservationDTO = reservations.get(0);
                 final MembreDTO booker = (MembreDTO) getMembreDAO().get(connexion,
                     uneReservationDTO.getMembreDTO().getIdMembre());
-                throw new ServiceException("Le livre "
+                throw new ExistingReservationException("Le livre "
                     + unLivreDTO.getTitre()
                     + " (ID de livre : "
                     + unLivreDTO.getIdLivre()
@@ -416,7 +416,7 @@ public class PretService extends Service implements IPretService {
             final PretDTO unPretDTO = get(connexion,
                 pretDTO.getIdPret());
             if(unPretDTO == null) {
-                throw new MissingDTOException("Le prêt "
+                throw new MissingLoanException("Le prêt "
                     + pretDTO.getIdPret()
                     + " n'existe pas");
             }

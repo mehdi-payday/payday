@@ -131,7 +131,7 @@ public class MembreService extends Service implements IMembreService {
         MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidDTOClassException,
-        ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException {
+        ServiceException {
         try {
             getMembreDAO().add(connexion,
                 membreDTO);
@@ -148,7 +148,7 @@ public class MembreService extends Service implements IMembreService {
     public MembreDTO get(Connexion connexion,
         String idMembre) throws InvalidHibernateSessionException,
         InvalidPrimaryKeyException,
-        ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException {
+        ServiceException {
         try {
             return (MembreDTO) getMembreDAO().get(connexion,
                 idMembre);
@@ -165,7 +165,7 @@ public class MembreService extends Service implements IMembreService {
         MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidDTOClassException,
-        ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException {
+        ServiceException {
         try {
             getMembreDAO().update(connexion,
                 membreDTO);
@@ -219,7 +219,7 @@ public class MembreService extends Service implements IMembreService {
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
         InvalidSortByPropertyException,
-        ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException {
+        ServiceException {
         try {
             return getMembreDAO().findByNom(connexion,
                 nom,
@@ -256,7 +256,7 @@ public class MembreService extends Service implements IMembreService {
         InvalidCriterionException,
         InvalidSortByPropertyException,
         ExistingReservationException,
-        ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException {
+        ServiceException {
         try {
             final MembreDTO unMembreDTO = get(connexion,
                 membreDTO.getIdMembre());
@@ -268,7 +268,7 @@ public class MembreService extends Service implements IMembreService {
             if(!getReservationDAO().findByMembre(connexion,
                 unMembreDTO.getIdMembre(),
                 MembreDTO.NOM_COLUMN_NAME).isEmpty()) {
-                throw new ServiceException("Le membre "
+                throw new ExistingReservationException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
                     + unMembreDTO.getIdMembre()
