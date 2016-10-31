@@ -310,7 +310,7 @@ public class ReservationService extends Service implements IReservationService {
             }
             final List<PretDTO> pret = getPretDAO().findByLivre(connexion,
                 unLivreDTO.getIdLivre(),
-                "sortBy");
+                PretDTO.ID_LIVRE_COLUMN_NAME);
             if(pret.isEmpty()) {
                 throw new MissingLoanException("Le livre "
                     + unLivreDTO.getTitre()
@@ -333,7 +333,7 @@ public class ReservationService extends Service implements IReservationService {
             }
             final List<ReservationDTO> reservations = getReservationDAO().findByMembre(connexion,
                 unMembreDTO.getIdMembre(),
-                "sortBy");
+                PretDTO.ID_MEMBRE_COLUMN_NAME);
             for(ReservationDTO uneAutreReservationDTO : reservations) {
                 if(uneAutreReservationDTO.getLivreDTO().getIdLivre() == unLivreDTO.getIdLivre()) {
                     throw new ExistingReservationException("Le livre "
@@ -405,14 +405,14 @@ public class ReservationService extends Service implements IReservationService {
             }
             if(!getPretDAO().findByLivre(connexion,
                 unLivreDTO.getIdLivre(),
-                "sortBy").isEmpty()) {
+                PretDTO.ID_LIVRE_COLUMN_NAME).isEmpty()) {
                 throw new ExistingReservationException("ID de livre : "
                     + unLivreDTO.getIdLivre()
                     + " est deja prêté");
             }
             if(getPretDAO().findByMembre(connexion,
                 unMembreDTO.getIdMembre(),
-                "sortBy").size() == Integer.parseInt(unMembreDTO.getLimitePret())) {
+                PretDTO.ID_MEMBRE_COLUMN_NAME).size() == Integer.parseInt(unMembreDTO.getLimitePret())) {
                 throw new InvalidLoanLimitException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
