@@ -304,7 +304,7 @@ public class ReservationService extends Service implements IReservationService {
             final LivreDTO unLivreDTO = (LivreDTO) getLivreDAO().get(connexion,
                 reservationDTO.getLivreDTO().getIdLivre());
             if(unLivreDTO == null) {
-                throw new ServiceException("Le livre "
+                throw new MissingDTOException("Le livre "
                     + reservationDTO.getLivreDTO().getIdLivre()
                     + " n'existe pas");
             }
