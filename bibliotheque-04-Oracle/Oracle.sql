@@ -35,7 +35,7 @@ CREATE TABLE membre (idMembre   NUMBER,
                      nom        VARCHAR(10)  NOT NULL,
                      telephone  NUMBER,
 					 limitePret NUMBER(2)   CHECK (limitePret > 0 AND limitePret <= 10),
-					 CONSTRAINT cleMembre    PRIMARY KEY (idMembre);
+					 CONSTRAINT cleMembre    PRIMARY KEY (idMembre));
 
 CREATE TABLE livre (idLivre         NUMBER,
                     titre           VARCHAR(50)   NOT NULL,
