@@ -47,10 +47,9 @@ public class MembreService extends Service implements IMembreService {
      * @param pretDAO Le DAO de la table <code>pret</code>
      * @throws InvalidDAOException Si le DAO de membre est null ou si le DAO de réservation est null
      */
-    public MembreService(MembreDAO membreDAO,
+    MembreService(MembreDAO membreDAO,
         ReservationDAO reservationDAO,
         PretDAO pretDAO) throws InvalidDAOException {
-        // TODO: Change the constructor visibility to package when switching to Spring
         super();
         if(membreDAO == null) {
             throw new InvalidDAOException("Le DAO de membre ne peut être null");
