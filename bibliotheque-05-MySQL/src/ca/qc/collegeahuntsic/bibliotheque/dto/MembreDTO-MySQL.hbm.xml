@@ -39,5 +39,23 @@
                    <column name="LIMITEPRET">
                    </column>
          </property>
+         
+         <set name="prets"
+              order-by="DATEPRET ASC"
+              where="DATERETOUR IS NULL">
+              <key>
+                <column name="IDLIVRE">
+                </column>
+              </key>
+              <one-to-many class="ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO"/>
+         </set>
+         <set name="reservations"
+              order-by="DATERESERVATION ASC">
+              <key>
+                <column name="IDLIVRE">
+                </column>
+              </key>
+              <one-to-many class="ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO"/>
+         </set>
   </class>
 </hibernate-mapping>
