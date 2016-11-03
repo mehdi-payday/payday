@@ -1,0 +1,43 @@
+<?xml version="1.0"
+      encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+          "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+          "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<!--
+   - LivreDTO mapping file.
+   -
+   - Author: Gilles Bénichou
+-->
+
+<hibernate-mapping>
+  <class name="ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO"
+         table="MEMBRE">
+         <id name="idMembre"
+             type="string">
+             <column name="IDMEMBRE">
+             </column>
+             <generator class="identity">
+             </generator>
+         </id>
+
+         <property name="nom"
+                   type="string"
+                   length="100">
+                   <column name="NOM">
+                   </column>
+         </property>
+         <property name="telephone"
+                   type="string"
+                   length="100">
+                   <column name="TELEPHONE">
+                   </column>
+         </property>
+         <property name="limitePret"
+                   type="string">
+                   <column name="LIMITEPRET">
+                   </column>
+         </property>
+  </class>
+</hibernate-mapping>
