@@ -21,27 +21,6 @@ import org.hibernate.Session;
 public interface IReservationDAO extends IDAO {
 
     /**
-     * Trouve les réservations d'un membre. La liste est classée par ordre croissant sur sortByPropertyName. Si aucune réservation n'est trouvée, une List vide est retournée.
-     *
-     * @param session La session Hibernate à utiliser
-     * @param idMembre L'ID du membre à trouver
-     * @param sortByPropertyName Le nom de la propriété à utiliser
-     * @return La liste des réservations correspondantes; une liste vide sinon
-     * @throws InvalidHibernateSessionException Si la connexion est null
-     * @throws InvalidCriterionException Si l'ID du membre est null
-     * @throws InvalidCriterionValueException Si la valeur à trouver est null
-     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
-     * @throws DAOException S'il y a erreur avec la base de données
-     */
-    List<ReservationDTO> findByMembre(Session session,
-        String idMembre,
-        String sortByPropertyName) throws InvalidHibernateSessionException,
-        InvalidCriterionException,
-        InvalidCriterionValueException,
-        InvalidSortByPropertyException,
-        DAOException;
-
-    /**
      * Trouve les réservations d'un livre. La liste est classée par ordre croissant sur sortByPropertyName. Si aucune réservation n'est trouvée, une List vide est retournée.     *
      *
      * @param session La session Hibernate à utiliser
@@ -62,4 +41,24 @@ public interface IReservationDAO extends IDAO {
         InvalidSortByPropertyException,
         DAOException;
 
+    /**
+     * Trouve les réservations d'un membre. La liste est classée par ordre croissant sur sortByPropertyName. Si aucune réservation n'est trouvée, une List vide est retournée.
+     *
+     * @param session La session Hibernate à utiliser
+     * @param idMembre L'ID du membre à trouver
+     * @param sortByPropertyName Le nom de la propriété à utiliser
+     * @return La liste des réservations correspondantes; une liste vide sinon
+     * @throws InvalidHibernateSessionException Si la connexion est null
+     * @throws InvalidCriterionException Si l'ID du membre est null
+     * @throws InvalidCriterionValueException Si la valeur à trouver est null
+     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
+     * @throws DAOException S'il y a erreur avec la base de données
+     */
+    List<ReservationDTO> findByMembre(Session session,
+        String idMembre,
+        String sortByPropertyName) throws InvalidHibernateSessionException,
+        InvalidCriterionException,
+        InvalidCriterionValueException,
+        InvalidSortByPropertyException,
+        DAOException;
 }
