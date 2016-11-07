@@ -42,7 +42,6 @@ public class PretDAO extends DAO implements IPretDAO {
         String idMembre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException {
 
@@ -78,7 +77,6 @@ public class PretDAO extends DAO implements IPretDAO {
         String idLivre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException {
 
@@ -115,7 +113,6 @@ public class PretDAO extends DAO implements IPretDAO {
         Timestamp datePret,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException {
 
@@ -153,7 +150,6 @@ public class PretDAO extends DAO implements IPretDAO {
         Timestamp dateRetour,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException {
 
