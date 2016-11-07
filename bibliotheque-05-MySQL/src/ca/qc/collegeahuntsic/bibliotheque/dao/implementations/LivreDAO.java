@@ -60,7 +60,7 @@ public class LivreDAO extends DAO implements ILivreDAO {
                 titre,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException InvalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur à trouver ne peut être null");
+            throw new DAOException("La valeur à trouver ne peut être null");
         }
         return livres;
     }
