@@ -56,7 +56,7 @@ public class MembreDAO extends DAO implements IMembreDAO {
         List<MembreDTO> membres = Collections.emptyList();
         try {
             membres = (List<MembreDTO>) find(session,
-                MembreDTO.ID_MEMBRE_COLUMN_NAME,
+                MembreDTO.NOM_COLUMN_NAME,
                 nom,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException InvalidCriterionValueException) {
