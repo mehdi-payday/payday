@@ -8,6 +8,7 @@ import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
 import org.hibernate.Session;
@@ -29,6 +30,7 @@ public interface IMembreDAO extends IDAO {
      * @return La liste des membres correspondants ; une liste vide sinon
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidCriterionException Si le nom est null
+     * @throws InvalidCriterionValueException - Si la valeur à trouver est null
      * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a une erreur avec la base de données
      */
@@ -36,6 +38,7 @@ public interface IMembreDAO extends IDAO {
         String nom,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
+        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException;
 
