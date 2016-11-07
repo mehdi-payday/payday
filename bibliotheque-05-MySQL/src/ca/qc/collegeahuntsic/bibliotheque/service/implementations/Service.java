@@ -1,5 +1,5 @@
 // Fichier Service.java
-// Auteur : Team PayDay
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.service.implementations;
@@ -13,6 +13,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionE
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.service.InvalidDAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.service.interfaces.IService;
 import org.hibernate.Session;
@@ -20,7 +21,7 @@ import org.hibernate.Session;
 /**
  * Classe de base pour tous les services.
  *
- * @author Team PayDay
+ * @author Gilles Bénichou
  */
 public class Service implements IService {
     private IDAO dao;
@@ -28,42 +29,38 @@ public class Service implements IService {
     /**
      * Crée un service.
      *
-     * @param daoInstance L'instance du DAO associée au service
+     * @param dao Le DAO à utiliser
+     * @throws InvalidDAOException Si le DAO est <code>null</code>
      */
-    protected Service(IDAO daoInstance) {
-        setDAO(daoInstance);
+    protected Service(IDAO dao) throws InvalidDAOException {
+        super();
+        if(dao == null) {
+            throw new InvalidDAOException("Le DAO ne peut être null");
+        }
+        setDao(dao);
     }
 
+    // Region Getters and Setters
     /**
+     * Getter de la variable d'instance <code>this.dao</code>.
      *
-     * Crée un service.
-     *
+     * @return La variable d'instance <code>this.dao</code>
      */
-    protected Service() {
-
-    }
-
-    /**
-     *
-     * Getter du DAO.
-     *
-     * @return L'instance de DAO associée au service
-     */
-    public IDAO getDAO() {
+    protected IDAO getDao() {
         return this.dao;
     }
 
     /**
+     * Setter de la variable d'instance <code>this.dao</code>.
      *
-     * Setter du DAO.
-     *
-     * @param instanceDao L'instance du DAO associée au service
+     * @param dao La valeur à utiliser pour la variable d'instance <code>this.dao</code>
      */
-    protected void setDAO(IDAO instanceDao) {
-        this.dao = instanceDao;
+    private void setDao(IDAO dao) {
+        this.dao = dao;
     }
+    // EndRegion Getters and Setters
 
-    /*
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -71,15 +68,21 @@ public class Service implements IService {
         DTO dto) throws InvalidHibernateSessionException,
         InvalidDTOException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La session Hibernate ne peut être null");
+        }
+        if(dto == null) {
+            throw new InvalidDTOException("Le DTO ne peut être null");
+        }
         try {
-            getDAO().add(session,
+            getDao().add(session,
                 dto);
-        } catch(DAOException e) {
-            throw new ServiceException(e);
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
         }
     }
 
-    /*
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -87,15 +90,22 @@ public class Service implements IService {
         Serializable primaryKey) throws InvalidHibernateSessionException,
         InvalidPrimaryKeyException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La session Hibernate ne peut être null");
+        }
+        if(primaryKey == null) {
+            throw new InvalidPrimaryKeyException("La clef primaire ne peut être null");
+        }
         try {
-            return getDAO().get(session,
+            final DTO dto = getDao().get(session,
                 primaryKey);
+            return dto;
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
     }
 
-    /*
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -103,15 +113,21 @@ public class Service implements IService {
         DTO dto) throws InvalidHibernateSessionException,
         InvalidDTOException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La session Hibernate ne peut être null");
+        }
+        if(dto == null) {
+            throw new InvalidDTOException("Le DTO ne peut être null");
+        }
         try {
-            getDAO().update(session,
+            getDao().update(session,
                 dto);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
     }
 
-    /*
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -119,40 +135,62 @@ public class Service implements IService {
         DTO dto) throws InvalidHibernateSessionException,
         InvalidDTOException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La session Hibernate ne peut être null");
+        }
+        if(dto == null) {
+            throw new InvalidDTOException("Le DTO ne peut être null");
+        }
         try {
-            getDAO().save(session,
+            getDao().save(session,
                 dto);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
     }
 
-    /* (non-Javadoc)
-     * @see ca.qc.collegeahuntsic.bibliotheque.service.interfaces.IService#delete(org.hibernate.Session, ca.qc.collegeahuntsic.bibliotheque.dto.DTO)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public void delete(Session session,
         DTO dto) throws InvalidHibernateSessionException,
         InvalidDTOException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La session Hibernate ne peut être null");
+        }
+        if(dto == null) {
+            throw new InvalidDTOException("Le DTO ne peut être null");
+        }
         try {
-            getDAO().delete(session,
+            getDao().delete(session,
                 dto);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
     }
 
-    /* (non-Javadoc)
-     * @see ca.qc.collegeahuntsic.bibliotheque.service.interfaces.IService#getAll(org.hibernate.Session, java.lang.String)
+    /**
+     * {@inheritDoc}
      */
     @Override
     public List<? extends DTO> getAll(Session session,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidSortByPropertyException,
         ServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La session Hibernate ne peut être null");
+        }
+        if(sortByPropertyName == null) {
+            throw new InvalidSortByPropertyException("La propriété utilisée pour classer ne peut être null");
+        }
+        try {
+            final List<? extends DTO> results = getDao().getAll(session,
+                sortByPropertyName);
+            return results;
+        } catch(DAOException daoException) {
+            throw new ServiceException(daoException);
+        }
     }
-
 }
