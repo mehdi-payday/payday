@@ -4,9 +4,9 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.facade.implementations;
 
-import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
@@ -22,6 +22,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.service.MissingLoanException
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.facade.interfaces.IReservationFacade;
 import ca.qc.collegeahuntsic.bibliotheque.service.interfaces.IReservationService;
+import org.hibernate.Session;
 
 /**
  * Facade pour interagir avec le service de réservations.
@@ -69,7 +70,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * {@inheritDoc}
      */
     @Override
-    public void placer(final Connexion connexion,
+    public void placer(final Session connexion,
         final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidPrimaryKeyException,
@@ -80,7 +81,8 @@ public class ReservationFacade extends Facade implements IReservationFacade {
         ExistingLoanException,
         ExistingReservationException,
         InvalidDTOClassException,
-        FacadeException {
+        FacadeException,
+        InvalidCriterionValueException {
         try {
             getReservationService().placer(connexion,
                 reservationDTO);
@@ -93,7 +95,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * {@inheritDoc}
      */
     @Override
-    public void utiliser(final Connexion connexion,
+    public void utiliser(final Session session,
         final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidPrimaryKeyException,
@@ -104,9 +106,10 @@ public class ReservationFacade extends Facade implements IReservationFacade {
         ExistingLoanException,
         InvalidLoanLimitException,
         InvalidDTOClassException,
-        FacadeException {
+        FacadeException,
+        InvalidCriterionValueException {
         try {
-            getReservationService().utiliser(connexion,
+            getReservationService().utiliser(session,
                 reservationDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
@@ -117,15 +120,16 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * {@inheritDoc}
      */
     @Override
-    public void annuler(final Connexion connexion,
+    public void annuler(final Session session,
         final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidPrimaryKeyException,
         MissingDTOException,
         InvalidDTOClassException,
+        InvalidCriterionValueException,
         FacadeException {
         try {
-            getReservationService().annuler(connexion,
+            getReservationService().annuler(session,
                 reservationDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
