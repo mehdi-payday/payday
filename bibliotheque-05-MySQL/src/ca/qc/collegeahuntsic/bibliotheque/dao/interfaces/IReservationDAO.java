@@ -8,7 +8,6 @@ import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
 import org.hibernate.Session;
@@ -29,7 +28,6 @@ public interface IReservationDAO extends IDAO {
      * @return La liste des réservations correspondantes; une liste vide sinon
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidCriterionException Si l'ID du livre est null
-     * @throws InvalidCriterionValueException Si la valeur à trouver est null
      * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a erreur avec la base de données
      */
@@ -37,7 +35,6 @@ public interface IReservationDAO extends IDAO {
         String idLivre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException;
 
@@ -50,7 +47,6 @@ public interface IReservationDAO extends IDAO {
      * @return La liste des réservations correspondantes; une liste vide sinon
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidCriterionException Si l'ID du membre est null
-     * @throws InvalidCriterionValueException Si la valeur à trouver est null
      * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws DAOException S'il y a erreur avec la base de données
      */
@@ -58,7 +54,6 @@ public interface IReservationDAO extends IDAO {
         String idMembre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException;
 }

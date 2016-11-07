@@ -42,7 +42,6 @@ public class ReservationDAO extends DAO implements IReservationDAO {
         String idLivre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException {
         if(session == null) {
@@ -61,7 +60,8 @@ public class ReservationDAO extends DAO implements IReservationDAO {
                 idLivre,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException InvalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur à trouver ne peut être null");
+            throw new DAOException("La valeur à trouver ne peut être null",
+                InvalidCriterionValueException);
         }
         return reservations;
     }
@@ -75,7 +75,6 @@ public class ReservationDAO extends DAO implements IReservationDAO {
         String idMembre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException {
         if(session == null) {
@@ -94,7 +93,8 @@ public class ReservationDAO extends DAO implements IReservationDAO {
                 idMembre,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException InvalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur à trouver ne peut être null");
+            throw new DAOException("La valeur à trouver ne peut être null",
+                InvalidCriterionValueException);
         }
         return reservations;
     }
