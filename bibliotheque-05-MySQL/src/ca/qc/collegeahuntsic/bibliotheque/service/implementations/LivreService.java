@@ -4,6 +4,7 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.service.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.ILivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IMembreDAO;
@@ -112,30 +113,12 @@ public class LivreService extends Service implements ILivreService {
     }
 
     /**
-     * Getter de la variable d'instance <code>this.pretDAO</code>.
-     *
-     * @return La variable d'instance <code>this.pretDAO</code>
-     */
-    private IPretDAO getPretDAO() {
-        return this.pretDAO;
-    }
-
-    /**
      * Setter de la variable d'instance <code>this.pretDAO</code>.
      *
      * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
      */
     private void setPretDAO(IPretDAO pretDAO) {
         this.pretDAO = pretDAO;
-    }
-
-    /**
-     * Getter de la variable d'instance <code>this.reservationDAO</code>.
-     *
-     * @return La variable d'instance <code>this.reservationDAO</code>
-     */
-    private IReservationDAO getReservationDAO() {
-        return this.reservationDAO;
     }
 
     /**
@@ -204,9 +187,7 @@ public class LivreService extends Service implements ILivreService {
                     + livreDTO.getIdLivre()
                     + " n'existe pas");
             }
-            final List<PretDTO> prets = getPretDAO().findByLivre(session,
-                unLivreDTO.getIdLivre(),
-                PretDTO.DATE_PRET_COLUMN_NAME);
+            final List<PretDTO> prets = new ArrayList<>(livreDTO.getPrets());
             if(!prets.isEmpty()) {
                 for(PretDTO pretDTO : prets) {
                     if(pretDTO.getDateRetour() == null) {
@@ -224,9 +205,7 @@ public class LivreService extends Service implements ILivreService {
                     }
                 }
             }
-            final List<ReservationDTO> reservations = getReservationDAO().findByLivre(session,
-                unLivreDTO.getIdLivre(),
-                ReservationDTO.DATE_RESERVATION_COLUMN_NAME);
+            final List<ReservationDTO> reservations = new ArrayList<>(livreDTO.getReservations());
             if(!reservations.isEmpty()) {
                 final ReservationDTO reservationDTO = reservations.get(0);
                 final MembreDTO booker = (MembreDTO) getMembreDAO().get(session,
