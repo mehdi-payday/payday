@@ -41,7 +41,6 @@ public class MembreDAO extends DAO implements IMembreDAO {
         String nom,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         DAOException {
         if(session == null) {
