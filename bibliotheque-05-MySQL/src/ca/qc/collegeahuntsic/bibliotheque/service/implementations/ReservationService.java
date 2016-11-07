@@ -17,6 +17,7 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
@@ -148,7 +149,8 @@ public class ReservationService extends Service implements IReservationService {
         ExistingLoanException,
         ExistingReservationException,
         InvalidDTOClassException,
-        ServiceException {
+        ServiceException,
+        InvalidCriterionValueException {
         try {
             final MembreDTO unMembreDTO = (MembreDTO) getMembreDAO().get(session,
                 reservationDTO.getMembreDTO().getIdMembre());
@@ -227,7 +229,8 @@ public class ReservationService extends Service implements IReservationService {
         ExistingLoanException,
         InvalidLoanLimitException,
         InvalidDTOClassException,
-        ServiceException {
+        ServiceException,
+        InvalidCriterionValueException {
         try {
             final ReservationDTO uneReservationDTO = (ReservationDTO) get(session,
                 reservationDTO.getIdReservation());

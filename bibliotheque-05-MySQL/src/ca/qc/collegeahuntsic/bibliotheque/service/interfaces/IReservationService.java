@@ -6,6 +6,7 @@ package ca.qc.collegeahuntsic.bibliotheque.service.interfaces;
 
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
@@ -43,6 +44,7 @@ public interface IReservationService extends IService {
      * @throws ExistingReservationException - Si le membre a déjà réservé ce livre
      * @throws InvalidDTOClassException - Si la classe de la réservation n'est pas celle que prend en charge le DAO
      * @throws ServiceException - S'il y a une erreur avec la base de données
+     * @throws InvalidCriterionValueException Si la valeur à trouver est null
      */
     void placer(Session session,
         ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
@@ -55,6 +57,7 @@ public interface IReservationService extends IService {
         ExistingLoanException,
         ExistingReservationException,
         InvalidDTOClassException,
+        InvalidCriterionValueException,
         ServiceException;
 
     /**
@@ -74,6 +77,7 @@ public interface IReservationService extends IService {
     * @throws ExistingReservationException - Si le membre a déjà réservé ce livre
     * @throws InvalidDTOClassException - Si la classe de la réservation n'est pas celle que prend en charge le DAO
     * @throws ServiceException - S'il y a une erreur avec la base de données
+    * @throws InvalidCriterionValueException Si la valeur à trouver est null
     */
     void utiliser(Session session,
         ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
@@ -86,6 +90,7 @@ public interface IReservationService extends IService {
         ExistingLoanException,
         InvalidLoanLimitException,
         InvalidDTOClassException,
+        InvalidCriterionValueException,
         ServiceException;
 
     /**
@@ -100,6 +105,7 @@ public interface IReservationService extends IService {
      * @throws MissingDTOException - Si la réservation n'existe pas, si le membre n'existe pas ou si le livre n'existe pas
      * @throws InvalidDTOClassException - Si la classe de la réservation n'est pas celle que prend en charge le DAO
      * @throws ServiceException - S'il y a une erreur avec la base de données
+     * @throws InvalidCriterionValueException Si la valeur à trouver est null
      */
     void annuler(Session session,
         ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
@@ -107,5 +113,6 @@ public interface IReservationService extends IService {
         InvalidPrimaryKeyException,
         MissingDTOException,
         InvalidDTOClassException,
+        InvalidCriterionValueException,
         ServiceException;
 }
