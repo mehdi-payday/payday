@@ -60,7 +60,7 @@ public class MembreDAO extends DAO implements IMembreDAO {
                 nom,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException InvalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur à trouver ne peut être null");
+            throw new DAOException(InvalidCriterionValueException);
         }
         return membres;
     }
