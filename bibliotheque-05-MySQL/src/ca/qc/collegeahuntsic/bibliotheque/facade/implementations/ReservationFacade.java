@@ -70,7 +70,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * {@inheritDoc}
      */
     @Override
-    public void placer(final Session connexion,
+    public void placer(final Session session,
         final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidPrimaryKeyException,
@@ -84,7 +84,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
         FacadeException,
         InvalidCriterionValueException {
         try {
-            getReservationService().placer(connexion,
+            getReservationService().placer(session,
                 reservationDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
