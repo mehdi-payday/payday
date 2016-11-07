@@ -30,13 +30,13 @@ public interface IMembreService extends IService {
      * Trouve les membres à partir d'un nom. La liste est classée par ordre croissant sur sortByPropertyName.
      *      Si aucun membre n'est trouvé, une List vide est retournée.
      *
-     * @param session La session à utiliser
+     * @param session La session Hibernate à utiliser
      * @param nom Le nom à trouver
      * @param sortByPropertyName Le nom de la propriété à utiliser pour classer
      * @return La liste des membres correspondants ; une liste vide sinon
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidCriterionException Si le nom est null
-     * @throws InvalidCriterionValueException Si la valeur est null
+     * @throws InvalidCriterionValueException Si la valeur à trouver est null
      * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
@@ -51,7 +51,7 @@ public interface IMembreService extends IService {
     /**
      * Inscrit un membre.
      *
-     * @param session La session à utiliser
+     * @param session La session Hibernate à utiliser
      * @param membreDTO Le membre à inscrire
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidDTOException Si le membre est null
@@ -67,7 +67,7 @@ public interface IMembreService extends IService {
     /**
      * Désincrit un membre.
      *
-     * @param session La session à utiliser
+     * @param session La session Hibernate à utiliser
      * @param membreDTO Le membre à désinscrire
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidDTOException Si le livre est null
@@ -76,7 +76,7 @@ public interface IMembreService extends IService {
      * @throws MissingDTOException Si le membre n'existe pas
      * @throws ExistingLoanException Si le membre a encore des prêts
      * @throws InvalidCriterionException Si l'ID du membre est null
-     * @throws InvalidCriterionValueException Si la valeur est null
+     * @throws InvalidCriterionValueException Si la valeur à trouver est null
      * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws ExistingReservationException Si le membre a des réservations
      * @throws ServiceException S'il y a une erreur avec la base de données

@@ -4,9 +4,9 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.facade.interfaces;
 
-import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
+import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
@@ -16,6 +16,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.dto.MissingDTOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.facade.FacadeException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingLoanException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingReservationException;
+import org.hibernate.Session;
 
 /**
  * Interface de façade pour manipuler les membres dans la base de données.
@@ -27,7 +28,7 @@ public interface IMembreFacade extends IFacade {
     /**
      * Désincrit un membre.
      *
-     * @param connexion La connexion à utiliser
+     * @param session La session Hibernate à utiliser
      * @param membreDTO Le membre à inscrire
      * @throws InvalidHibernateSessionException - Si la connexion est null
      * @throws InvalidDTOException - Si le livre est null
@@ -36,11 +37,12 @@ public interface IMembreFacade extends IFacade {
      * @throws MissingDTOException - Si le membre n'existe pas
      * @throws ExistingLoanException - Si le membre a encore des prêts
      * @throws InvalidCriterionException - Si l'ID du membre est null
+     * @throws InvalidCriterionValueException - Si la valeur à trouver est null
      * @throws InvalidSortByPropertyException - Si la propriété à utiliser pour classer est null
      * @throws ExistingReservationException - Si le membre a des réservations
      * @throws FacadeException - S'il y a une erreur avec la base de données
      */
-    void desinscrire(final Connexion connexion,
+    void desinscrire(final Session session,
         final MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidDTOClassException,
@@ -48,6 +50,7 @@ public interface IMembreFacade extends IFacade {
         MissingDTOException,
         ExistingLoanException,
         InvalidCriterionException,
+        InvalidCriterionValueException,
         InvalidSortByPropertyException,
         ExistingReservationException,
         FacadeException;
@@ -55,14 +58,14 @@ public interface IMembreFacade extends IFacade {
     /**
      * Inscrit un membre.
      *
-     * @param connexion La connexion à utiliser
+     * @param session La session Hibernate à utiliser
      * @param membreDTO Le membre à inscrire
      * @throws InvalidHibernateSessionException - Si la connexion est null
      * @throws InvalidDTOException - Si le membre est null
      * @throws InvalidDTOClassException - Si la classe du membre n'est pas celle que prend en charge le DAO
      * @throws FacadeException - S'il y a une erreur avec la base de données
      */
-    void inscrire(final Connexion connexion,
+    void inscrire(final Session session,
         final MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         InvalidDTOClassException,
