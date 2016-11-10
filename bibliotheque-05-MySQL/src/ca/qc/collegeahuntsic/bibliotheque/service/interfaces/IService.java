@@ -1,5 +1,5 @@
 // Fichier IService.java
-// Auteur : Team PayDay
+// Auteur : Gilles Bénichou
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.service.interfaces;
@@ -18,17 +18,16 @@ import org.hibernate.Session;
  * Interface de base pour les services.<br />
  * Toutes les interfaces de service devraient en hériter.
  *
- * @author Team PayDay
+ * @author Gilles Bénichou
  */
 public interface IService {
     /**
-     *
      * Ajoute un nouveau DTO dans la base de données.
      *
      * @param session La session Hibernate à utiliser
      * @param dto Le DTO à ajouter
-     * @throws InvalidHibernateSessionException Si la session Hibernate est null
-     * @throws InvalidDTOException Si le DTO est null
+     * @throws InvalidHibernateSessionException Si la session Hibernate est <code>null</code>
+     * @throws InvalidDTOException Si le DTO est <code>null</code>
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     void add(Session session,
@@ -37,14 +36,13 @@ public interface IService {
         ServiceException;
 
     /**
-     *
-     * Lit un DTO à partir de la base de données. Si aucun DTO n'est trouvé, null est retourné.
+     * Lit un DTO à partir de la base de données. Si aucun DTO n'est trouvé, <code>null</code> est retourné.
      *
      * @param session La session Hibernate à utiliser
      * @param primaryKey La clef primaire du DTO à lire
-     * @return Le DTO lu ; null sinon
-     * @throws InvalidHibernateSessionException Si la session Hibernate est null
-     * @throws InvalidPrimaryKeyException Si la clef primaire du DTO est null
+     * @return Le DTO lu ; <code>null</code> sinon
+     * @throws InvalidHibernateSessionException Si la connexion est <code>null</code>
+     * @throws InvalidPrimaryKeyException Si la clef primaire du DTO est <code>null</code>
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     DTO get(Session session,
@@ -53,13 +51,12 @@ public interface IService {
         ServiceException;
 
     /**
-     *
      * Met à jour un DTO dans la base de données.
      *
      * @param session La session Hibernate à utiliser
      * @param dto Le DTO à mettre à jour
-     * @throws InvalidHibernateSessionException Si la session Hibernate est null
-     * @throws InvalidDTOException Si le DTO est null
+     * @throws InvalidHibernateSessionException Si la session Hibernate est <code>null</code>
+     * @throws InvalidDTOException Si le DTO est <code>null</code>
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     void update(Session session,
@@ -68,13 +65,12 @@ public interface IService {
         ServiceException;
 
     /**
-     *
      * Ajoute un nouveau DTO dans la base de données s'il n'existe pas ; le met à jour sinon.
      *
      * @param session La session Hibernate à utiliser
      * @param dto Le DTO à ajouter ou à mettre à jour
-     * @throws InvalidHibernateSessionException Si la session Hibernate est null
-     * @throws InvalidDTOException Si le DTO est null
+     * @throws InvalidHibernateSessionException Si la session Hibernate est <code>null</code>
+     * @throws InvalidDTOException Si le DTO est <code>null</code>
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     void save(Session session,
@@ -83,13 +79,12 @@ public interface IService {
         ServiceException;
 
     /**
-     *
      * Supprime un DTO de la base de données.
      *
      * @param session La session Hibernate à utiliser
      * @param dto Le DTO à supprimer
-     * @throws InvalidHibernateSessionException Si la session Hibernate est null
-     * @throws InvalidDTOException Si le DTO est null
+     * @throws InvalidHibernateSessionException Si la session Hibernate est <code>null</code>
+     * @throws InvalidDTOException Si le DTO est <code>null</code>
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     void delete(Session session,
@@ -98,16 +93,14 @@ public interface IService {
         ServiceException;
 
     /**
-     *
-     * Trouve tous les DTOs de la base de données.
-     * La liste est classée par ordre croissant sur sortByPropertyName.
-     * Si aucun DTO n'est trouvé, une List vide est retournée.
+     * Trouve tous les DTOs de la base de données. La liste est classée par ordre croissant sur <code>sortByPropertyName</code>. Si aucun
+     * DTO n'est trouvé, une {@link List} vide est retournée.
      *
      * @param session La session Hibernate à utiliser
      * @param sortByPropertyName Le nom de la propriété à utiliser pour classer
      * @return La liste de tous les DTOs ; une liste vide sinon
-     * @throws InvalidHibernateSessionException Si la session Hibernate est null
-     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
+     * @throws InvalidHibernateSessionException Si la session Hibernate est <code>null</code>
+     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est <code>null</code>
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     List<? extends DTO> getAll(Session session,

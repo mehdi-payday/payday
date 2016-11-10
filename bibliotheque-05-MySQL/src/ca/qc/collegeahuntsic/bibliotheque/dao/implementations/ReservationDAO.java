@@ -42,9 +42,9 @@ public class ReservationDAO extends DAO implements IReservationDAO {
         String idLivre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
-        DAOException {
+        DAOException,
+        InvalidCriterionValueException {
         if(session == null) {
             throw new InvalidHibernateSessionException("La session ne peut être null");
         }
@@ -55,14 +55,12 @@ public class ReservationDAO extends DAO implements IReservationDAO {
             throw new InvalidSortByPropertyException("La propriété utilisée pour classer ne peut être null");
         }
         List<ReservationDTO> reservations = Collections.emptyList();
-        try {
-            reservations = (List<ReservationDTO>) find(session,
-                ReservationDTO.ID_LIVRE_COLUMN_NAME,
-                idLivre,
-                sortByPropertyName);
-        } catch(InvalidCriterionValueException InvalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur à trouver ne peut être null");
-        }
+
+        reservations = (List<ReservationDTO>) find(session,
+            ReservationDTO.ID_LIVRE_COLUMN_NAME,
+            idLivre,
+            sortByPropertyName);
+
         return reservations;
     }
 
@@ -75,9 +73,9 @@ public class ReservationDAO extends DAO implements IReservationDAO {
         String idMembre,
         String sortByPropertyName) throws InvalidHibernateSessionException,
         InvalidCriterionException,
-        InvalidCriterionValueException,
         InvalidSortByPropertyException,
-        DAOException {
+        DAOException,
+        InvalidCriterionValueException {
         if(session == null) {
             throw new InvalidHibernateSessionException("La session ne peut être null");
         }
@@ -88,14 +86,12 @@ public class ReservationDAO extends DAO implements IReservationDAO {
             throw new InvalidSortByPropertyException("La propriété utilisée pour classer ne peut être null");
         }
         List<ReservationDTO> reservations = Collections.emptyList();
-        try {
-            reservations = (List<ReservationDTO>) find(session,
-                ReservationDTO.ID_MEMBRE_COLUMN_NAME,
-                idMembre,
-                sortByPropertyName);
-        } catch(InvalidCriterionValueException InvalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur à trouver ne peut être null");
-        }
+
+        reservations = (List<ReservationDTO>) find(session,
+            ReservationDTO.ID_MEMBRE_COLUMN_NAME,
+            idMembre,
+            sortByPropertyName);
+
         return reservations;
     }
 }

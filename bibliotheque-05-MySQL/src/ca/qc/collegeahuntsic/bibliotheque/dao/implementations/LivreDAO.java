@@ -54,14 +54,11 @@ public class LivreDAO extends DAO implements ILivreDAO {
             throw new InvalidSortByPropertyException("La propriété utilisée pour classer ne peut être null");
         }
         List<LivreDTO> livres = Collections.emptyList();
-        try {
-            livres = (List<LivreDTO>) find(session,
-                LivreDTO.TITRE_COLUMN_NAME,
-                titre,
-                sortByPropertyName);
-        } catch(InvalidCriterionValueException InvalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur à trouver ne peut être null");
-        }
+        livres = (List<LivreDTO>) find(session,
+            LivreDTO.TITRE_COLUMN_NAME,
+            titre,
+            sortByPropertyName);
+
         return livres;
     }
 }

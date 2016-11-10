@@ -63,7 +63,7 @@ public class PretDAO extends DAO implements IPretDAO {
                 idMembre,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException invalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur de l'id de membre ne peut être null",
+            throw new DAOException("La valeur de l'id de membre ne peut être null",
                 invalidCriterionValueException);
         }
         return prets;
@@ -100,7 +100,7 @@ public class PretDAO extends DAO implements IPretDAO {
                 idLivre,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException invalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur de l'id du livre a rechercher ne peut être null",
+            throw new DAOException("La valeur de l'id du livre a rechercher ne peut être null",
                 invalidCriterionValueException);
         }
         return prets;
@@ -137,7 +137,7 @@ public class PretDAO extends DAO implements IPretDAO {
                 datePret,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException invalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur de la date de prêt a rechercher ne peut être null",
+            throw new DAOException("La valeur de la date de prêt a rechercher ne peut être null",
                 invalidCriterionValueException);
         }
 
@@ -175,7 +175,7 @@ public class PretDAO extends DAO implements IPretDAO {
                 dateRetour,
                 sortByPropertyName);
         } catch(InvalidCriterionValueException invalidCriterionValueException) {
-            throw new InvalidCriterionValueException("La valeur de la date de retour a rechercher ne peut être null",
+            throw new DAOException("La valeur de la date de retour a rechercher ne peut être null",
                 invalidCriterionValueException);
         }
 
