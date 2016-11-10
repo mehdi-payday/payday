@@ -36,10 +36,9 @@ import org.hibernate.Session;
  * Service de la table <code>pret</code>.
  *
  * @author Team PayDay
+ * @SuppressWarnings({"checkstyle:ClassFanOutComplexity"})
  */
 public class PretService extends Service implements IPretService {
-    private PretDAO pretDAO;
-
     private MembreDAO membreDAO;
 
     private LivreDAO livreDAO;
@@ -85,7 +84,7 @@ public class PretService extends Service implements IPretService {
      * @return La variable d'instance <code>this.pretDAO</code>
      */
     private PretDAO getPretDAO() {
-        return this.pretDAO;
+        return (PretDAO) getDAO();
     }
 
     /**
