@@ -5,8 +5,8 @@
 package ca.qc.collegeahuntsic.bibliotheque.service.implementations;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
-import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.ReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.ILivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IMembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IPretDAO;
@@ -16,14 +16,9 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOClassException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dto.MissingDTOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingLoanException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingReservationException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.InvalidDAOException;
@@ -39,8 +34,6 @@ import org.hibernate.Session;
  * @author Team PayDay
  */
 public class ReservationService extends Service implements IReservationService {
-
-    private ILivreDAO livreDAO;
 
     private IMembreDAO membreDAO;
 
@@ -72,30 +65,11 @@ public class ReservationService extends Service implements IReservationService {
         if(reservationDAO == null) {
             throw new InvalidDAOException("Le DAO de réservation ne peut être null");
         }
-        setLivreDAO(livreDAO);
         setMembreDAO(membreDAO);
         setPretDAO(pretDAO);
     }
 
-    // Region Getters and Setters
-    /**
-     * Getter de la variable d'instance <code>this.livreDAO</code>.
-     *
-     * @return La variable d'instance <code>this.livreDAO</code>
-     */
-    private ILivreDAO getLivreDAO() {
-        return this.livreDAO;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.livreDAO</code>.
-     *
-     * @param livreDAO La valeur à utiliser pour la variable d'instance <code>this.livreDAO</code>
-     */
-    private void setLivreDAO(final ILivreDAO livreDAO) {
-        this.livreDAO = livreDAO;
-    }
-
+    //Region Getters and Setters
     /**
      * Getter de la variable d'instance <code>this.membreDAO</code>.
      *
@@ -141,34 +115,24 @@ public class ReservationService extends Service implements IReservationService {
     public void placer(final Session session,
         final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidPrimaryKeyException,
-        MissingDTOException,
-        InvalidCriterionException,
-        InvalidSortByPropertyException,
         MissingLoanException,
         ExistingLoanException,
         ExistingReservationException,
-        InvalidDTOClassException,
-        ServiceException,
-        InvalidCriterionValueException {
+        ServiceException {
         try {
-            final MembreDTO unMembreDTO = (MembreDTO) getMembreDAO().get(session,
-                reservationDTO.getMembreDTO().getIdMembre());
+            final MembreDTO unMembreDTO = reservationDTO.getMembreDTO();
             if(unMembreDTO == null) {
-                throw new MissingDTOException("Le membre "
+                throw new InvalidDTOException("Le membre "
                     + reservationDTO.getMembreDTO().getIdMembre()
                     + " n'existe pas");
             }
-            final LivreDTO unLivreDTO = (LivreDTO) getLivreDAO().get(session,
-                reservationDTO.getLivreDTO().getIdLivre());
+            final LivreDTO unLivreDTO = reservationDTO.getLivreDTO();
             if(unLivreDTO == null) {
-                throw new MissingDTOException("Le livre "
+                throw new InvalidDTOException("Le livre "
                     + reservationDTO.getLivreDTO().getIdLivre()
                     + " n'existe pas");
             }
-            final List<PretDTO> pret = getPretDAO().findByLivre(session,
-                unLivreDTO.getIdLivre(),
-                PretDTO.ID_LIVRE_COLUMN_NAME);
+            final List<PretDTO> pret = new ArrayList<>(unLivreDTO.getPrets());
             if(pret.isEmpty()) {
                 throw new MissingLoanException("Le livre "
                     + unLivreDTO.getTitre()
@@ -189,9 +153,7 @@ public class ReservationService extends Service implements IReservationService {
                     + emprunteur.getIdMembre()
                     + ")");
             }
-            final List<ReservationDTO> reservations = ((ReservationDAO) getDao()).findByMembre(session,
-                unMembreDTO.getIdMembre(),
-                PretDTO.ID_MEMBRE_COLUMN_NAME);
+            final List<ReservationDTO> reservations = new ArrayList<>(unMembreDTO.getReservations());
             for(ReservationDTO uneAutreReservationDTO : reservations) {
                 if(uneAutreReservationDTO.getLivreDTO().getIdLivre() == unLivreDTO.getIdLivre()) {
                     throw new ExistingReservationException("Le livre "
@@ -210,6 +172,8 @@ public class ReservationService extends Service implements IReservationService {
                 reservationDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
+        } catch(InvalidPrimaryKeyException exception) {
+            throw new ServiceException(exception);
         }
 
     }
@@ -221,16 +185,10 @@ public class ReservationService extends Service implements IReservationService {
     public void utiliser(final Session session,
         final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidPrimaryKeyException,
-        MissingDTOException,
-        InvalidCriterionException,
-        InvalidSortByPropertyException,
         ExistingReservationException,
         ExistingLoanException,
         InvalidLoanLimitException,
-        InvalidDTOClassException,
-        ServiceException,
-        InvalidCriterionValueException {
+        ServiceException {
         try {
             final ReservationDTO uneReservationDTO = (ReservationDTO) get(session,
                 reservationDTO.getIdReservation());
@@ -239,18 +197,13 @@ public class ReservationService extends Service implements IReservationService {
                     + reservationDTO.getIdReservation()
                     + " n'existe pas");
             }
-            final LivreDTO unLivreDTO = (LivreDTO) getLivreDAO().get(session,
-                uneReservationDTO.getLivreDTO().getIdLivre());
-            final MembreDTO unMembreDTO = (MembreDTO) getMembreDAO().get(session,
-                uneReservationDTO.getMembreDTO().getIdMembre());
-            final List<ReservationDTO> reservationsTrouvees = ((ReservationDAO) getDao()).findByLivre(session,
-                unLivreDTO.getIdLivre(),
-                ReservationDTO.DATE_RESERVATION_COLUMN_NAME);
+            final LivreDTO unLivreDTO = uneReservationDTO.getLivreDTO();
+            final MembreDTO unMembreDTO = uneReservationDTO.getMembreDTO();
+            final List<ReservationDTO> reservationsTrouvees = new ArrayList<>(unLivreDTO.getReservations());
             if(!reservationsTrouvees.isEmpty()) {
                 final ReservationDTO premiereReservationDTO = reservationsTrouvees.get(0);
                 if(!premiereReservationDTO.equals(uneReservationDTO)) {
-                    final MembreDTO booker = (MembreDTO) getMembreDAO().get(session,
-                        premiereReservationDTO.getMembreDTO().getIdMembre());
+                    final MembreDTO booker = premiereReservationDTO.getMembreDTO();
                     throw new ExistingReservationException("Le livre "
                         + unLivreDTO.getTitre()
                         + "(ID de livre : "
@@ -262,16 +215,12 @@ public class ReservationService extends Service implements IReservationService {
                         + ")");
                 }
             }
-            if(!getPretDAO().findByLivre(session,
-                unLivreDTO.getIdLivre(),
-                PretDTO.ID_LIVRE_COLUMN_NAME).isEmpty()) {
+            if(!unLivreDTO.getPrets().isEmpty()) {
                 throw new ExistingReservationException("ID de livre : "
                     + unLivreDTO.getIdLivre()
                     + " est deja prêté");
             }
-            if(getPretDAO().findByMembre(session,
-                unMembreDTO.getIdMembre(),
-                PretDTO.ID_MEMBRE_COLUMN_NAME).size() == Integer.parseInt(unMembreDTO.getLimitePret())) {
+            if(unMembreDTO.getPrets().size() == Integer.parseInt(unMembreDTO.getLimitePret())) {
                 throw new InvalidLoanLimitException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
@@ -291,6 +240,8 @@ public class ReservationService extends Service implements IReservationService {
                 newPretDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
+        } catch(InvalidPrimaryKeyException exception) {
+            throw new ServiceException(exception);
         }
 
     }
@@ -302,20 +253,22 @@ public class ReservationService extends Service implements IReservationService {
     public void annuler(final Session session,
         final ReservationDTO reservationDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidPrimaryKeyException,
-        MissingDTOException,
-        InvalidDTOClassException,
         ServiceException {
 
-        final ReservationDTO uneReservationDTO = (ReservationDTO) get(session,
-            reservationDTO.getIdReservation());
-        if(uneReservationDTO == null) {
-            throw new ServiceException("La réservation "
-                + reservationDTO.getIdReservation()
-                + " n'existe pas");
+        final ReservationDTO uneReservationDTO;
+        try {
+            uneReservationDTO = (ReservationDTO) get(session,
+                reservationDTO.getIdReservation());
+            if(uneReservationDTO == null) {
+                throw new ServiceException("La réservation "
+                    + reservationDTO.getIdReservation()
+                    + " n'existe pas");
+            }
+            delete(session,
+                uneReservationDTO);
+        } catch(InvalidPrimaryKeyException exception) {
+            throw new ServiceException(exception);
         }
-        delete(session,
-            uneReservationDTO);
 
     }
 }
