@@ -5,14 +5,8 @@
 package ca.qc.collegeahuntsic.bibliotheque.facade.implementations;
 
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOClassException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dto.MissingDTOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.facade.FacadeException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.facade.InvalidServiceException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingLoanException;
@@ -37,7 +31,7 @@ public class MembreFacade extends Facade implements IMembreFacade {
      * @throws InvalidServiceException Si le service de membres est null
      */
     public MembreFacade(final IMembreService membreService) throws InvalidServiceException {
-        super();
+        super(membreService);
         if(membreService == null) {
             throw new InvalidServiceException("Le service de membres ne peut être null");
         }
@@ -51,13 +45,7 @@ public class MembreFacade extends Facade implements IMembreFacade {
     public void desinscrire(final Session session,
         final MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidDTOClassException,
-        InvalidPrimaryKeyException,
-        MissingDTOException,
         ExistingLoanException,
-        InvalidCriterionException,
-        InvalidCriterionValueException,
-        InvalidSortByPropertyException,
         ExistingReservationException,
         FacadeException {
         try {
@@ -76,7 +64,6 @@ public class MembreFacade extends Facade implements IMembreFacade {
     public void inscrire(final Session session,
         final MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidDTOClassException,
         FacadeException {
         try {
             getMembreService().inscrire(session,
