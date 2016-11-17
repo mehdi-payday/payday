@@ -169,23 +169,16 @@ public class MembreService extends Service implements IMembreService {
         }
 
         try {
-            final MembreDTO unMembreDTO = (MembreDTO) get(session,
-                membreDTO.getIdMembre());
-            if(unMembreDTO == null) {
-                throw new ServiceException("Le membre "
-                    + membreDTO.getIdMembre()
-                    + " n'existe pas");
-            }
-            final ArrayList<ReservationDTO> reservations = new ArrayList<>(unMembreDTO.getReservations());
+            final ArrayList<ReservationDTO> reservations = new ArrayList<>(membreDTO.getReservations());
             if(!reservations.isEmpty()) {
                 throw new ExistingReservationException("Le membre "
-                    + unMembreDTO.getNom()
+                    + membreDTO.getNom()
                     + " (ID de membre : "
-                    + unMembreDTO.getIdMembre()
+                    + membreDTO.getIdMembre()
                     + ") a des réservations");
             }
             delete(session,
-                unMembreDTO);
+                membreDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
