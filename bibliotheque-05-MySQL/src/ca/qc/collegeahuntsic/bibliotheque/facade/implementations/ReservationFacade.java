@@ -24,8 +24,6 @@ import org.hibernate.Session;
  * @author Team PayDay
  */
 public class ReservationFacade extends Facade implements IReservationFacade {
-    private IReservationService reservationService;
-
     /**
      * Crée la façade de la table <code>reservation</code>.
      *
@@ -33,32 +31,11 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * @throws InvalidServiceException Si le service de réservations est <code>null</code>
      */
     ReservationFacade(final IReservationService reservationService) throws InvalidServiceException {
-        super();
+        super(reservationService);
         if(reservationService == null) {
             throw new InvalidServiceException("Le service de livres ne peut être null");
         }
-        setReservationService(reservationService);
     }
-
-    // Region Getters and Setters
-    /**
-     * Getter de la variable d'instance <code>this.reservationService</code>.
-     *
-     * @return La variable d'instance <code>this.reservationService</code>
-     */
-    private IReservationService getReservationService() {
-        return this.reservationService;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.reservationService</code>.
-     *
-     * @param reservationService La valeur à utiliser pour la variable d'instance <code>this.reservationService</code>
-     */
-    private void setReservationService(final IReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
-    // EndRegion Getters and Setters
 
     /**
      * {@inheritDoc}
@@ -72,7 +49,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
         ExistingReservationException,
         FacadeException {
         try {
-            getReservationService().placer(session,
+            ((IReservationService) getService()).placer(session,
                 reservationDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
@@ -91,7 +68,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
         InvalidLoanLimitException,
         FacadeException {
         try {
-            getReservationService().utiliser(session,
+            ((IReservationService) getService()).utiliser(session,
                 reservationDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
@@ -107,7 +84,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
         InvalidDTOException,
         FacadeException {
         try {
-            getReservationService().annuler(session,
+            ((IReservationService) getService()).annuler(session,
                 reservationDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);

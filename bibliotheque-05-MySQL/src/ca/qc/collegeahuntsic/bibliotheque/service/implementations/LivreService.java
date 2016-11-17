@@ -6,6 +6,7 @@ package ca.qc.collegeahuntsic.bibliotheque.service.implementations;
 
 import java.util.ArrayList;
 import java.util.List;
+import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.LivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.ILivreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
@@ -30,8 +31,6 @@ import org.hibernate.Session;
  * @author Team PayDay
  */
 public class LivreService extends Service implements ILivreService {
-    private ILivreDAO livreDAO;
-
     /**
      * Crée le service de la table <code>livre</code>.
      *
@@ -44,28 +43,7 @@ public class LivreService extends Service implements ILivreService {
         if(livreDAO == null) {
             throw new InvalidDAOException("Le DAO de livre ne peut être null");
         }
-        setLivreDAO(livreDAO);
     }
-
-    // Region Getters and Setters
-    /**
-     * Getter de la variable d'instance <code>this.livreDAO</code>.
-     *
-     * @return La variable d'instance <code>this.livreDAO</code>
-     */
-    private ILivreDAO getLivreDAO() {
-        return this.livreDAO;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.livreDAO</code>.
-     *
-     * @param livreDAO La valeur à utiliser pour la variable d'instance <code>this.livreDAO</code>
-     */
-    private void setLivreDAO(ILivreDAO livreDAO) {
-        this.livreDAO = livreDAO;
-    }
-    // EndRegion Getters and Setters
 
     /**
      * {@inheritDoc}
@@ -79,7 +57,7 @@ public class LivreService extends Service implements ILivreService {
         InvalidSortByPropertyException,
         ServiceException {
         try {
-            return getLivreDAO().findByTitre(session,
+            return ((LivreDAO) getDao()).findByTitre(session,
                 titre,
                 sortByPropertyName);
         } catch(DAOException daoException) {
