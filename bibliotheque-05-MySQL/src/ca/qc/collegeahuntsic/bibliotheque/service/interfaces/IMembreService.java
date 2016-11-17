@@ -9,11 +9,8 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOClassException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dto.MissingDTOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingLoanException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingReservationException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException;
@@ -55,13 +52,11 @@ public interface IMembreService extends IService {
      * @param membreDTO Le membre à inscrire
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidDTOException Si le membre est null
-     * @throws InvalidDTOClassException Si la classe du membre n'est pas celle que prend en charge le DAO
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
     void inscrire(Session session,
         MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidDTOClassException,
         ServiceException;
 
     /**
@@ -71,9 +66,6 @@ public interface IMembreService extends IService {
      * @param membreDTO Le membre à désinscrire
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidDTOException Si le livre est null
-     * @throws InvalidDTOClassException Si la classe du membre n'est pas celle que prend en charge le DAO
-     * @throws InvalidPrimaryKeyException Si la clef primaire du membre est null
-     * @throws MissingDTOException Si le membre n'existe pas
      * @throws ExistingLoanException Si le membre a encore des prêts
      * @throws InvalidCriterionException Si l'ID du membre est null
      * @throws InvalidCriterionValueException Si la valeur à trouver est null
@@ -84,13 +76,7 @@ public interface IMembreService extends IService {
     void desinscrire(Session session,
         MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidDTOClassException,
-        InvalidPrimaryKeyException,
-        MissingDTOException,
         ExistingLoanException,
-        InvalidCriterionException,
-        InvalidCriterionValueException,
-        InvalidSortByPropertyException,
         ExistingReservationException,
         ServiceException;
 }

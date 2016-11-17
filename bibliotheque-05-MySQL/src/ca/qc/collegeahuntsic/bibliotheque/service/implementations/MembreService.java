@@ -4,6 +4,7 @@
 
 package ca.qc.collegeahuntsic.bibliotheque.service.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.MembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.PretDAO;
@@ -12,15 +13,13 @@ import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IMembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IPretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionValueException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidSortByPropertyException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOClassException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dto.MissingDTOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingLoanException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingReservationException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.InvalidDAOException;
@@ -35,8 +34,6 @@ import org.hibernate.Session;
  */
 public class MembreService extends Service implements IMembreService {
     private IMembreDAO membreDAO;
-
-    private IReservationDAO reservationDAO;
 
     private IPretDAO pretDAO;
 
@@ -86,21 +83,11 @@ public class MembreService extends Service implements IMembreService {
     }
 
     /**
-     * Getter de la variable d'instance <code>this.reservationDAO</code>.
-     *
-     * @return La variable d'instance <code>this.reservationDAO</code>
-     */
-    private IReservationDAO getReservationDAO() {
-        return this.reservationDAO;
-    }
-
-    /**
      * Setter de la variable d'instance <code>this.reservationDAO</code>.
      *
      * @param reservationDAO La valeur à utiliser pour la variable d'instance <code>this.reservationDAO</code>
      */
     private void setReservationDAO(IReservationDAO reservationDAO) {
-        this.reservationDAO = reservationDAO;
     }
 
     /**
@@ -150,7 +137,6 @@ public class MembreService extends Service implements IMembreService {
     public void inscrire(Session session,
         MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidDTOClassException,
         ServiceException {
 
         if(session == null) {
@@ -171,13 +157,7 @@ public class MembreService extends Service implements IMembreService {
     public void desinscrire(Session session,
         MembreDTO membreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
-        InvalidDTOClassException,
-        InvalidPrimaryKeyException,
-        MissingDTOException,
         ExistingLoanException,
-        InvalidCriterionException,
-        InvalidCriterionValueException,
-        InvalidSortByPropertyException,
         ExistingReservationException,
         ServiceException {
 
@@ -196,9 +176,8 @@ public class MembreService extends Service implements IMembreService {
                     + membreDTO.getIdMembre()
                     + " n'existe pas");
             }
-            if(!getReservationDAO().findByMembre(session,
-                unMembreDTO.getIdMembre(),
-                MembreDTO.NOM_COLUMN_NAME).isEmpty()) {
+            final ArrayList<ReservationDTO> reservations = new ArrayList<>(unMembreDTO.getReservations());
+            if(!reservations.isEmpty()) {
                 throw new ExistingReservationException("Le membre "
                     + unMembreDTO.getNom()
                     + " (ID de membre : "
