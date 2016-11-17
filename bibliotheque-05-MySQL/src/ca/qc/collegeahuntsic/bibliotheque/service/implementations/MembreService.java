@@ -9,9 +9,6 @@ import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.MembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.PretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.ReservationDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IMembreDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IPretDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
@@ -33,10 +30,6 @@ import org.hibernate.Session;
  * @author Team PayDay
  */
 public class MembreService extends Service implements IMembreService {
-    private IMembreDAO membreDAO;
-
-    private IPretDAO pretDAO;
-
     /**
      * Crée le service de la table <code>membre</code>.
      *
@@ -58,55 +51,10 @@ public class MembreService extends Service implements IMembreService {
         if(reservationDAO == null) {
             throw new InvalidDAOException("Le DAO de réservation ne peut être null");
         }
-        setMembreDAO(membreDAO);
-        setReservationDAO(reservationDAO);
-        setPretDAO(pretDAO);
+
     }
 
     // Region Getters and Setters
-    /**
-     * Getter de la variable d'instance <code>this.membreDAO</code>.
-     *
-     * @return La variable d'instance <code>this.membreDAO</code>
-     */
-    private IMembreDAO getMembreDAO() {
-        return this.membreDAO;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.membreDAO</code>.
-     *
-     * @param membreDAO La valeur à utiliser pour la variable d'instance <code>this.membreDAO</code>
-     */
-    private void setMembreDAO(IMembreDAO membreDAO) {
-        this.membreDAO = membreDAO;
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.reservationDAO</code>.
-     *
-     * @param reservationDAO La valeur à utiliser pour la variable d'instance <code>this.reservationDAO</code>
-     */
-    private void setReservationDAO(IReservationDAO reservationDAO) {
-    }
-
-    /**
-     * Setter de la variable d'instance <code>this.pretDAO</code>.
-     *
-     * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
-     */
-    private void setPretDAO(IPretDAO pretDAO) {
-        this.pretDAO = pretDAO;
-    }
-
-    /**
-     * Getter de la variable d'instance <code>this.pretDAO</code>.
-     *
-     * @return La variable d'instance <code>this.pretDAO</code>
-     */
-    public IPretDAO getPretDAO() {
-        return this.pretDAO;
-    }
 
     // EndRegion Getters and Setters
 
@@ -122,7 +70,7 @@ public class MembreService extends Service implements IMembreService {
         InvalidSortByPropertyException,
         ServiceException {
         try {
-            return getMembreDAO().findByNom(session,
+            return ((MembreDAO) getDao()).findByNom(session,
                 nom,
                 sortByPropertyName);
         } catch(DAOException daoException) {
@@ -168,19 +116,16 @@ public class MembreService extends Service implements IMembreService {
             throw new InvalidDTOException("Le DTO ne peut être null");
         }
 
-        try {
-            final ArrayList<ReservationDTO> reservations = new ArrayList<>(membreDTO.getReservations());
-            if(!reservations.isEmpty()) {
-                throw new ExistingReservationException("Le membre "
-                    + membreDTO.getNom()
-                    + " (ID de membre : "
-                    + membreDTO.getIdMembre()
-                    + ") a des réservations");
-            }
-            delete(session,
-                membreDTO);
-        } catch(DAOException daoException) {
-            throw new ServiceException(daoException);
+        final ArrayList<ReservationDTO> reservations = new ArrayList<>(membreDTO.getReservations());
+        if(!reservations.isEmpty()) {
+            throw new ExistingReservationException("Le membre "
+                + membreDTO.getNom()
+                + " (ID de membre : "
+                + membreDTO.getIdMembre()
+                + ") a des réservations");
         }
+        delete(session,
+            membreDTO);
+
     }
 }
