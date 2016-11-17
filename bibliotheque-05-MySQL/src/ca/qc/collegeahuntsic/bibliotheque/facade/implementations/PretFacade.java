@@ -23,8 +23,7 @@ import org.hibernate.Session;
  *
  * @author Adam Cherti
  */
-public class PretFacade implements IPretFacade {
-    private IPretService pretService;
+public class PretFacade extends Facade implements IPretFacade {
 
     /**
      *
@@ -34,10 +33,8 @@ public class PretFacade implements IPretFacade {
      * @throws InvalidServiceException Si le service de prêts est null
      */
     public PretFacade(IPretService pretService) throws InvalidServiceException {
-        if(pretService == null) {
-            throw new InvalidServiceException();
-        }
-        this.pretService = pretService;
+        super(pretService);
+
     }
 
     /**
@@ -52,7 +49,7 @@ public class PretFacade implements IPretFacade {
         ExistingReservationException,
         FacadeException {
         try {
-            this.pretService.commencer(session,
+            ((IPretService) getService()).commencer(session,
                 pretDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
@@ -70,7 +67,7 @@ public class PretFacade implements IPretFacade {
         ExistingReservationException,
         FacadeException {
         try {
-            this.pretService.renouveler(session,
+            ((IPretService) getService()).renouveler(session,
                 pretDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
@@ -87,7 +84,7 @@ public class PretFacade implements IPretFacade {
         MissingLoanException,
         FacadeException {
         try {
-            this.pretService.terminer(session,
+            ((IPretService) getService()).terminer(session,
                 pretDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
