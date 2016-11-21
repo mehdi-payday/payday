@@ -11,7 +11,6 @@ import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.StringTokenizer;
-import ca.qc.collegeahuntsic.bibliotheque.db.Connexion;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
@@ -72,9 +71,8 @@ public final class Bibliotheque {
      */
     public static void main(final String[] arguments) throws Exception {
         // Validation du nombre de paramètres
-        if(arguments.length < 5) {
-            System.out.println("Usage: java Bibliotheque <serveur> <bd> <user> <password> <fichier-transactions>");
-            System.out.println(Connexion.getServeursSupportes());
+        if(arguments.length < 1) {
+            System.out.println("Usage: java Bibliotheque  <fichier-transactions>");
             return;
         }
 
@@ -85,14 +83,11 @@ public final class Bibliotheque {
             try(
                 BufferedReader reader = new BufferedReader(new InputStreamReader(sourceTransaction))) {
 
-                Bibliotheque.gestionnaireBibliotheque = new BibliothequeCreateur(arguments[0],
-                    arguments[1],
-                    arguments[2],
-                    arguments[3]);
+                Bibliotheque.gestionnaireBibliotheque = new BibliothequeCreateur();
                 Bibliotheque.traiterTransactions(reader);
             }
         } catch(Exception exception) {
-            Bibliotheque.gestionnaireBibliotheque.rollback();
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
             exception.printStackTrace(System.out);
         } finally {
             Bibliotheque.gestionnaireBibliotheque.close();
@@ -145,101 +140,47 @@ public final class Bibliotheque {
     private static void executerTransaction(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
             final String command = tokenizer.nextToken();
-            if("aide".equals(command)) {
-                Bibliotheque.afficherAide();
-            } else if("acquerir".equals(command)) {
-                final LivreDTO livreDTO = new LivreDTO();
-                livreDTO.setTitre(Bibliotheque.readString(tokenizer));
-                livreDTO.setAuteur(Bibliotheque.readString(tokenizer));
-                livreDTO.setDateAcquisition(Bibliotheque.readDate(tokenizer));
-                Bibliotheque.gestionnaireBibliotheque.getLivreFacade().acquerir(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    livreDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("vendre".equals(command)) {
-                final LivreDTO livreDTO = new LivreDTO();
-                livreDTO.setIdLivre(Bibliotheque.readString(tokenizer));
-                Bibliotheque.gestionnaireBibliotheque.getLivreFacade().vendre(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    livreDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("preter".equals(command)) {
-                final MembreDTO membreDTO = new MembreDTO();
-                membreDTO.setIdMembre(Bibliotheque.readString(tokenizer));
-                final LivreDTO livreDTO = new LivreDTO();
-                livreDTO.setIdLivre(Bibliotheque.readString(tokenizer));
-                final PretDTO pretDTO = new PretDTO();
-                pretDTO.setMembreDTO(membreDTO);
-                pretDTO.setLivreDTO(livreDTO);
-                Bibliotheque.gestionnaireBibliotheque.getPretFacade().commencer(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    pretDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("renouveler".equals(command)) {
-                final PretDTO pretDTO = new PretDTO();
-                pretDTO.setIdPret(Bibliotheque.readString(tokenizer));
 
-                Bibliotheque.gestionnaireBibliotheque.getPretFacade().renouveler(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    pretDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("retourner".equals(command)) {
-                final PretDTO pretDTO = new PretDTO();
-                pretDTO.setIdPret(Bibliotheque.readString(tokenizer));
-
-                Bibliotheque.gestionnaireBibliotheque.getPretFacade().terminer(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    pretDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("inscrire".equals(command)) {
-                final MembreDTO membreDTO = new MembreDTO();
-                membreDTO.setNom(Bibliotheque.readString(tokenizer));
-                membreDTO.setTelephone(Bibliotheque.readString(tokenizer));
-                membreDTO.setLimitePret(Bibliotheque.readString(tokenizer));
-                Bibliotheque.gestionnaireBibliotheque.getMembreFacade().inscrire(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    membreDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("desinscrire".equals(command)) {
-                final MembreDTO membreDTO = new MembreDTO();
-                membreDTO.setIdMembre(Bibliotheque.readString(tokenizer));
-                Bibliotheque.gestionnaireBibliotheque.getMembreFacade().desinscrire(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    membreDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("reserver".equals(command)) {
-                // Juste pour éviter deux timestamps de réservation strictement identiques
-                Thread.sleep(1);
-                final ReservationDTO reservationDTO = new ReservationDTO();
-                if(reservationDTO.getMembreDTO() == null) {
-                    reservationDTO.setMembreDTO(new MembreDTO());
-                }
-                if(reservationDTO.getLivreDTO() == null) {
-                    reservationDTO.setLivreDTO(new LivreDTO());
-                }
-                reservationDTO.getMembreDTO().setIdMembre(Bibliotheque.readString(tokenizer));
-                reservationDTO.getLivreDTO().setIdLivre(Bibliotheque.readString(tokenizer));
-                final MembreDTO membreDTO = new MembreDTO();
-                membreDTO.setIdMembre(reservationDTO.getMembreDTO().getIdMembre());
-                final LivreDTO livreDTO = new LivreDTO();
-                livreDTO.setIdLivre(reservationDTO.getLivreDTO().getIdLivre());
-                Bibliotheque.gestionnaireBibliotheque.getReservationFacade().placer(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    reservationDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("utiliser".equals(command)) {
-                final ReservationDTO reservationDTO = new ReservationDTO();
-                reservationDTO.setIdReservation(Bibliotheque.readString(tokenizer));
-                Bibliotheque.gestionnaireBibliotheque.getReservationFacade().utiliser(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    reservationDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-            } else if("annuler".equals(command)) {
-                final ReservationDTO reservationDTO = new ReservationDTO();
-                reservationDTO.setIdReservation(Bibliotheque.readString(tokenizer));
-                Bibliotheque.gestionnaireBibliotheque.getReservationFacade().annuler(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-                    reservationDTO);
-                Bibliotheque.gestionnaireBibliotheque.commit();
-                // } else if("listerLivres".equals(command)) {
-                //     Bibliotheque.gestionBibliothque.livreDAO.listerLivres();
-                // } else if("listerLivresRetard".equals(command)) {
-                //     Bibliotheque.gestionBibliothque.livreDAO.listerLivresRetard(readString(tokenizer) /* date courante */);
-                // } else if("listerLivresTitre".equals(command)) {
-                //     Bibliotheque.gestionBibliothque.livreDAO.listerLivresTitre(readString(tokenizer) /* mot */);
-            } else if(!"--".equals(command)) {
-                System.out.println("  Transactions non reconnue.  Essayer \"aide\"");
+            switch(command) {
+                case "aide":
+                    Bibliotheque.afficherAide();
+                    break;
+                case "inscrire":
+                    Bibliotheque.inscrireMembre(tokenizer);
+                    break;
+                case "desinscrire":
+                    Bibliotheque.desinscrireMembre(tokenizer);
+                    break;
+                case "acquerir":
+                    Bibliotheque.acquerirLivre(tokenizer);
+                    break;
+                case "vendre":
+                    Bibliotheque.vendreLivre(tokenizer);
+                    break;
+                case "preter":
+                    Bibliotheque.preterLivre(tokenizer);
+                    break;
+                case "renouveller":
+                    Bibliotheque.renouvelerPret(tokenizer);
+                    break;
+                case "retourner":
+                    Bibliotheque.terminerPret(tokenizer);
+                    break;
+                case "reserver":
+                    Bibliotheque.placerReservation(tokenizer);
+                    break;
+                case "utiliser":
+                    Bibliotheque.utiliserReservation(tokenizer);
+                    break;
+                case "annuler":
+                    Bibliotheque.annulerReservation(tokenizer);
+                    break;
+                case "--":
+                    break;
+                default:
+                    System.out.println("  Transactions non reconnue.  Essayer \"aide\"");
             }
+
         } catch(InterruptedException interruptedException) {
             System.out.println("** "
                 + interruptedException.toString());
@@ -260,7 +201,7 @@ public final class Bibliotheque {
             | MissingLoanException exception) {
             System.out.println("** "
                 + exception.getMessage());
-            Bibliotheque.gestionnaireBibliotheque.rollback();
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
         }
     }
 
@@ -268,6 +209,7 @@ public final class Bibliotheque {
      * Affiche le menu des transactions acceptées par le système.
      */
     private static void afficherAide() {
+
         System.out.println();
         System.out.println("Chaque transaction comporte un nom et une liste d'arguments");
         System.out.println("séparés par des espaces. La liste peut être vide.");
@@ -287,6 +229,131 @@ public final class Bibliotheque {
         // System.out.println("  listerLivresRetard <dateCourante>");
         // System.out.println("  listerLivresTitre <mot>");
         // System.out.println("  listerLivres");
+    }
+
+    /**
+     *
+     * TODO Auto-generated method javadoc.
+     *
+     * @param tokenizer le tokenizer de la commande
+     * @throws BibliothequeException TODO
+     */
+    private static void inscrireMembre(final StringTokenizer tokenizer) throws BibliothequeException {
+        try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
+            final MembreDTO membreDTO = new MembreDTO();
+            membreDTO.setNom(Bibliotheque.readString(tokenizer));
+            membreDTO.setTelephone(Bibliotheque.readString(tokenizer));
+            membreDTO.setLimitePret(Bibliotheque.readString(tokenizer));
+            Bibliotheque.gestionnaireBibliotheque.getMembreFacade().inscrire(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                membreDTO);
+            Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+        } catch(
+            InvalidHibernateSessionException
+            | InvalidDTOException
+            | FacadeException exception) {
+            // TODO Auto-generated catch block
+            throw new BibliothequeException(exception);
+        }
+
+    }
+
+    private static void desinscrireMembre(final StringTokenizer tokenizer) throws BibliothequeException {
+        try {
+            final MembreDTO membreDTO = new MembreDTO();
+            membreDTO.setIdMembre(Bibliotheque.readString(tokenizer));
+            Bibliotheque.gestionnaireBibliotheque.getMembreFacade().desinscrire(Bibliotheque.gestionnaireBibliotheque.getSession()
+                membreDTO);
+            Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+        }catch(){
+
+        }
+    }
+
+    private static void acquerirLivre(final StringTokenizer tokenizer) throws BibliothequeException {
+        final LivreDTO livreDTO = new LivreDTO();
+        livreDTO.setTitre(Bibliotheque.readString(tokenizer));
+        livreDTO.setAuteur(Bibliotheque.readString(tokenizer));
+        livreDTO.setDateAcquisition(Bibliotheque.readDate(tokenizer));
+        Bibliotheque.gestionnaireBibliotheque.getLivreFacade().acquerir(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
+            livreDTO);
+        Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+    }
+
+    private static void vendreLivre(final StringTokenizer tokenizer) throws BibliothequeException {
+        final LivreDTO livreDTO = new LivreDTO();
+        livreDTO.setIdLivre(Bibliotheque.readString(tokenizer));
+        Bibliotheque.gestionnaireBibliotheque.getLivreFacade().vendre(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
+            livreDTO);
+        Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+    }
+
+    private static void preterLivre(final StringTokenizer tokenizer) throws BibliothequeException {
+        final MembreDTO membreDTO = new MembreDTO();
+        membreDTO.setIdMembre(Bibliotheque.readString(tokenizer));
+        final LivreDTO livreDTO = new LivreDTO();
+        livreDTO.setIdLivre(Bibliotheque.readString(tokenizer));
+        final PretDTO pretDTO = new PretDTO();
+        pretDTO.setMembreDTO(membreDTO);
+        pretDTO.setLivreDTO(livreDTO);
+        Bibliotheque.gestionnaireBibliotheque.getPretFacade().commencer(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
+            pretDTO);
+        Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+    }
+
+    public static void renouvelerPret(final StringTokenizer tokenizer) throws BibliothequeException {
+        final PretDTO pretDTO = new PretDTO();
+        pretDTO.setIdPret(Bibliotheque.readString(tokenizer));
+
+        Bibliotheque.gestionnaireBibliotheque.getPretFacade().renouveler(Bibliotheque.gestionnaireBibliotheque.getSession(),
+            pretDTO);
+        Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+    }
+
+    private static void terminerPret(final StringTokenizer tokenizer) throws BibliothequeException {
+        final PretDTO pretDTO = new PretDTO();
+        pretDTO.setIdPret(Bibliotheque.readString(tokenizer));
+
+        Bibliotheque.gestionnaireBibliotheque.getPretFacade().terminer(Bibliotheque.gestionnaireBibliotheque.getSession(),
+            pretDTO);
+        Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+    }
+
+    private static void placerReservation(final StringTokenizer tokenizer) throws BibliothequeException {
+        // Juste pour éviter deux timestamps de réservation strictement identiques
+        Thread.sleep(1);
+        final ReservationDTO reservationDTO = new ReservationDTO();
+        if(reservationDTO.getMembreDTO() == null) {
+            reservationDTO.setMembreDTO(new MembreDTO());
+        }
+        if(reservationDTO.getLivreDTO() == null) {
+            reservationDTO.setLivreDTO(new LivreDTO());
+        }
+        reservationDTO.getMembreDTO().setIdMembre(Bibliotheque.readString(tokenizer));
+        reservationDTO.getLivreDTO().setIdLivre(Bibliotheque.readString(tokenizer));
+        final MembreDTO membreDTO = new MembreDTO();
+        membreDTO.setIdMembre(reservationDTO.getMembreDTO().getIdMembre());
+        final LivreDTO livreDTO = new LivreDTO();
+        livreDTO.setIdLivre(reservationDTO.getLivreDTO().getIdLivre());
+        Bibliotheque.gestionnaireBibliotheque.getReservationFacade().placer(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
+            reservationDTO);
+        Bibliotheque.gestionnaireBibliotheque.commit();
+    }
+
+    private static void utiliserReservation(final StringTokenizer tokenizer) {
+        final ReservationDTO reservationDTO = new ReservationDTO();
+        reservationDTO.setIdReservation(Bibliotheque.readString(tokenizer));
+        Bibliotheque.gestionnaireBibliotheque.getReservationFacade().utiliser(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
+            reservationDTO);
+        Bibliotheque.gestionnaireBibliotheque.commit();
+    }
+
+    public static void annulerReservation(final StringTokenizer tokenizer) {
+        final ReservationDTO reservationDTO = new ReservationDTO();
+        reservationDTO.setIdReservation(Bibliotheque.readString(tokenizer));
+        Bibliotheque.gestionnaireBibliotheque.getReservationFacade().annuler(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
+            reservationDTO);
+        Bibliotheque.gestionnaireBibliotheque.commit();
     }
 
     /**
