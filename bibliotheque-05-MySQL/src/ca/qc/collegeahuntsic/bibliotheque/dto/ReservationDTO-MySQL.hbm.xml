@@ -35,7 +35,8 @@
                       </column>
          </many-to-one>         
          <property name="dateReservation" type="java.sql.Timestamp">
-            <column name="DATERESERVATION" />
+            <column name="DATERESERVATION">
+            </column>
         </property>
   </class>
 </hibernate-mapping>
