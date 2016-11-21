@@ -1,5 +1,5 @@
 // Fichier BibliothequeCreateur.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
@@ -20,7 +20,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * Utilitaire de création des outils de la bibliothèque.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class BibliothequeCreateur {
     private static final String SPRING_CONFIGURATION_FILE_NAME = "applicationContext-MySQL.xml";
@@ -29,11 +29,11 @@ public class BibliothequeCreateur {
 
     private static final String LIVRE_FACADE_NAME = "livreFacade";
 
-    private static final String MEMBRE_FACADE_NAME = "membreFacade";
+    private static final String MEMBRE_FACADE_NAME = "livreFacade";
 
-    private static final String PRET_FACADE_NAME = "pretFacade";
+    private static final String PRET_FACADE_NAME = "livreFacade";
 
-    private static final String RESERVATION_FACADE_NAME = "reservationFacade";
+    private static final String RESERVATION_FACADE_NAME = "livreFacade";
 
     private static final ApplicationContext APPLICATION_CONTEXT = new ClassPathXmlApplicationContext(BibliothequeCreateur.SPRING_CONFIGURATION_FILE_NAME);
 
@@ -60,13 +60,18 @@ public class BibliothequeCreateur {
         super();
         try {
             setSessionFactory((SessionFactory) BibliothequeCreateur.APPLICATION_CONTEXT.getBean(BibliothequeCreateur.SESSION_FACTORY_NAME));
-			// Récuppérer les facades
+            setLivreFacade((ILivreFacade) BibliothequeCreateur.APPLICATION_CONTEXT.getBean(BibliothequeCreateur.LIVRE_FACADE_NAME));
+            setMembreFacade((IMembreFacade) BibliothequeCreateur.APPLICATION_CONTEXT.getBean(BibliothequeCreateur.MEMBRE_FACADE_NAME));
+            setPretFacade((IPretFacade) BibliothequeCreateur.APPLICATION_CONTEXT.getBean(BibliothequeCreateur.PRET_FACADE_NAME));
+            setReservationFacade((IReservationFacade) BibliothequeCreateur.APPLICATION_CONTEXT.getBean(BibliothequeCreateur.RESERVATION_FACADE_NAME));
+
         } catch(BeansException beansException) {
             throw new BibliothequeException(beansException);
         }
     }
 
     // Region Getters and Setters
+
     /**
      * Getter de la variable d'instance <code>this.sessionFactory</code>.
      *
@@ -83,6 +88,33 @@ public class BibliothequeCreateur {
      */
     private void setSessionFactory(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.membreFacade</code>.
+     *
+     * @param membreFacade La valeur à utiliser pour la variable d'instance <code>this.membreFacade</code>
+     */
+    public void setMembreFacade(IMembreFacade membreFacade) {
+        this.membreFacade = membreFacade;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.pretFacade</code>.
+     *
+     * @param pretFacade La valeur à utiliser pour la variable d'instance <code>this.pretFacade</code>
+     */
+    public void setPretFacade(IPretFacade pretFacade) {
+        this.pretFacade = pretFacade;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.reservationFacade</code>.
+     *
+     * @param reservationFacade La valeur à utiliser pour la variable d'instance <code>this.reservationFacade</code>
+     */
+    public void setReservationFacade(IReservationFacade reservationFacade) {
+        this.reservationFacade = reservationFacade;
     }
 
     /**
@@ -131,15 +163,6 @@ public class BibliothequeCreateur {
     }
 
     /**
-     * Setter de la variable d'instance <code>this.membreFacade</code>.
-     *
-     * @param membreFacade La valeur à utiliser pour la variable d'instance <code>this.membreFacade</code>
-     */
-    private void setMembreFacade(IMembreFacade membreFacade) {
-        this.membreFacade = membreFacade;
-    }
-
-    /**
      * Getter de la variable d'instance <code>this.livreFacade</code>.
      *
      * @return La variable d'instance <code>this.livreFacade</code>
@@ -167,15 +190,6 @@ public class BibliothequeCreateur {
     }
 
     /**
-     * Setter de la variable d'instance <code>this.pretFacade</code>.
-     *
-     * @param pretFacade La valeur à utiliser pour la variable d'instance <code>this.pretFacade</code>
-     */
-    private void setPretFacade(IPretFacade pretFacade) {
-        this.pretFacade = pretFacade;
-    }
-
-    /**
      * Getter de la variable d'instance <code>this.reservationFacade</code>.
      *
      * @return La variable d'instance <code>this.reservationFacade</code>
@@ -183,16 +197,6 @@ public class BibliothequeCreateur {
     public IReservationFacade getReservationFacade() {
         return this.reservationFacade;
     }
-
-    /**
-     * Setter de la variable d'instance <code>this.reservationFacade</code>.
-     *
-     * @param reservationFacade La valeur à utiliser pour la variable d'instance <code>this.reservationFacade</code>
-     */
-    private void setReservationFacade(IReservationFacade reservationFacade) {
-        this.reservationFacade = reservationFacade;
-    }
-    // EndRegion Getters and Setters
 
     /**
      * Ouvre une session.
