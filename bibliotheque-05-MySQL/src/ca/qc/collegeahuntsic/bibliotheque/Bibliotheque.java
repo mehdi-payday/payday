@@ -158,7 +158,7 @@ public final class Bibliotheque {
                     Bibliotheque.vendreLivre(tokenizer);
                     break;
                 case "preter":
-                    Bibliotheque.preterLivre(tokenizer);
+                    Bibliotheque.commencerPret(tokenizer);
                     break;
                 case "renouveller":
                     Bibliotheque.renouvelerPret(tokenizer);
@@ -232,13 +232,12 @@ public final class Bibliotheque {
     }
 
     /**
+     * Inscrit un membre.
      *
-     * TODO Auto-generated method javadoc.
-     *
-     * @param tokenizer le tokenizer de la commande
-     * @throws BibliothequeException TODO
+     * @param tokenizer Le tokenizer à utiliser
+     * @throws BibliothequeException S'il y a une erreur
      */
-    private static void inscrireMembre(final StringTokenizer tokenizer) throws BibliothequeException {
+    private static void inscrireMembre(StringTokenizer tokenizer) throws BibliothequeException {
         try {
             Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final MembreDTO membreDTO = new MembreDTO();
@@ -252,21 +251,44 @@ public final class Bibliotheque {
             InvalidHibernateSessionException
             | InvalidDTOException
             | FacadeException exception) {
-            // TODO Auto-generated catch block
-            throw new BibliothequeException(exception);
+            System.out.println("**** "
+                + exception.getMessage());
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
         }
-
     }
 
+    /**
+     * Desinscrire un membre.
+     *
+     * @param tokenizer Le tokenizer à utiliser
+     * @throws BibliothequeException S'il y a une erreur
+     */
     private static void desinscrireMembre(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
-            final MembreDTO membreDTO = new MembreDTO();
-            membreDTO.setIdMembre(Bibliotheque.readString(tokenizer));
-            Bibliotheque.gestionnaireBibliotheque.getMembreFacade().desinscrire(Bibliotheque.gestionnaireBibliotheque.getSession()
+            final String idMembre = Bibliotheque.readString(tokenizer);
+            final MembreDTO membreDTO = (MembreDTO) Bibliotheque.gestionnaireBibliotheque.getMembreFacade().get(
+                Bibliotheque.gestionnaireBibliotheque.getSession(),
+                idMembre);
+            if(membreDTO == null) {
+                throw new MissingDTOException("Le membre "
+                    + idMembre
+                    + " n'existe pas");
+            }
+
+            Bibliotheque.gestionnaireBibliotheque.getMembreFacade().desinscrire(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 membreDTO);
             Bibliotheque.gestionnaireBibliotheque.commitTransaction();
-        }catch(){
-
+        } catch(
+            InvalidHibernateSessionException
+            | InvalidPrimaryKeyException
+            | InvalidDTOException
+            | FacadeException
+            | ExistingLoanException
+            | ExistingReservationException
+            | MissingDTOException exception) {
+            System.out.println("**** "
+                + exception.getMessage());
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
         }
     }
 
@@ -288,17 +310,52 @@ public final class Bibliotheque {
         Bibliotheque.gestionnaireBibliotheque.commitTransaction();
     }
 
-    private static void preterLivre(final StringTokenizer tokenizer) throws BibliothequeException {
-        final MembreDTO membreDTO = new MembreDTO();
-        membreDTO.setIdMembre(Bibliotheque.readString(tokenizer));
-        final LivreDTO livreDTO = new LivreDTO();
-        livreDTO.setIdLivre(Bibliotheque.readString(tokenizer));
-        final PretDTO pretDTO = new PretDTO();
-        pretDTO.setMembreDTO(membreDTO);
-        pretDTO.setLivreDTO(livreDTO);
-        Bibliotheque.gestionnaireBibliotheque.getPretFacade().commencer(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-            pretDTO);
-        Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+    /**
+     * Preter un livre.
+     *
+     * @param tokenizer Le tokenizer à utiliser
+     * @throws BibliothequeException S'il y a une erreur
+     */
+    private static void commencerPret(final StringTokenizer tokenizer) throws BibliothequeException {
+        try {
+            final String idMembre = Bibliotheque.readString(tokenizer);
+            final MembreDTO membreDTO = (MembreDTO) Bibliotheque.gestionnaireBibliotheque.getMembreFacade().get(
+                Bibliotheque.gestionnaireBibliotheque.getSession(),
+                idMembre);
+            if(membreDTO == null) {
+                throw new MissingDTOException("Le membre "
+                    + idMembre
+                    + " n'existe pas");
+            }
+            final String idLivre = readString(tokenizer);
+            final LivreDTO livreDTO = (LivreDTO) Bibliotheque.gestionnaireBibliotheque.getLivreFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                idLivre);
+            if(livreDTO == null) {
+                throw new MissingDTOException("Le livre "
+                    + idMembre
+                    + " n'existe pas");
+            }
+
+            final PretDTO pretDTO = new PretDTO();
+            pretDTO.setLivreDTO(livreDTO);
+            pretDTO.setMembreDTO(membreDTO);
+
+            Bibliotheque.gestionnaireBibliotheque.getPretFacade().commencer(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                pretDTO);
+            Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+        } catch(
+            InvalidHibernateSessionException
+            | MissingDTOException
+            | InvalidPrimaryKeyException
+            | FacadeException
+            | InvalidDTOException
+            | ExistingLoanException
+            | InvalidLoanLimitException
+            | ExistingReservationException exception) {
+            System.out.println("**** "
+                + exception.getMessage());
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
+        }
     }
 
     public static void renouvelerPret(final StringTokenizer tokenizer) throws BibliothequeException {
@@ -348,12 +405,36 @@ public final class Bibliotheque {
         Bibliotheque.gestionnaireBibliotheque.commit();
     }
 
-    public static void annulerReservation(final StringTokenizer tokenizer) {
-        final ReservationDTO reservationDTO = new ReservationDTO();
-        reservationDTO.setIdReservation(Bibliotheque.readString(tokenizer));
-        Bibliotheque.gestionnaireBibliotheque.getReservationFacade().annuler(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-            reservationDTO);
-        Bibliotheque.gestionnaireBibliotheque.commit();
+    /**
+     * Annuler une reservation.
+     *
+     * @param tokenizer Le tokenizer à utiliser
+     * @throws BibliothequeException S'il y a une erreur
+     */
+    public static void annulerReservation(final StringTokenizer tokenizer) throws BibliothequeException {
+        try {
+            final String idReservation = Bibliotheque.readString(tokenizer);
+            final ReservationDTO reservationDTO = (ReservationDTO) Bibliotheque.gestionnaireBibliotheque.getReservationFacade().get(
+                Bibliotheque.gestionnaireBibliotheque.getSession(),
+                idReservation);
+            if(reservationDTO == null) {
+                throw new MissingDTOException("Le reservation "
+                    + idReservation
+                    + " n'existe pas");
+            }
+            Bibliotheque.gestionnaireBibliotheque.getReservationFacade().annuler(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                reservationDTO);
+            Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+        } catch(
+            InvalidHibernateSessionException
+            | InvalidPrimaryKeyException
+            | InvalidDTOException
+            | FacadeException
+            | MissingDTOException exception) {
+            System.out.println("**** "
+                + exception.getMessage());
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
+        }
     }
 
     /**
