@@ -67,9 +67,6 @@ public interface IMembreService extends IService {
      * @throws InvalidHibernateSessionException Si la connexion est null
      * @throws InvalidDTOException Si le livre est null
      * @throws ExistingLoanException Si le membre a encore des prêts
-     * @throws InvalidCriterionException Si l'ID du membre est null
-     * @throws InvalidCriterionValueException Si la valeur à trouver est null
-     * @throws InvalidSortByPropertyException Si la propriété à utiliser pour classer est null
      * @throws ExistingReservationException Si le membre a des réservations
      * @throws ServiceException S'il y a une erreur avec la base de données
      */
