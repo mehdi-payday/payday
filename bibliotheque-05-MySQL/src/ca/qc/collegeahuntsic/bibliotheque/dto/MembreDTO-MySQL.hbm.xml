@@ -6,13 +6,13 @@
           "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <!--
-   - LivreDTO mapping file.
+   - MembreDTO mapping file.
    -
    - Author: Team PayDay
 -->
 
 <hibernate-mapping>
-  <class name="ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO"
+  <class name="ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO"
          table="MEMBRE">
          <id name="idMembre"
              type="string">
@@ -44,7 +44,7 @@
               order-by="DATEPRET ASC"
               where="DATERETOUR IS NULL">
               <key>
-                <column name="IDLIVRE">
+                <column name="IDMEMBRE">
                 </column>
               </key>
               <one-to-many class="ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO"/>
@@ -52,7 +52,7 @@
          <set name="reservations"
               order-by="DATERESERVATION ASC">
               <key>
-                <column name="IDLIVRE">
+                <column name="IDMEMBRE">
                 </column>
               </key>
               <one-to-many class="ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO"/>

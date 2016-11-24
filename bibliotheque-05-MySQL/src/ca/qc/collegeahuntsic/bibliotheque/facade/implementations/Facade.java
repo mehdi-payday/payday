@@ -18,7 +18,7 @@ import org.hibernate.Session;
 /**
  * Classe de base pour toutes les façades.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class Facade implements IFacade {
     private IService service;
