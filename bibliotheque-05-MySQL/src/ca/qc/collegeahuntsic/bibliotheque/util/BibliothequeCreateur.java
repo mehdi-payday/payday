@@ -260,7 +260,6 @@ public class BibliothequeCreateur {
      */
     public void rollbackTransaction() throws BibliothequeException {
         try {
-            System.out.println("FUCKING ROLLBACCCKKK!!!!!!!!!!!!!!!");
             getTransaction().rollback();
             closeSession();
         } catch(HibernateException hibernateException) {
