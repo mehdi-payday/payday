@@ -130,7 +130,6 @@ public final class Bibliotheque {
      */
     private static void executerTransaction(final StringTokenizer tokenizer) throws BibliothequeException {
         final String command = tokenizer.nextToken();
-
         switch(command) {
             case "aide":
                 Bibliotheque.afficherAide();
@@ -150,7 +149,7 @@ public final class Bibliotheque {
             case "preter":
                 Bibliotheque.commencerPret(tokenizer);
                 break;
-            case "renouveller":
+            case "renouveler":
                 Bibliotheque.renouvelerPret(tokenizer);
                 break;
             case "retourner":
@@ -193,9 +192,6 @@ public final class Bibliotheque {
         System.out.println("  reserver <idMembre> <idLivre>");
         System.out.println("  utiliser <idReservation>");
         System.out.println("  annuler <idReservation>");
-        // System.out.println("  listerLivresRetard <dateCourante>");
-        // System.out.println("  listerLivresTitre <mot>");
-        // System.out.println("  listerLivres");
     }
 
     /**
@@ -326,7 +322,6 @@ public final class Bibliotheque {
                 + exception.getMessage());
             Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
         }
-
     }
 
     /**
@@ -458,23 +453,19 @@ public final class Bibliotheque {
             final MembreDTO membreDTO = (MembreDTO) Bibliotheque.gestionnaireBibliotheque.getMembreFacade().get(
                 Bibliotheque.gestionnaireBibliotheque.getSession(),
                 idMembre);
-
             if(membreDTO == null) {
                 throw new MissingDTOException("Le membre "
                     + idMembre
                     + " n'existe pas");
             }
-
             final String idLivre = Bibliotheque.readString(tokenizer);
             final LivreDTO livreDTO = (LivreDTO) Bibliotheque.gestionnaireBibliotheque.getLivreFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 idLivre);
-
             if(livreDTO == null) {
                 throw new MissingDTOException("Le livre "
                     + idLivre
                     + " n'existe pas");
             }
-
             final ReservationDTO reservationDTO = new ReservationDTO();
             reservationDTO.setMembreDTO(membreDTO);
             reservationDTO.setLivreDTO(livreDTO);
@@ -516,7 +507,6 @@ public final class Bibliotheque {
                     + idReservation
                     + " n'existe pas");
             }
-
             Bibliotheque.gestionnaireBibliotheque.getReservationFacade().utiliser(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 reservationDTO);
             Bibliotheque.gestionnaireBibliotheque.commitTransaction();
@@ -585,7 +575,6 @@ public final class Bibliotheque {
                 finDeFichier = "exit".equals(commande);
             }
         }
-
         return finDeFichier;
     }
 
