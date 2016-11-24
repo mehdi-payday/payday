@@ -15,7 +15,7 @@ import org.hibernate.Session;
  * Interface de base pour les façades.<br />
  * Toutes les interfaces de façade devraient en hériter.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public interface IFacade {
     /**

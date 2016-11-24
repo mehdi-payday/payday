@@ -1,5 +1,5 @@
 // Fichier Date.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.util;
@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Un objet {@link java.util.Date} amélioré.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class BibliothequeDate extends Date {
     private static final long serialVersionUID = 1L;

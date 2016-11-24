@@ -15,7 +15,7 @@ import org.hibernate.Session;
 /**
  * Interface de façade pour manipuler les livres dans la base de données.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public interface ILivreFacade extends IFacade {
     /**

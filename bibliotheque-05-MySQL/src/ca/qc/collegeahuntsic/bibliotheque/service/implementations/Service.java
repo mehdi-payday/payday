@@ -1,5 +1,5 @@
 // Fichier Service.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.service.implementations;
@@ -21,7 +21,7 @@ import org.hibernate.Session;
 /**
  * Classe de base pour tous les services.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class Service implements IService {
     private IDAO dao;

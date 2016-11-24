@@ -1,5 +1,5 @@
 // Fichier IDAO.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dao.interfaces;
@@ -18,7 +18,7 @@ import org.hibernate.Session;
  * Interface de base pour les DAOs.<br />
  * Toutes les interfaces de DAO devraient en hériter.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public interface IDAO {
     /**

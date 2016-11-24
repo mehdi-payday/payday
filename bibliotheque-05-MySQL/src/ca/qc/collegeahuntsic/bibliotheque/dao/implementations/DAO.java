@@ -1,5 +1,5 @@
 // Fichier DAO.java
-// Auteur : Gilles Bénichou
+// Auteur : Team PayDay
 // Date de création : 2016-05-18
 
 package ca.qc.collegeahuntsic.bibliotheque.dao.implementations;
@@ -29,7 +29,7 @@ import org.hibernate.criterion.Restrictions;
  * Classe de base pour tous les DAOs.<br />
  * Tous les DAOs devraient en hériter.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public class DAO implements IDAO {
     private Class<? extends DTO> dtoClass;

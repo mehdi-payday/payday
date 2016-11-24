@@ -8,7 +8,7 @@
 <!--
    - PretDTO mapping file.
    -
-   - Author: Gilles Bénichou
+   - Author: Team PayDay
 -->
 
 <hibernate-mapping>

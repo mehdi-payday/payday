@@ -17,7 +17,7 @@ import org.hibernate.Session;
 /**
  * Interface de façade pour manipuler les prêts dans la base de données.
  *
- * @author Gilles Bénichou
+ * @author Team PayDay
  */
 public interface IPretFacade extends IFacade {
     /**
