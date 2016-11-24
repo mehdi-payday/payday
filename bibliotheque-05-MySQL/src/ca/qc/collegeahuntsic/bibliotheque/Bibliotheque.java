@@ -225,7 +225,7 @@ public final class Bibliotheque {
     }
 
     /**
-     * Desinscrire un membre.
+     * Désinscrire un membre.
      *
      * @param tokenizer Le tokenizer à utiliser
      * @throws BibliothequeException S'il y a une erreur
@@ -376,7 +376,7 @@ public final class Bibliotheque {
     }
 
     /**
-     * Renouveler un pret.
+     * Renouveler un prêt.
      *
      * @param tokenizer Le tokenizer a utiliser
      * @throws BibliothequeException S'il y a une erreur
@@ -387,7 +387,7 @@ public final class Bibliotheque {
             final PretDTO pretDTO = (PretDTO) Bibliotheque.gestionnaireBibliotheque.getPretFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 idPret);
             if(pretDTO == null) {
-                throw new MissingDTOException("Le pret "
+                throw new MissingDTOException("Le prêt "
                     + idPret
                     + " n'existe pas");
             }
@@ -409,7 +409,7 @@ public final class Bibliotheque {
     }
 
     /**
-     * Terminer un pret.
+     * Terminer un prêt.
      *
      * @param tokenizer Le tokenizer à utiliser
      * @throws BibliothequeException S'il y a une erreur
@@ -420,7 +420,7 @@ public final class Bibliotheque {
             final PretDTO pretDTO = (PretDTO) Bibliotheque.gestionnaireBibliotheque.getPretFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 idPret);
             if(pretDTO == null) {
-                throw new MissingDTOException("Le pret "
+                throw new MissingDTOException("Le prêt "
                     + idPret
                     + " n'existe pas");
             }
@@ -440,37 +440,86 @@ public final class Bibliotheque {
         }
     }
 
+    /**
+     * Place une réservation.
+     *
+     * @param tokenizer Le tokenizer à utiliser
+     * @throws BibliothequeException S'il y a une erreur
+     */
     private static void placerReservation(final StringTokenizer tokenizer) throws BibliothequeException {
-        // Juste pour éviter deux timestamps de réservation strictement identiques
-        Thread.sleep(1);
-        final ReservationDTO reservationDTO = new ReservationDTO();
-        if(reservationDTO.getMembreDTO() == null) {
-            reservationDTO.setMembreDTO(new MembreDTO());
-        }
-        if(reservationDTO.getLivreDTO() == null) {
-            reservationDTO.setLivreDTO(new LivreDTO());
-        }
-        reservationDTO.getMembreDTO().setIdMembre(Bibliotheque.readString(tokenizer));
-        reservationDTO.getLivreDTO().setIdLivre(Bibliotheque.readString(tokenizer));
-        final MembreDTO membreDTO = new MembreDTO();
-        membreDTO.setIdMembre(reservationDTO.getMembreDTO().getIdMembre());
-        final LivreDTO livreDTO = new LivreDTO();
-        livreDTO.setIdLivre(reservationDTO.getLivreDTO().getIdLivre());
-        Bibliotheque.gestionnaireBibliotheque.getReservationFacade().placer(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-            reservationDTO);
-        Bibliotheque.gestionnaireBibliotheque.commit();
-    }
+        try {
+            // Juste pour éviter deux timestamps de réservation strictement identiques
+            Thread.sleep(1);
 
-    private static void utiliserReservation(final StringTokenizer tokenizer) {
-        final ReservationDTO reservationDTO = new ReservationDTO();
-        reservationDTO.setIdReservation(Bibliotheque.readString(tokenizer));
-        Bibliotheque.gestionnaireBibliotheque.getReservationFacade().utiliser(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-            reservationDTO);
-        Bibliotheque.gestionnaireBibliotheque.commit();
+            final String idReservation = Bibliotheque.readString(tokenizer);
+            final ReservationDTO reservationDTO = (ReservationDTO) Bibliotheque.gestionnaireBibliotheque.getReservationFacade().get(
+                Bibliotheque.gestionnaireBibliotheque.getSession(),
+                idReservation);
+
+            if(reservationDTO == null) {
+                throw new MissingDTOException("La réservation "
+                    + idReservation
+                    + " n'existe pas");
+            }
+
+            Bibliotheque.gestionnaireBibliotheque.getReservationFacade().placer(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                reservationDTO);
+            Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+        } catch(
+            InvalidHibernateSessionException
+            | InvalidDTOException
+            | FacadeException
+            | InvalidPrimaryKeyException
+            | MissingDTOException
+            | ExistingReservationException
+            | ExistingLoanException
+            | MissingLoanException
+            | InterruptedException exception) {
+            System.out.println("**** "
+                + exception.getMessage());
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
+        }
     }
 
     /**
-     * Annuler une reservation.
+     * Utilise une réservation.
+     *
+     * @param tokenizer Le tokenizer à utiliser
+     * @throws BibliothequeException S'il y a une erreur
+     */
+    private static void utiliserReservation(final StringTokenizer tokenizer) throws BibliothequeException {
+        try {
+            final String idReservation = Bibliotheque.readString(tokenizer);
+            final ReservationDTO reservationDTO = (ReservationDTO) Bibliotheque.gestionnaireBibliotheque.getReservationFacade().get(
+                Bibliotheque.gestionnaireBibliotheque.getSession(),
+                idReservation);
+
+            if(reservationDTO == null) {
+                throw new MissingDTOException("La réservation "
+                    + idReservation
+                    + " n'existe pas");
+            }
+
+            Bibliotheque.gestionnaireBibliotheque.getReservationFacade().utiliser(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                reservationDTO);
+            Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+        } catch(
+            InvalidHibernateSessionException
+            | InvalidDTOException
+            | FacadeException
+            | InvalidPrimaryKeyException
+            | MissingDTOException
+            | ExistingReservationException
+            | ExistingLoanException
+            | InvalidLoanLimitException exception) {
+            System.out.println("**** "
+                + exception.getMessage());
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
+        }
+    }
+
+    /**
+     * Annule une réservation.
      *
      * @param tokenizer Le tokenizer à utiliser
      * @throws BibliothequeException S'il y a une erreur
@@ -482,7 +531,7 @@ public final class Bibliotheque {
                 Bibliotheque.gestionnaireBibliotheque.getSession(),
                 idReservation);
             if(reservationDTO == null) {
-                throw new MissingDTOException("Le reservation "
+                throw new MissingDTOException("La réservation "
                     + idReservation
                     + " n'existe pas");
             }
