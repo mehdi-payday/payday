@@ -121,7 +121,7 @@ public class PretService extends Service implements IPretService {
         }
         prets = new ArrayList<>(pretDTO.getMembreDTO().getPrets());
 
-        if(Integer.parseInt(pretDTO.getMembreDTO().getLimitePret()) >= prets.size()) {
+        if(Integer.parseInt(pretDTO.getMembreDTO().getLimitePret()) <= prets.size()) {
             throw new InvalidLoanLimitException("Le membre "
                 + pretDTO.getMembreDTO().getNom()
                 + " (ID de membre : "
