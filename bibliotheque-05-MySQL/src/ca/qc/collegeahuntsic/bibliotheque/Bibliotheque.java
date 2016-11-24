@@ -451,16 +451,30 @@ public final class Bibliotheque {
             // Juste pour éviter deux timestamps de réservation strictement identiques
             Thread.sleep(1);
 
-            final String idReservation = Bibliotheque.readString(tokenizer);
-            final ReservationDTO reservationDTO = (ReservationDTO) Bibliotheque.gestionnaireBibliotheque.getReservationFacade().get(
+            final String idMembre = Bibliotheque.readString(tokenizer);
+            final MembreDTO membreDTO = (MembreDTO) Bibliotheque.gestionnaireBibliotheque.getMembreFacade().get(
                 Bibliotheque.gestionnaireBibliotheque.getSession(),
-                idReservation);
+                idMembre);
 
-            if(reservationDTO == null) {
-                throw new MissingDTOException("La réservation "
-                    + idReservation
+            if(membreDTO == null) {
+                throw new MissingDTOException("Le membre "
+                    + idMembre
                     + " n'existe pas");
             }
+
+            final String idLivre = Bibliotheque.readString(tokenizer);
+            final LivreDTO livreDTO = (LivreDTO) Bibliotheque.gestionnaireBibliotheque.getLivreFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                idLivre);
+
+            if(livreDTO == null) {
+                throw new MissingDTOException("Le livre "
+                    + idLivre
+                    + " n'existe pas");
+            }
+
+            final ReservationDTO reservationDTO = new ReservationDTO();
+            reservationDTO.setMembreDTO(membreDTO);
+            reservationDTO.setLivreDTO(livreDTO);
 
             Bibliotheque.gestionnaireBibliotheque.getReservationFacade().placer(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 reservationDTO);
