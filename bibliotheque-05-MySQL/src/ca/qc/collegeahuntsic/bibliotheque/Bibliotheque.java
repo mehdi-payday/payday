@@ -259,22 +259,72 @@ public final class Bibliotheque {
         }
     }
 
+    /**
+     *
+     * Permet d'acquérir un livre.
+     *
+     * @param tokenizer Le tokenizer à utiliser
+     * @throws BibliothequeException Si la connexion avec la base de données ne peut être faite ou que la transaction Hibernate ne peut être créée
+     */
     private static void acquerirLivre(final StringTokenizer tokenizer) throws BibliothequeException {
         final LivreDTO livreDTO = new LivreDTO();
-        livreDTO.setTitre(Bibliotheque.readString(tokenizer));
-        livreDTO.setAuteur(Bibliotheque.readString(tokenizer));
-        livreDTO.setDateAcquisition(Bibliotheque.readDate(tokenizer));
-        Bibliotheque.gestionnaireBibliotheque.getLivreFacade().acquerir(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-            livreDTO);
-        Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+
+        final String titre = Bibliotheque.readString(tokenizer);
+        final String auteur = Bibliotheque.readString(tokenizer);
+        final Timestamp dateAcquisition = Bibliotheque.readDate(tokenizer);
+        livreDTO.setTitre(titre);
+        livreDTO.setAuteur(auteur);
+        livreDTO.setDateAcquisition(dateAcquisition);
+
+        try {
+            Bibliotheque.gestionnaireBibliotheque.getLivreFacade().acquerir(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                livreDTO);
+            Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+        } catch(
+            InvalidHibernateSessionException
+            | InvalidDTOException
+            | FacadeException exception) {
+            System.out.println("**** "
+                + exception.getMessage());
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
+        }
+
     }
 
+    /**
+    *
+    * Permet de vendre un livre.
+    *
+    * @param tokenizer Le tokenizer à utiliser
+    * @throws BibliothequeException Si la connexion avec la base de données ne peut être faite ou que la transaction Hibernate ne peut être créée
+     */
     private static void vendreLivre(final StringTokenizer tokenizer) throws BibliothequeException {
-        final LivreDTO livreDTO = new LivreDTO();
-        livreDTO.setIdLivre(Bibliotheque.readString(tokenizer));
-        Bibliotheque.gestionnaireBibliotheque.getLivreFacade().vendre(Bibliotheque.gestionnaireBibliotheque.getConnexion(),
-            livreDTO);
-        Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+
+        try {
+            final String idLivre = Bibliotheque.readString(tokenizer);
+            final LivreDTO livreDTO = (LivreDTO) Bibliotheque.gestionnaireBibliotheque.getLivreFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                idLivre);
+            if(livreDTO == null) {
+                throw new MissingDTOException("Le livre "
+                    + idLivre
+                    + " n'existe pas");
+            }
+            Bibliotheque.gestionnaireBibliotheque.getLivreFacade().vendre(Bibliotheque.gestionnaireBibliotheque.getSession(),
+                livreDTO);
+            Bibliotheque.gestionnaireBibliotheque.commitTransaction();
+        } catch(
+            InvalidHibernateSessionException
+            | InvalidDTOException
+            | ExistingLoanException
+            | ExistingReservationException
+            | FacadeException
+            | MissingDTOException
+            | InvalidPrimaryKeyException exception) {
+            System.out.println("**** "
+                + exception.getMessage());
+            Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
+        }
+
     }
 
     /**
