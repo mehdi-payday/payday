@@ -32,10 +32,6 @@ public class MembreFacade extends Facade implements IMembreFacade {
      */
     public MembreFacade(final IMembreService membreService) throws InvalidServiceException {
         super(membreService);
-        if(membreService == null) {
-            throw new InvalidServiceException("Le service de membres ne peut être null");
-        }
-        setMembreService(membreService);
     }
 
     /**
@@ -83,14 +79,4 @@ public class MembreFacade extends Facade implements IMembreFacade {
     private IMembreService getMembreService() {
         return this.membreService;
     }
-
-    /**
-     * Setter de la variable d'instance <code>this.membreService</code>.
-     *
-     * @param membreService La valeur à utiliser pour la variable d'instance <code>this.membreService</code>
-     */
-    private void setMembreService(IMembreService membreService) {
-        this.membreService = membreService;
-    }
-    // EndRegion Getters and Setters
 }

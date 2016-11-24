@@ -53,6 +53,15 @@ public class LivreService extends Service implements ILivreService {
         InvalidCriterionValueException,
         InvalidSortByPropertyException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+        if(titre == null) {
+            throw new InvalidCriterionException("Le titre ne peut être null");
+        }
+        if(sortByPropertyName == null) {
+            throw new InvalidSortByPropertyException("La propriété utilisée pour classer ne peut être null");
+        }
         try {
             return ((LivreDAO) getDao()).findByTitre(session,
                 titre,
@@ -70,6 +79,13 @@ public class LivreService extends Service implements ILivreService {
         LivreDTO livreDTO) throws InvalidHibernateSessionException,
         InvalidDTOException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+        if(livreDTO == null) {
+            throw new InvalidDTOException("Le livre ne peut être null");
+        }
+
         add(session,
             livreDTO);
     }

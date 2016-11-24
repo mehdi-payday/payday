@@ -32,9 +32,6 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      */
     ReservationFacade(final IReservationService reservationService) throws InvalidServiceException {
         super(reservationService);
-        if(reservationService == null) {
-            throw new InvalidServiceException("Le service de livres ne peut être null");
-        }
     }
 
     /**

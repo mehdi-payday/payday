@@ -56,6 +56,15 @@ public class PretService extends Service implements IPretService {
         InvalidSortByPropertyException,
         InvalidCriterionValueException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+        if(datePret == null) {
+            throw new InvalidCriterionException("La date de prêt ne peut être null");
+        }
+        if(sortByPropertyName == null) {
+            throw new InvalidSortByPropertyException("La propriété utilisée pour classer ne peut être null");
+        }
         try {
             return ((PretDAO) getDao()).findByDatePret(session,
                 datePret,
@@ -76,6 +85,17 @@ public class PretService extends Service implements IPretService {
         InvalidSortByPropertyException,
         InvalidCriterionValueException,
         ServiceException {
+
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La connexion ne peut être null");
+        }
+        if(dateRetour == null) {
+            throw new InvalidCriterionException("La date de retour ne peut être null");
+        }
+        if(sortByPropertyName == null) {
+            throw new InvalidSortByPropertyException("La propriété utilisée pour classer ne peut être null");
+        }
+
         try {
             return ((PretDAO) getDao()).findByDateRetour(session,
                 dateRetour,
@@ -161,7 +181,9 @@ public class PretService extends Service implements IPretService {
         MissingLoanException,
         ExistingReservationException,
         ServiceException {
-
+        if(session == null) {
+            throw new InvalidHibernateSessionException("la session hibernate ne peut pas etre null");
+        }
         if(pretDTO == null) {
             throw new InvalidDTOException("le pret ne peut etre null");
         }
@@ -181,8 +203,7 @@ public class PretService extends Service implements IPretService {
         }
         boolean aEteEmprunteParMembre = false;
         for(PretDTO pretDTODuMembre : prets) {
-            if(unLivreDTO.equals(pretDTODuMembre.getLivreDTO())
-                && pretDTODuMembre.getDateRetour() == null) {
+            if(unLivreDTO.equals(pretDTODuMembre.getLivreDTO())) {
                 aEteEmprunteParMembre = true;
                 break;
             }
@@ -214,6 +235,7 @@ public class PretService extends Service implements IPretService {
                 + ")");
         }
         pretDTO.setDatePret(new Timestamp(System.currentTimeMillis()));
+        pretDTO.setDateRetour(null);
         update(session,
             pretDTO);
 
@@ -235,6 +257,11 @@ public class PretService extends Service implements IPretService {
         if(session == null) {
             throw new InvalidHibernateSessionException("la session hibernate ne peut pas etre null");
         }
+        /*
+         * TODO : décider de faire cette vérification ou pas
+         * if(pretDTO.getDateRetour() != null) {
+            throw new InvalidLoanException("");
+        }*/
         final MembreDTO unMembreDTO = pretDTO.getMembreDTO();
         final LivreDTO unLivreDTO = pretDTO.getLivreDTO();
         final List<PretDTO> prets = new ArrayList<>(unMembreDTO.getPrets());
@@ -249,8 +276,7 @@ public class PretService extends Service implements IPretService {
         }
         boolean aEteEmprunteParMembre = false;
         for(PretDTO pretDTODuMembre : prets) {
-            if(unLivreDTO.equals(pretDTODuMembre.getLivreDTO())
-                && pretDTODuMembre.getDateRetour() == null) {
+            if(unLivreDTO.equals(pretDTODuMembre.getLivreDTO())) {
                 aEteEmprunteParMembre = true;
                 break;
             }

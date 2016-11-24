@@ -9,6 +9,7 @@ import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.MembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IMembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
+import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidCriterionException;
@@ -54,6 +55,15 @@ public class MembreService extends Service implements IMembreService {
         InvalidCriterionValueException,
         InvalidSortByPropertyException,
         ServiceException {
+        if(session == null) {
+            throw new InvalidHibernateSessionException("La session Hibernate ne peut être null");
+        }
+        if(nom == null) {
+            throw new InvalidCriterionException("Le nom ne peut être null");
+        }
+        if(sortByPropertyName == null) {
+            throw new InvalidSortByPropertyException("La propriété utilisée pour classer ne peut être null");
+        }
         try {
             return ((MembreDAO) getDao()).findByNom(session,
                 nom,
@@ -99,6 +109,15 @@ public class MembreService extends Service implements IMembreService {
         }
         if(membreDTO == null) {
             throw new InvalidDTOException("Le DTO ne peut être null");
+        }
+
+        final ArrayList<PretDTO> prets = new ArrayList<>(membreDTO.getPrets());
+        if(!prets.isEmpty()) {
+            throw new ExistingLoanException("Le membre "
+                + membreDTO.getNom()
+                + " (ID : "
+                + membreDTO.getIdMembre()
+                + ") a des prêts en cours.");
         }
 
         final ArrayList<ReservationDTO> reservations = new ArrayList<>(membreDTO.getReservations());
