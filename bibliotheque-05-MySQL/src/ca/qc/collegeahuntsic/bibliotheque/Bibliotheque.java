@@ -232,6 +232,7 @@ public final class Bibliotheque {
      */
     private static void desinscrireMembre(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final String idMembre = Bibliotheque.readString(tokenizer);
             final MembreDTO membreDTO = (MembreDTO) Bibliotheque.gestionnaireBibliotheque.getMembreFacade().get(
                 Bibliotheque.gestionnaireBibliotheque.getSession(),
@@ -267,16 +268,17 @@ public final class Bibliotheque {
      * @throws BibliothequeException Si la connexion avec la base de données ne peut être faite ou que la transaction Hibernate ne peut être créée
      */
     private static void acquerirLivre(final StringTokenizer tokenizer) throws BibliothequeException {
-        final LivreDTO livreDTO = new LivreDTO();
-
-        final String titre = Bibliotheque.readString(tokenizer);
-        final String auteur = Bibliotheque.readString(tokenizer);
-        final Timestamp dateAcquisition = Bibliotheque.readDate(tokenizer);
-        livreDTO.setTitre(titre);
-        livreDTO.setAuteur(auteur);
-        livreDTO.setDateAcquisition(dateAcquisition);
-
         try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
+            final LivreDTO livreDTO = new LivreDTO();
+
+            final String titre = Bibliotheque.readString(tokenizer);
+            final String auteur = Bibliotheque.readString(tokenizer);
+            final Timestamp dateAcquisition = Bibliotheque.readDate(tokenizer);
+            livreDTO.setTitre(titre);
+            livreDTO.setAuteur(auteur);
+            livreDTO.setDateAcquisition(dateAcquisition);
+
             Bibliotheque.gestionnaireBibliotheque.getLivreFacade().acquerir(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 livreDTO);
             Bibliotheque.gestionnaireBibliotheque.commitTransaction();
@@ -299,8 +301,8 @@ public final class Bibliotheque {
     * @throws BibliothequeException Si la connexion avec la base de données ne peut être faite ou que la transaction Hibernate ne peut être créée
      */
     private static void vendreLivre(final StringTokenizer tokenizer) throws BibliothequeException {
-
         try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final String idLivre = Bibliotheque.readString(tokenizer);
             final LivreDTO livreDTO = (LivreDTO) Bibliotheque.gestionnaireBibliotheque.getLivreFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 idLivre);
@@ -335,6 +337,7 @@ public final class Bibliotheque {
      */
     private static void commencerPret(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final String idMembre = Bibliotheque.readString(tokenizer);
             final MembreDTO membreDTO = (MembreDTO) Bibliotheque.gestionnaireBibliotheque.getMembreFacade().get(
                 Bibliotheque.gestionnaireBibliotheque.getSession(),
@@ -383,6 +386,7 @@ public final class Bibliotheque {
      */
     private static void renouvelerPret(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final String idPret = Bibliotheque.readString(tokenizer);
             final PretDTO pretDTO = (PretDTO) Bibliotheque.gestionnaireBibliotheque.getPretFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 idPret);
@@ -416,6 +420,7 @@ public final class Bibliotheque {
      */
     private static void terminerPret(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final String idPret = Bibliotheque.readString(tokenizer);
             final PretDTO pretDTO = (PretDTO) Bibliotheque.gestionnaireBibliotheque.getPretFacade().get(Bibliotheque.gestionnaireBibliotheque.getSession(),
                 idPret);
@@ -448,9 +453,7 @@ public final class Bibliotheque {
      */
     private static void placerReservation(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
-            // Juste pour éviter deux timestamps de réservation strictement identiques
-            Thread.sleep(1);
-
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final String idMembre = Bibliotheque.readString(tokenizer);
             final MembreDTO membreDTO = (MembreDTO) Bibliotheque.gestionnaireBibliotheque.getMembreFacade().get(
                 Bibliotheque.gestionnaireBibliotheque.getSession(),
@@ -487,8 +490,7 @@ public final class Bibliotheque {
             | MissingDTOException
             | ExistingReservationException
             | ExistingLoanException
-            | MissingLoanException
-            | InterruptedException exception) {
+            | MissingLoanException exception) {
             System.out.println("**** "
                 + exception.getMessage());
             Bibliotheque.gestionnaireBibliotheque.rollbackTransaction();
@@ -503,6 +505,7 @@ public final class Bibliotheque {
      */
     private static void utiliserReservation(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final String idReservation = Bibliotheque.readString(tokenizer);
             final ReservationDTO reservationDTO = (ReservationDTO) Bibliotheque.gestionnaireBibliotheque.getReservationFacade().get(
                 Bibliotheque.gestionnaireBibliotheque.getSession(),
@@ -540,6 +543,7 @@ public final class Bibliotheque {
      */
     public static void annulerReservation(final StringTokenizer tokenizer) throws BibliothequeException {
         try {
+            Bibliotheque.gestionnaireBibliotheque.beginTransaction();
             final String idReservation = Bibliotheque.readString(tokenizer);
             final ReservationDTO reservationDTO = (ReservationDTO) Bibliotheque.gestionnaireBibliotheque.getReservationFacade().get(
                 Bibliotheque.gestionnaireBibliotheque.getSession(),

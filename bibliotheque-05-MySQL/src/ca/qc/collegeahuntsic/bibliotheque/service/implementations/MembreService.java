@@ -7,8 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.service.implementations;
 import java.util.ArrayList;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.MembreDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.PretDAO;
-import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.ReservationDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IMembreDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
@@ -34,24 +33,10 @@ public class MembreService extends Service implements IMembreService {
      * Crée le service de la table <code>membre</code>.
      *
      * @param membreDAO Le DAO de la table <code>membre</code>
-     * @param reservationDAO Le DAO de la table <code>reservation</code>
-     * @param pretDAO Le DAO de la table <code>pret</code>
      * @throws InvalidDAOException Si le DAO de membre est null ou si le DAO de réservation est null
      */
-    MembreService(MembreDAO membreDAO,
-        ReservationDAO reservationDAO,
-        PretDAO pretDAO) throws InvalidDAOException {
+    MembreService(IMembreDAO membreDAO) throws InvalidDAOException {
         super(membreDAO);
-        if(membreDAO == null) {
-            throw new InvalidDAOException("Le DAO de membre ne peut être null");
-        }
-        if(pretDAO == null) {
-            throw new InvalidDAOException("Le DAO de prêt ne peut être null");
-        }
-        if(reservationDAO == null) {
-            throw new InvalidDAOException("Le DAO de réservation ne peut être null");
-        }
-
     }
 
     // Region Getters and Setters

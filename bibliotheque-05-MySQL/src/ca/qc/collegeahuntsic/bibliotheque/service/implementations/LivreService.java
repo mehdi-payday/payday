@@ -40,9 +40,6 @@ public class LivreService extends Service implements ILivreService {
      */
     LivreService(ILivreDAO livreDAO) throws InvalidDAOException {
         super(livreDAO);
-        if(livreDAO == null) {
-            throw new InvalidDAOException("Le DAO de livre ne peut être null");
-        }
     }
 
     /**

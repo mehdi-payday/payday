@@ -29,11 +29,11 @@ public class BibliothequeCreateur {
 
     private static final String LIVRE_FACADE_NAME = "livreFacade";
 
-    private static final String MEMBRE_FACADE_NAME = "livreFacade";
+    private static final String MEMBRE_FACADE_NAME = "membreFacade";
 
-    private static final String PRET_FACADE_NAME = "livreFacade";
+    private static final String PRET_FACADE_NAME = "pretFacade";
 
-    private static final String RESERVATION_FACADE_NAME = "livreFacade";
+    private static final String RESERVATION_FACADE_NAME = "reservationFacade";
 
     private static final ApplicationContext APPLICATION_CONTEXT = new ClassPathXmlApplicationContext(BibliothequeCreateur.SPRING_CONFIGURATION_FILE_NAME);
 

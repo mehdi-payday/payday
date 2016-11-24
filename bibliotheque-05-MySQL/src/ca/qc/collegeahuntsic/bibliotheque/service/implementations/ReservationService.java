@@ -7,7 +7,7 @@ package ca.qc.collegeahuntsic.bibliotheque.service.implementations;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IPretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IReservationDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
@@ -32,20 +32,41 @@ import org.hibernate.Session;
  * @author Team PayDay
  */
 public class ReservationService extends Service implements IReservationService {
+    private IPretDAO pretDAO;
+
     /**
      * Crée le service de la table <code>reservation</code>.
      *
      * @param reservationDAO Le DAO de la table reservation
+     * @param pretDAO Le DAO de la table Pret
      * @throws InvalidDAOException Si le DAO de réservation est null, si le DAO de membre est null, si le DAO de livre est null ou si le DAO de prêt est null
      */
-    public ReservationService(final IReservationDAO reservationDAO) throws InvalidDAOException {
+    public ReservationService(IReservationDAO reservationDAO,
+        IPretDAO pretDAO) throws InvalidDAOException {
         super(reservationDAO);
-        if(reservationDAO == null) {
-            throw new InvalidDAOException("Le DAO de réservation ne doit pas être null");
+        if(pretDAO == null) {
+            throw new InvalidDAOException("Le DAO de pret ne peut être null");
         }
+        setPretDAO(pretDAO);
     }
 
-    // EndRegion Getters and Setters
+    /**
+     * Getter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @return La variable d'instance <code>this.pretDAO</code>
+     */
+    private IPretDAO getPretDAO() {
+        return this.pretDAO;
+    }
+
+    /**
+     * Setter de la variable d'instance <code>this.pretDAO</code>.
+     *
+     * @param pretDAO La valeur à utiliser pour la variable d'instance <code>this.pretDAO</code>
+     */
+    private void setPretDAO(IPretDAO pretDAO) {
+        this.pretDAO = pretDAO;
+    }
 
     /**
     * {@inheritDoc}
@@ -136,52 +157,53 @@ public class ReservationService extends Service implements IReservationService {
         if(reservationDTO == null) {
             throw new InvalidDTOException("la réservation ne peut etre null");
         }
-
-        final LivreDTO unLivreDTO = reservationDTO.getLivreDTO();
-        final MembreDTO unMembreDTO = reservationDTO.getMembreDTO();
-        final List<ReservationDTO> reservationsTrouvees = new ArrayList<>(unLivreDTO.getReservations());
-        if(!reservationsTrouvees.isEmpty()) {
-            final ReservationDTO premiereReservationDTO = reservationsTrouvees.get(0);
-            if(!premiereReservationDTO.equals(reservationDTO)) {
-                final MembreDTO booker = premiereReservationDTO.getMembreDTO();
-                throw new ExistingReservationException("Le livre "
-                    + unLivreDTO.getTitre()
-                    + "(ID de livre : "
-                    + unLivreDTO.getIdLivre()
-                    + ") est réservé pour "
-                    + booker.getNom()
-                    + " (ID de membre : "
-                    + booker.getIdMembre()
-                    + ")");
-            }
-        }
-        if(!unLivreDTO.getPrets().isEmpty()) {
-            throw new ExistingReservationException("ID de livre : "
-                + unLivreDTO.getIdLivre()
-                + " est deja prêté");
-        }
-        if(unMembreDTO.getPrets().size() == Integer.parseInt(unMembreDTO.getLimitePret())) {
-            throw new InvalidLoanLimitException("Le membre "
-                + unMembreDTO.getNom()
-                + " (ID de membre : "
-                + unMembreDTO.getIdMembre()
-                + ") a atteint sa limite de prêt ("
-                + unMembreDTO.getLimitePret()
-                + " emprunt(s) maximum)");
-        }
-
-        annuler(session,
-            reservationDTO);
-
-        final PretDTO newPretDTO = new PretDTO();
-        newPretDTO.setMembreDTO(unMembreDTO);
-        newPretDTO.setLivreDTO(unLivreDTO);
         try {
-            ((IDAO) newPretDTO).add(session,
+            final LivreDTO unLivreDTO = reservationDTO.getLivreDTO();
+            final MembreDTO unMembreDTO = reservationDTO.getMembreDTO();
+            final List<ReservationDTO> reservationsTrouvees = new ArrayList<>(unLivreDTO.getReservations());
+            if(!reservationsTrouvees.isEmpty()) {
+                final ReservationDTO premiereReservationDTO = reservationsTrouvees.get(0);
+                if(!premiereReservationDTO.equals(reservationDTO)) {
+                    final MembreDTO booker = premiereReservationDTO.getMembreDTO();
+                    throw new ExistingReservationException("Le livre "
+                        + unLivreDTO.getTitre()
+                        + "(ID de livre : "
+                        + unLivreDTO.getIdLivre()
+                        + ") est réservé pour "
+                        + booker.getNom()
+                        + " (ID de membre : "
+                        + booker.getIdMembre()
+                        + ")");
+                }
+            }
+            if(!unLivreDTO.getPrets().isEmpty()) {
+                throw new ExistingReservationException("ID de livre : "
+                    + unLivreDTO.getIdLivre()
+                    + " est deja prêté");
+            }
+            if(unMembreDTO.getPrets().size() == Integer.parseInt(unMembreDTO.getLimitePret())) {
+                throw new InvalidLoanLimitException("Le membre "
+                    + unMembreDTO.getNom()
+                    + " (ID de membre : "
+                    + unMembreDTO.getIdMembre()
+                    + ") a atteint sa limite de prêt ("
+                    + unMembreDTO.getLimitePret()
+                    + " emprunt(s) maximum)");
+            }
+
+            final PretDTO newPretDTO = new PretDTO();
+            newPretDTO.setMembreDTO(unMembreDTO);
+            newPretDTO.setLivreDTO(unLivreDTO);
+            newPretDTO.setDatePret(new Timestamp(System.currentTimeMillis()));
+            newPretDTO.setDateRetour(null);
+            getPretDAO().add(session,
                 newPretDTO);
+            annuler(session,
+                reservationDTO);
         } catch(DAOException daoException) {
             throw new ServiceException(daoException);
         }
+
     }
 
     /**

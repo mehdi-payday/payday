@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import ca.qc.collegeahuntsic.bibliotheque.dao.implementations.PretDAO;
+import ca.qc.collegeahuntsic.bibliotheque.dao.interfaces.IPretDAO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.LivreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.MembreDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
@@ -40,17 +41,9 @@ public class PretService extends Service implements IPretService {
      * @param pretDAO Le DAO de la table <code>pret</code>
      * @throws InvalidDAOException Si le DAO de prêt est null, si le DAO de membre est null, si le DAO de livre est null ou si le DAO de réservation est null
      */
-    PretService(PretDAO pretDAO) throws InvalidDAOException {
+    PretService(IPretDAO pretDAO) throws InvalidDAOException {
         super(pretDAO);
-        if(pretDAO == null) {
-            throw new InvalidDAOException("Le DAO de prêt ne doit pas être null");
-        }
-
     }
-
-    // Region Getters and Setters
-
-    // EndRegion Getters and Setters
 
     /**
      * {@inheritDoc}
