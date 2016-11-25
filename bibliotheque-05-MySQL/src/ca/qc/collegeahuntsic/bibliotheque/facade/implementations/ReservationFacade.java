@@ -30,7 +30,7 @@ public class ReservationFacade extends Facade implements IReservationFacade {
      * @param reservationService Le service de la table <code>reservation</code>
      * @throws InvalidServiceException Si le service de réservations est <code>null</code>
      */
-    ReservationFacade(final IReservationService reservationService) throws InvalidServiceException {
+    ReservationFacade(IReservationService reservationService) throws InvalidServiceException {
         super(reservationService);
     }
 

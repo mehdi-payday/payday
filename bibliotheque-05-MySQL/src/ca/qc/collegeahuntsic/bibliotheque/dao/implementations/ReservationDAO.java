@@ -29,7 +29,7 @@ public class ReservationDAO extends DAO implements IReservationDAO {
      * @param reservationDTOClass La classe de réservation DTO à utiliser
      * @throws InvalidDTOClassException Si la classe de DTO est null
      */
-    ReservationDAO(final Class<ReservationDTO> reservationDTOClass) throws InvalidDTOClassException {
+    ReservationDAO(Class<ReservationDTO> reservationDTOClass) throws InvalidDTOClassException {
         super(reservationDTOClass);
     }
 

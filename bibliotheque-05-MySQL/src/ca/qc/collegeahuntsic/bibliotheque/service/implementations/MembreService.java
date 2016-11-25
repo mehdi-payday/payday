@@ -40,10 +40,6 @@ public class MembreService extends Service implements IMembreService {
         super(membreDAO);
     }
 
-    // Region Getters and Setters
-
-    // EndRegion Getters and Setters
-
     /**
      * {@inheritDoc}
      */

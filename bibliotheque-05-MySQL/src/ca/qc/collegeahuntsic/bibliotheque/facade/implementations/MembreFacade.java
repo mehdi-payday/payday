@@ -22,15 +22,13 @@ import org.hibernate.Session;
  * @author Mehdi Hamidi
  */
 public class MembreFacade extends Facade implements IMembreFacade {
-    private IMembreService membreService;
-
     /**
      * Crée la façade de la table membre.
      *
      * @param membreService Le service de la table membre
      * @throws InvalidServiceException Si le service de membres est null
      */
-    public MembreFacade(final IMembreService membreService) throws InvalidServiceException {
+    public MembreFacade(IMembreService membreService) throws InvalidServiceException {
         super(membreService);
     }
 
@@ -45,7 +43,7 @@ public class MembreFacade extends Facade implements IMembreFacade {
         ExistingReservationException,
         FacadeException {
         try {
-            getMembreService().desinscrire(session,
+            ((IMembreService) getService()).desinscrire(session,
                 membreDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
@@ -62,7 +60,7 @@ public class MembreFacade extends Facade implements IMembreFacade {
         InvalidDTOException,
         FacadeException {
         try {
-            getMembreService().inscrire(session,
+            ((IMembreService) getService()).inscrire(session,
                 membreDTO);
         } catch(ServiceException serviceException) {
             throw new FacadeException(serviceException);
@@ -70,13 +68,4 @@ public class MembreFacade extends Facade implements IMembreFacade {
 
     }
 
-    // Region Getters and Setters
-    /**
-     * Getter de la variable d'instance <code>this.membreService</code>.
-     *
-     * @return La variable d'instance <code>this.membreService</code>
-     */
-    private IMembreService getMembreService() {
-        return this.membreService;
-    }
 }

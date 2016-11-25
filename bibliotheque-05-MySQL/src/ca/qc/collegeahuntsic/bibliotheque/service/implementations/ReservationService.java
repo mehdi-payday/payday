@@ -50,6 +50,7 @@ public class ReservationService extends Service implements IReservationService {
         setPretDAO(pretDAO);
     }
 
+    // Region Getters and Setters
     /**
      * Getter de la variable d'instance <code>this.pretDAO</code>.
      *
@@ -67,6 +68,7 @@ public class ReservationService extends Service implements IReservationService {
     private void setPretDAO(IPretDAO pretDAO) {
         this.pretDAO = pretDAO;
     }
+    // EndRegion Getters and Setters
 
     /**
     * {@inheritDoc}

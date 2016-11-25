@@ -251,17 +251,13 @@ public class PretService extends Service implements IPretService {
         MissingLoanException,
         ServiceException {
 
-        if(pretDTO == null) {
-            throw new InvalidDTOException("le pret ne peut etre null");
-        }
         if(session == null) {
             throw new InvalidHibernateSessionException("la session hibernate ne peut pas etre null");
         }
-        /*
-         * TODO : décider de faire cette vérification ou pas
-         * if(pretDTO.getDateRetour() != null) {
-            throw new InvalidLoanException("");
-        }*/
+        if(pretDTO == null) {
+            throw new InvalidDTOException("le pret ne peut etre null");
+        }
+
         final MembreDTO unMembreDTO = pretDTO.getMembreDTO();
         final LivreDTO unLivreDTO = pretDTO.getLivreDTO();
         final List<PretDTO> prets = new ArrayList<>(unMembreDTO.getPrets());
