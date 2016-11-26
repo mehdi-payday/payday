@@ -26,7 +26,7 @@ public class PretDAO extends DAO implements IPretDAO {
     /**
      * Crée un DAO à partir d'une connexion à la base de données.
      *
-     * @param pretDTOClass La classe de membre DTO à utiliser
+     * @param pretDTOClass La classe de prêt DTO à utiliser
      * @throws InvalidDTOClassException Si la classe de DTO est null
      */
     public PretDAO(Class<PretDTO> pretDTOClass) throws InvalidDTOClassException {

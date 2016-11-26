@@ -15,7 +15,6 @@ import ca.qc.collegeahuntsic.bibliotheque.dto.PretDTO;
 import ca.qc.collegeahuntsic.bibliotheque.dto.ReservationDTO;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.DAOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidHibernateSessionException;
-import ca.qc.collegeahuntsic.bibliotheque.exception.dao.InvalidPrimaryKeyException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingLoanException;
 import ca.qc.collegeahuntsic.bibliotheque.exception.service.ExistingReservationException;
@@ -223,21 +222,8 @@ public class ReservationService extends Service implements IReservationService {
         if(reservationDTO == null) {
             throw new InvalidDTOException("la réservation ne peut etre null");
         }
-
-        final ReservationDTO uneReservationDTO;
-        try {
-            uneReservationDTO = (ReservationDTO) get(session,
-                reservationDTO.getIdReservation());
-            if(uneReservationDTO == null) {
-                throw new ServiceException("La réservation "
-                    + reservationDTO.getIdReservation()
-                    + " n'existe pas");
-            }
-            delete(session,
-                uneReservationDTO);
-        } catch(InvalidPrimaryKeyException exception) {
-            throw new ServiceException(exception);
-        }
+        delete(session,
+            reservationDTO);
 
     }
 }

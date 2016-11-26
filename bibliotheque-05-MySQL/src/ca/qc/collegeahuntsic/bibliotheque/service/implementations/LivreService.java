@@ -110,18 +110,16 @@ public class LivreService extends Service implements ILivreService {
         final List<PretDTO> prets = new ArrayList<>(livreDTO.getPrets());
         if(!prets.isEmpty()) {
             for(PretDTO pretDTO : prets) {
-                if(pretDTO.getDateRetour() == null) {
-                    final MembreDTO emprunteur = pretDTO.getMembreDTO();
-                    throw new ExistingLoanException("Le livre "
-                        + livreDTO.getTitre()
-                        + " (ID de livre : "
-                        + livreDTO.getIdLivre()
-                        + ") a été prêté à "
-                        + emprunteur.getNom()
-                        + " (ID de membre : "
-                        + emprunteur.getIdMembre()
-                        + ")");
-                }
+                final MembreDTO emprunteur = pretDTO.getMembreDTO();
+                throw new ExistingLoanException("Le livre "
+                    + livreDTO.getTitre()
+                    + " (ID de livre : "
+                    + livreDTO.getIdLivre()
+                    + ") a été prêté à "
+                    + emprunteur.getNom()
+                    + " (ID de membre : "
+                    + emprunteur.getIdMembre()
+                    + ")");
             }
         }
         final List<ReservationDTO> reservations = new ArrayList<>(livreDTO.getReservations());
