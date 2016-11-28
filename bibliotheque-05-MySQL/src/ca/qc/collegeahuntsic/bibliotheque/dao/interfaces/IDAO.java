@@ -15,7 +15,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.dto.InvalidDTOException;
 import org.hibernate.Session;
 
 /**
- * Interface de base pour les DAOs.<br />
+ * Interface de base pour les DAOs.
  * Toutes les interfaces de DAO devraient en hériter.
  *
  * @author Team PayDay

@@ -32,7 +32,6 @@ import org.hibernate.Session;
  * Service de la table <code>pret</code>.
  *
  * @author Team PayDay
- * @SuppressWarnings({"checkstyle:ClassFanOutComplexity"})
  */
 public class PretService extends Service implements IPretService {
     /**
