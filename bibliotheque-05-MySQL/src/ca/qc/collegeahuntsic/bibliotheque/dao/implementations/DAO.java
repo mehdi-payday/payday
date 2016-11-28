@@ -26,7 +26,7 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 /**
- * Classe de base pour tous les DAOs.<br />
+ * Classe de base pour tous les DAOs.
  * Tous les DAOs devraient en hériter.
  *
  * @author Team PayDay

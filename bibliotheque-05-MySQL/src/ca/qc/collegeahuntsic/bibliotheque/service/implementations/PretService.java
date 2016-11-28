@@ -32,7 +32,6 @@ import org.hibernate.Session;
  * Service de la table <code>pret</code>.
  *
  * @author Team PayDay
- * @SuppressWarnings({"checkstyle:ClassFanOutComplexity"})
  */
 public class PretService extends Service implements IPretService {
     /**
@@ -272,7 +271,7 @@ public class PretService extends Service implements IPretService {
         final MembreDTO unMembreDTO = pretDTO.getMembreDTO();
         final LivreDTO unLivreDTO = pretDTO.getLivreDTO();
         final List<PretDTO> prets = new ArrayList<>(unMembreDTO.getPrets());
-        
+
         if(prets.isEmpty()) {
             throw new MissingLoanException("Le livre "
                 + unLivreDTO.getTitre()
@@ -288,7 +287,7 @@ public class PretService extends Service implements IPretService {
                 break;
             }
         }
-        
+
         if(!aEteEmprunteParMembre) {
             throw new MissingLoanException("Le livre "
                 + unLivreDTO.getTitre()

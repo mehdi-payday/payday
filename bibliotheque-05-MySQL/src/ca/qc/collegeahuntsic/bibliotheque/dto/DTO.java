@@ -32,9 +32,9 @@ public class DTO implements Serializable {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this one. <br />
-     * The equals method implements an equivalence relation on non-<code>null</code> object references: <br />
-     * <br />
+     * Indicates whether some other object is "equal to" this one.
+     * The equals method implements an equivalence relation on non-<code>null</code> object references:
+     *
      * <ul>
      * <li>It is reflexive: for any non-<code>null</code> reference value x, x.equals(x) should return <code>true</code>.
      * <li>It is symmetric: for any non-<code>null</code> reference values x and y, x.equals(y) should return <code>true</code> if and only if
@@ -46,12 +46,12 @@ public class DTO implements Serializable {
      * modified.
      * <li>For any non-<code>null</code> reference value x, x.equals(<code>null</code>) should return <code>false</code>.
      * </ul>
-     * <br />
-     * <br />
+     *
+     *
      * The equals method for class Object implements the most discriminating possible equivalence relation on objects; that is, for any
      * non-<code>null</code> reference values x and y, this method returns <code>true</code> if and only if x and y refer to the same object
-     * (x == y has the value <code>true</code>). <br />
-     * <br />
+     * (x == y has the value <code>true</code>).
+     *
      * Note that it is generally necessary to override the hashCode method whenever this method is overridden, so as to maintain the general
      * contract for the hashCode method, which states that equal objects must have equal hash codes.
      *
@@ -70,8 +70,8 @@ public class DTO implements Serializable {
 
     /**
      * Returns a hash code value for the object. This method is supported for the benefit of hashtables such as those provided by
-     * {@link java.util.Hashtable}. <br />
-     * <br />
+     * {@link java.util.Hashtable}.
+     *
      * The general contract of hashCode is:
      * <ul>
      * <li>Whenever it is invoked on the same object more than once during an execution of a Java application, the hashCode method must
@@ -83,8 +83,8 @@ public class DTO implements Serializable {
      * of the two objects must produce distinct integer results. However, the programmer should be aware that producing distinct integer results
      * for unequal objects may improve the performance of hashtables.
      * </ul>
-     * <br />
-     * <br />
+     *
+     *
      * As much as is reasonably practical, the hashCode method defined by class Object does return distinct integers for distinct objects (this
      * is typically implemented by converting the internal address of the object into an integer, but this implementation technique is not
      * required by the Java<small><sup>TM</sup></small> programming language).
@@ -102,7 +102,7 @@ public class DTO implements Serializable {
      * Returns a string representation of the object. In general, the <code>toString</code> method returns a string that "textually represents"
      * this object. The result should be a concise but informative representation that is easy for a person to read. It is recommended that all
      * subclasses override this method.
-     * <p>
+     *
      * The {@link java.lang.Object#toString()} method for class {@link java.lang.Object} returns a string consisting of the name of the class of
      * which the object is an instance, the at-sign character '<code>@</code>', and the unsigned hexadecimal representation of the hash code of
      * the object. In other words, this method returns a string equal to the value of:
@@ -115,7 +115,7 @@ public class DTO implements Serializable {
      * </pre>
      *
      * </blockquote>
-     * </p>
+     *
      * @return A string representation of the object.
      */
     @Override

@@ -50,7 +50,12 @@ public final class FormatteurDate {
      * @return La chaîne de caractères issue de la conversion
      * @throws ParseException Si le {@link java.sql.Timestamp} n'est pas formaté correctement
      */
-    public static String stringValue(Timestamp timestamp) {
+    public static String stringValue(Timestamp timestamp) throws ParseException {
+        if(timestamp == null) {
+            throw new ParseException("La valeur du timestamp ne peut être nulle.",
+                0);
+
+        }
         final Date date = new Date(timestamp.getTime());
         final String dateFormatee = FormatteurDate.SIMPLE_DATE_FORMAT.format(date);
         return dateFormatee;

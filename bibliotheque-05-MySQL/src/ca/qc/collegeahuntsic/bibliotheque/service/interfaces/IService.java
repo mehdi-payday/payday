@@ -15,7 +15,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.service.ServiceException;
 import org.hibernate.Session;
 
 /**
- * Interface de base pour les services.<br />
+ * Interface de base pour les services.
  * Toutes les interfaces de service devraient en hériter.
  *
  * @author Team PayDay

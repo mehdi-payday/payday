@@ -12,7 +12,7 @@ import ca.qc.collegeahuntsic.bibliotheque.exception.facade.FacadeException;
 import org.hibernate.Session;
 
 /**
- * Interface de base pour les façades.<br />
+ * Interface de base pour les façades.
  * Toutes les interfaces de façade devraient en hériter.
  *
  * @author Team PayDay
