@@ -258,10 +258,21 @@ public class PretService extends Service implements IPretService {
             throw new InvalidDTOException("le pret ne peut etre null");
         }
 
+        if(pretDTO.getDateRetour() != null) {
+            throw new MissingLoanException("Le livre "
+                + pretDTO.getLivreDTO().getTitre()
+                + " (ID de livre : "
+                + pretDTO.getLivreDTO().getIdLivre()
+                + ") a déjà été retourné");
+        }
+
+        /*
+         * Ancien code qui fait un détour gigantesque pour arriver à la même solution.
+         *
         final MembreDTO unMembreDTO = pretDTO.getMembreDTO();
         final LivreDTO unLivreDTO = pretDTO.getLivreDTO();
         final List<PretDTO> prets = new ArrayList<>(unMembreDTO.getPrets());
-
+        
         if(prets.isEmpty()) {
             throw new MissingLoanException("Le livre "
                 + unLivreDTO.getTitre()
@@ -277,7 +288,7 @@ public class PretService extends Service implements IPretService {
                 break;
             }
         }
-
+        
         if(!aEteEmprunteParMembre) {
             throw new MissingLoanException("Le livre "
                 + unLivreDTO.getTitre()
@@ -288,7 +299,8 @@ public class PretService extends Service implements IPretService {
                 + " (ID de membre : "
                 + unMembreDTO.getIdMembre()
                 + ")");
-        }
+        }*/
+
         pretDTO.setDateRetour(new Timestamp(System.currentTimeMillis()));
         update(session,
             pretDTO);
