@@ -100,15 +100,15 @@ public class ReservationService extends Service implements IReservationService {
                 + reservationDTO.getLivreDTO().getIdLivre()
                 + " n'existe pas");
         }
-        final List<PretDTO> pret = new ArrayList<>(unLivreDTO.getPrets());
-        if(pret.isEmpty()) {
+        final List<PretDTO> prets = new ArrayList<>(unLivreDTO.getPrets());
+        if(prets.isEmpty()) {
             throw new MissingLoanException("Le livre "
                 + unLivreDTO.getTitre()
                 + " (ID de livre : "
                 + unLivreDTO.getIdLivre()
                 + ") n'est pas encore prêté");
         }
-        final MembreDTO emprunteur = pret.get(0).getMembreDTO();
+        final MembreDTO emprunteur = prets.get(0).getMembreDTO();
         if(unMembreDTO.getIdMembre() == emprunteur.getIdMembre()) {
             throw new ExistingLoanException("Le livre "
                 + unLivreDTO.getTitre()
@@ -137,7 +137,6 @@ public class ReservationService extends Service implements IReservationService {
         reservationDTO.setDateReservation(new Timestamp(System.currentTimeMillis()));
         add(session,
             reservationDTO);
-
     }
 
     /**

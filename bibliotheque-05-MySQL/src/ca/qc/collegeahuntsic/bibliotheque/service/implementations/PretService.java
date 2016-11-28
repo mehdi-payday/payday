@@ -266,41 +266,6 @@ public class PretService extends Service implements IPretService {
                 + ") a déjà été retourné");
         }
 
-        /*
-         * Ancien code qui fait un détour gigantesque pour arriver à la même solution.
-         *
-        final MembreDTO unMembreDTO = pretDTO.getMembreDTO();
-        final LivreDTO unLivreDTO = pretDTO.getLivreDTO();
-        final List<PretDTO> prets = new ArrayList<>(unMembreDTO.getPrets());
-        
-        if(prets.isEmpty()) {
-            throw new MissingLoanException("Le livre "
-                + unLivreDTO.getTitre()
-                + " (ID de livre : "
-                + unLivreDTO.getIdLivre()
-                + ") n'est pas prêté par le membre."
-                + " De plus, le membre n'a aucun prêt.");
-        }
-        boolean aEteEmprunteParMembre = false;
-        for(PretDTO pretDTODuMembre : prets) {
-            if(unLivreDTO.equals(pretDTODuMembre.getLivreDTO())) {
-                aEteEmprunteParMembre = true;
-                break;
-            }
-        }
-        
-        if(!aEteEmprunteParMembre) {
-            throw new MissingLoanException("Le livre "
-                + unLivreDTO.getTitre()
-                + " (ID de livre : "
-                + unLivreDTO.getIdLivre()
-                + ") n'est pas actuellement prêté à "
-                + unMembreDTO.getNom()
-                + " (ID de membre : "
-                + unMembreDTO.getIdMembre()
-                + ")");
-        }*/
-
         pretDTO.setDateRetour(new Timestamp(System.currentTimeMillis()));
         update(session,
             pretDTO);
