@@ -2,10 +2,15 @@ DROP TABLE reservation CASCADE CONSTRAINT;
 DROP TABLE pret		 CASCADE CONSTRAINT;
 DROP TABLE livre       CASCADE CONSTRAINT;
 DROP TABLE membre      CASCADE CONSTRAINT;
-DROP SEQUENCE membre_sequence;
 DROP SEQUENCE livre_sequence;
+DROP SEQUENCE membre_sequence;
 DROP SEQUENCE pret_sequence;
 DROP SEQUENCE reservation_sequence;
+-- TODO remove drop trigger
+DROP trigger membre_trigger;
+DROP trigger livre_trigger;
+DROP trigger pret_trigger;
+DROP trigger reservation_trigger;
 
 CREATE SEQUENCE membre_sequence
         START WITH 1
@@ -63,45 +68,4 @@ CREATE TABLE reservation (idReservation   NUMBER,
 						  CONSTRAINT      cleEtrangereReservation UNIQUE (idMembre, idLivre),
 						  CONSTRAINT      refReservationMembre    FOREIGN KEY (idMembre) REFERENCES membre (idMembre) ON DELETE CASCADE,
 			              CONSTRAINT      refReservationLivre     FOREIGN KEY (idLivre)  REFERENCES livre (idLivre)   ON DELETE CASCADE);
-			              
-CREATE OR REPLACE TRIGGER membre_trigger 
-BEFORE INSERT ON membre 
-FOR EACH ROW
-
-BEGIN
-  SELECT membre_sequence.NEXTVAL
-  INTO   :new.idMembre
-  FROM   dual;
-END;
-/
-CREATE OR REPLACE TRIGGER livre_trigger 
-BEFORE INSERT ON livre 
-FOR EACH ROW
-
-BEGIN
-  SELECT livre_sequence.NEXTVAL
-  INTO   :new.idLivre
-  FROM   dual;
-END;
-/
-CREATE OR REPLACE TRIGGER pret_trigger 
-BEFORE INSERT ON pret 
-FOR EACH ROW
-
-BEGIN
-  SELECT pret_sequence.NEXTVAL
-  INTO   :new.idPret
-  FROM   dual;
-END;
-/
-CREATE OR REPLACE TRIGGER reservation_trigger 
-BEFORE INSERT ON reservation 
-FOR EACH ROW
-BEGIN
-  SELECT reservation_sequence.NEXTVAL
-  INTO   :new.idReservation
-  FROM   dual;
-END;
-/	              
-			              
 			              
