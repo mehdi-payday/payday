@@ -6,11 +6,6 @@ DROP SEQUENCE livre_sequence;
 DROP SEQUENCE membre_sequence;
 DROP SEQUENCE pret_sequence;
 DROP SEQUENCE reservation_sequence;
--- TODO remove drop trigger
-DROP trigger membre_trigger;
-DROP trigger livre_trigger;
-DROP trigger pret_trigger;
-DROP trigger reservation_trigger;
 
 CREATE SEQUENCE membre_sequence
         START WITH 1
