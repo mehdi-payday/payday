@@ -24,9 +24,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class BibliothequeCreateur {
 
-    private static final String APPLICATION_CONTEXT_JDBC_FILENAME = "testApplicationContext-jdbc-MySQL.xml";
+    private static final String APPLICATION_CONTEXT_JDBC_FILENAME = "testApplicationContext-jdbc-Oracle.xml";
 
-    private static final String APPLICATION_CONTEXT_DTO_FILENAME = "applicationContext-dto-MySQL.xml";
+    private static final String APPLICATION_CONTEXT_DTO_FILENAME = "applicationContext-dto-Oracle.xml";
 
     private static final String APPLICATION_CONTEXT_DAO_FILENAME = "applicationContext-dao.xml";
 

@@ -16,16 +16,16 @@
         class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
         <property name="mappingResources">
                   <list>
-                    <value>ca/qc/collegeahuntsic/bibliotheque/dto/LivreDTO-Oracle.hbm.xml</value>
-                    <value>ca/qc/collegeahuntsic/bibliotheque/dto/MembreDTO-Oracle.hbm.xml</value>
-                    <value>ca/qc/collegeahuntsic/bibliotheque/dto/PretDTO-Oracle.hbm.xml</value>
-                    <value>ca/qc/collegeahuntsic/bibliotheque/dto/ReservationDTO-Oracle.hbm.xml</value>
+                    <value>ca/qc/collegeahuntsic/bibliothequeBackEnd/dto/LivreDTO-Oracle.hbm.xml</value>
+                    <value>ca/qc/collegeahuntsic/bibliothequeBackEnd/dto/MembreDTO-Oracle.hbm.xml</value>
+                    <value>ca/qc/collegeahuntsic/bibliothequeBackEnd/dto/PretDTO-Oracle.hbm.xml</value>
+                    <value>ca/qc/collegeahuntsic/bibliothequeBackEnd/dto/ReservationDTO-Oracle.hbm.xml</value>
                   </list>
         </property>
         <property name="hibernateProperties">
                   <props>
                     <prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
-                    <prop key="hibernate.show_sql">true</prop>
+                    <prop key="hibernate.show_sql">false</prop>
                     <prop key="hibernate.format_sql">true</prop>
                     <prop key="hibernate.max_fetch_depth">3</prop>
                     <prop key="hibernate.default_batch_fetch_size">16</prop>
