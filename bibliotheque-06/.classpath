@@ -25,8 +25,16 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_79"/>
-	<classpathentry kind="lib" path="lib/bibliotheque-06-back-end-MySQL.jar"/>
-	<classpathentry kind="lib" path="lib/bibliotheque-06-back-end-Oracle.jar"/>
+	<classpathentry kind="lib" path="lib/bibliotheque-06-back-end-MySQL.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/bibliotheque-06/docs/bibliotheque-06-back-end-javadoc.jar!/javadoc"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/bibliotheque-06-back-end-Oracle.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/bibliotheque-06/docs/bibliotheque-06-back-end-javadoc.jar!/javadoc"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="src" path="log4j"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
